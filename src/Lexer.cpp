@@ -14,6 +14,11 @@ Lexer::Lexer(const std::ifstream* sourcefile)
     this->m_inputFile = sourcefile;
 }
 
+bool Lexer::isIdentifier(char* chr)
+{
+    return false;
+}
+
 bool Lexer::isKeyword(const std::string chr)
 {
 
@@ -33,6 +38,11 @@ bool Lexer::isKeyword(const std::string chr)
 bool Lexer::isDigit(char chr)
 {
     return (chr >= '0' && chr <= '9');
+}
+
+bool Lexer::isWhiteSpace(char chr)
+{
+    return chr == ' ' || chr == '\n' || chr == '\r';
 }
 
 void Lexer::tokenize()

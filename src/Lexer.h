@@ -8,6 +8,20 @@
 #include <fstream>
 #include <unordered_map>
 
+enum class TokenType
+{
+
+};
+
+struct Token
+{
+    TokenType type; 
+    std::string value;
+
+    Token(TokenType t, const std::string& v) : type(t), value(v) {};
+
+};
+
 class Lexer
 {
 
@@ -18,8 +32,12 @@ public:
     bool isKeyword(const std::string chr);
     bool isDigit(char chr);
     bool isWhiteSpace(char chr);
+    bool isAlphaNumeric(char chr);
     bool isComment(char* chr);
+
     void tokenize();
+    std::string getNextWord();
+    std::string getNextNumber();
 
 private:
     const std::ifstream* m_inputFile;
