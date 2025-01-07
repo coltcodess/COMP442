@@ -10,7 +10,9 @@
 
 enum class TokenType
 {
-
+    KEYWORD, 
+    IDENIFIER,
+    OPERATOR, 
 };
 
 struct Token
@@ -19,28 +21,32 @@ struct Token
     std::string value;
 
     Token(TokenType t, const std::string& v) : type(t), value(v) {};
-
 };
 
 class Lexer
 {
 
 public:
-    Lexer(const std::ifstream* file);
+    Lexer(const std::string source);
 
     bool isIdentifier(char* chr);
     bool isKeyword(const std::string chr);
     bool isDigit(char chr);
     bool isWhiteSpace(char chr);
+    bool isAlpha(char chr);
     bool isAlphaNumeric(char chr);
     bool isComment(char* chr);
 
-    void tokenize();
+    std::vector<Token> tokenize();
     std::string getNextWord();
     std::string getNextNumber();
+    std::string getNextLine();
 
 private:
-    const std::ifstream* m_inputFile;
+    std::string m_sourceText;
+    std::string m_currentLine;
+    size_t m_position;
+    size_t m_linePosition;
 };
 
 #endif // LEXER_H
