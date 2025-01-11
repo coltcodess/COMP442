@@ -10,6 +10,7 @@ Lexer::Lexer(const std::string source) : m_position(0), m_linePosition(0)
 {
     std::cout << "Create Lexer" << std::endl;
     this->m_sourceText = source;
+    this->tokenize();
 }
 
 bool Lexer::isIdentifier(char* chr)
@@ -52,7 +53,6 @@ bool Lexer::isAlphaNumeric(char chr)
     return isAlpha(chr) || isDigit(chr);
 }
 
-
 std::string Lexer::getNextWord()
 {
     size_t start = m_position;
@@ -86,9 +86,21 @@ std::string Lexer::getNextLine()
     return buffer;
 }
 
-std::vector<Token> Lexer::tokenize()
+bool Lexer::isOperator(char chr)
 {
-    std::vector<Token> tokens; 
+    return (chr == '+' || chr == '-' || chr == '/' || chr == '*');
+}
+
+bool Lexer::isNonzero(char chr)
+{
+    return (chr >= 1 || chr <= 9);
+}
+
+
+
+std::vector<Token>* Lexer::tokenize()
+{
+    std::vector<Token>* tokens = new std::vector<Token>; 
 
     while (m_position < m_sourceText.length())
     {
@@ -100,11 +112,21 @@ std::vector<Token> Lexer::tokenize()
             continue;
         }
 
-        if (isAlpha(currentChar))
+        else if (isAlpha(currentChar))
         {
 
+        }
+
+        else if (isOperator(currentChar))
+        {
+            createToken(TokenType::OPERATOR, std::string{currentChar}, m_linePosition);
         }
     }
 
     return tokens;
+}
+
+Token Lexer::createToken(TokenType type, std::string value, int position)
+{
+    return Token(type, value, position);
 }

@@ -7,9 +7,12 @@ static std::string _TEST_DIR = ".\\data\\";
 
 int main()
 {
-    std::stringstream* buffer = new std::stringstream;
-    std::ifstream srcFile(_TEST_DIR + "TEST_01.txt");
+    std::string fileInput;
+    std::cout << "Enter file to open. " << std::endl;
+    std::cin >> fileInput;
 
+    std::stringstream* buffer = new std::stringstream;
+    std::ifstream srcFile(_TEST_DIR + fileInput + ".txt");
 
     if (srcFile.is_open())
     {
@@ -28,13 +31,18 @@ int main()
 
     Lexer* lexer = new Lexer(buffer->str());
 
+
+
     std::cout << lexer->getNextLine() << std::endl;
 
     std::cout << "------" << std::endl;
 
     std::cout << lexer->getNextLine() << std::endl;
-    std::cout << lexer->getNextLine() << std::endl;
 
+    // Write token file 
+    std::ofstream outputFile(_TEST_DIR + fileInput + "_output" + ".txt", std::ofstream::out);
+
+    outputFile.close();
 
     return 0;
 }
