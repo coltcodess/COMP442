@@ -18,21 +18,6 @@ bool Lexer::isIdentifier(char* chr)
     return false;
 }
 
-//bool Lexer::isKeyword(const std::string chr)
-//{
-//    const std::string keywords[] = { "int", "float", "if", "while" };
-//
-//    for (auto& keyword : keywords)
-//    {
-//        if (keywords->compare(chr) == 0)
-//        {
-//            return true;
-//        }
-//    }
-//
-//    return false;
-//}
-
 bool Lexer::isDigit(char chr)
 {
     return (chr >= '0' && chr <= '9');
@@ -98,9 +83,32 @@ std::string Lexer::getNextLine()
     return buffer;
 }
 
-std::string Lexer::getNextChar()
+char Lexer::getNextChar()
 {
-    return std::string();
+    if (m_position != m_sourceText.length())
+    {
+        char currentChar = m_sourceText[m_position];
+        m_position++;
+        return currentChar;
+    }
+    else
+    {
+        std::cout << "End of source file";
+        return ' ';
+    }
+
+}
+
+char Lexer::backupChar()
+{
+    if (m_position != 0)
+    {
+        int temp_pos = m_position;
+        temp_pos--;
+        char backChar = m_sourceText[temp_pos];
+        return backChar;
+    }
+    else return ' ';
 }
 
 std::vector<Token> Lexer::tokenize()
@@ -144,6 +152,10 @@ std::vector<Token> Lexer::tokenize()
             m_linePosition++;
             m_position++;
         }
+
+        // REMOVE ______________________________
+
+        m_position++;
 
 
     }

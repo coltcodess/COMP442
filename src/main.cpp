@@ -12,7 +12,7 @@ int main()
     std::cin >> fileInput;
 
     std::stringstream* buffer = new std::stringstream;
-    std::ifstream srcFile(_TEST_DIR + fileInput + ".txt");
+    std::ifstream srcFile(_TEST_DIR + fileInput + ".src");
 
     if (srcFile.is_open())
     {
@@ -33,16 +33,18 @@ int main()
 
 
 
-    std::cout << lexer->getNextLine() << std::endl;
+    
 
     std::cout << "------" << std::endl;
 
-    std::cout << lexer->getNextLine() << std::endl;
+    
 
-    // Write token file 
-    std::ofstream outputFile(_TEST_DIR + fileInput + "_output" + ".txt", std::ofstream::out);
+    // Write token / error files  
+    std::ofstream tokenOutputFile(_TEST_DIR + fileInput + ".outlextokens", std::ofstream::out);
+    std::ofstream errorOutputFile(_TEST_DIR + fileInput + ".outlexerrors", std::ofstream::out);
 
-    outputFile.close();
+    tokenOutputFile.close();
+    errorOutputFile.close();
 
     while (true);
 

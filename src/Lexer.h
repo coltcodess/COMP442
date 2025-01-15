@@ -93,6 +93,27 @@ class Lexer
 public:
     Lexer(const std::string source);
 
+    // Return the next Token to be used. (Should this be pointer to the Token object??)
+    Token getNextToken();
+
+private:
+
+    // Gets the next character within the SRC file
+    char getNextChar();
+
+    // (TO-DO) Checks whether the lexer is in a Final state??? 
+    bool isFinalState(State state);
+
+    // Backtracking one character within the SRC file
+    char backupChar();
+
+    // Tokenize SRC file 
+    std::vector<Token> tokenize();
+    Token* createToken(TokenType type, std::string value, int position);
+
+    void initKeywords();
+
+    // Checks within SRC file
     bool isIdentifier(char* chr);
     bool isDigit(char chr);
     bool isWhiteSpace(char chr);
@@ -102,29 +123,28 @@ public:
     bool isAlphaNumeric(char chr);
     bool isComment(char* chr);
 
-    
-
-    std::vector<Token> tokenize();
-    Token getNextToken();
-    std::string getNextChar();
-    std::string backupChar();
-    bool isFinalState(State state);
-    Token* createToken(TokenType type, std::string value, int position);
+    // Helper functions.
     std::string convertTokenTypeToString(TokenType type);
-
     std::string getNextWord();
     std::string getNextNumber();
     std::string getNextLine();
 
-private:
+    // SRC text from driver
     std::string m_sourceText;
-    std::string m_currentLine;
+    
+    // Position within the SRC text
     size_t m_position;
+
+    // Line position within the SRC file 
     size_t m_linePosition;
-    // std::vector<std::string> m_keywords = {"int", "float"};
+
+    // Get the position of the next token in the vector 
+    int m_tokenIndex;
+
     std::unordered_map<std::string, TokenType> m_keywords;
 
-    void initKeywords();
+    
+
 
 };
 
