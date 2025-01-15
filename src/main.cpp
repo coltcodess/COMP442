@@ -44,5 +44,7 @@ int main()
 
     outputFile.close();
 
+    while (true);
+
     return 0;
 }
