@@ -31,9 +31,9 @@ int main()
 
     Lexer* lexer = new Lexer(buffer->str());
 
+    Token token = lexer->getNextToken();
 
-
-    
+    std::cout << "[" + token.convertTokenTypeToString() + ", " + token.lexem + ", " + std::to_string(token.position) + "]" << std::endl;
 
     std::cout << "------" << std::endl;
 

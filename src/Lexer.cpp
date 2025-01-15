@@ -10,7 +10,17 @@ Lexer::Lexer(const std::string source) : m_position(0), m_linePosition(0)
 {
     std::cout << "Create Lexer" << std::endl;
     this->m_sourceText = source;
-    this->tokenize();
+    m_tokens = this->tokenize();
+
+    // remove
+    m_tokens.push_back(Token(TokenType::ATTRIBUTE, "wow", 1));
+       
+}
+
+Token Lexer::getNextToken()
+{
+    Token token = m_tokens[m_tokenIndex];
+    return token;
 }
 
 bool Lexer::isIdentifier(char* chr)
@@ -167,11 +177,6 @@ Token* Lexer::createToken(TokenType type, std::string value, int position)
 {
     Token* token = new Token(type, value, position);
     return token;
-}
-
-std::string Lexer::convertTokenTypeToString(TokenType type)
-{
-    return "";
 }
 
 void Lexer::initKeywords()

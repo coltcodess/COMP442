@@ -80,11 +80,24 @@ enum class State
 
 struct Token
 {
-    TokenType type; 
-    std::string lexem;
-    const int position;
+    TokenType type = TokenType::ATTRIBUTE; 
+    std::string lexem = "wow";
+    int position = 0;
 
     Token(TokenType t, std::string v, int p) : type(t), lexem(v), position(p) {};
+
+    std::string convertTokenTypeToString()
+    {
+        switch (type) {
+        case TokenType::ATTRIBUTE:
+            return "attribute";
+         
+
+        default:
+            return "$$$$$";
+        }
+
+    }
 };
 
 class Lexer
@@ -121,7 +134,7 @@ private:
     bool isAlpha(char chr);
     bool isOperator(char chr);
     bool isAlphaNumeric(char chr);
-    bool isComment(char* chr);
+    bool IsPunctuation(char chr);
 
     // Helper functions.
     std::string convertTokenTypeToString(TokenType type);
@@ -141,6 +154,8 @@ private:
     // Get the position of the next token in the vector 
     int m_tokenIndex;
 
+
+    std::vector<Token> m_tokens;
     std::unordered_map<std::string, TokenType> m_keywords;
 
     
