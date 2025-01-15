@@ -11,9 +11,65 @@
 
 enum class TokenType
 {
-    KEYWORD, 
-    IDENIFIER,
-    OPERATOR, 
+    // Data
+    intnum, 
+    floatnum,
+    id,
+    inlinecmt,
+    blockcmt, 
+
+    // Punc 
+    EQ,
+    NOTEQ,
+    SEMI,
+    COLON,
+    CLOSEPAR,
+    OPENPAR,
+    CLOSECUBR,
+    OPENCUBR,
+    DOT,
+    COMMA,
+    
+    AND,
+    OR,
+    ISA,
+
+    // Operators
+    MULTI,
+    PLUS,
+    MINUS,
+    DIV,
+    ARROW,
+    OPENSQBR,
+    CLOSESQBR,
+    ASSIGN,
+    LEQ,
+    GEQ,
+    GT,
+    LT,
+
+    // Keywords 
+    INT,
+    FLOAT,
+    LOCAL,
+    ATTRIBUTE,
+    THEN,
+    CLASS,
+    SELF,
+    PUBLIC,
+    PRIVATE,
+    IMPLEMENTATION,
+    RETURN,
+    WRITE,
+    READ,
+    IF, 
+    ELSE,
+    VOID,
+    CONSTRUCTOR,
+    WHILE,   
+    FUNCTION,
+
+    // Errors 
     ERROR,
 };
 

@@ -159,44 +159,31 @@ Token* Lexer::createToken(TokenType type, std::string value, int position)
 
 std::string Lexer::convertTokenTypeToString(TokenType type)
 {
-    switch (type)
-    {
-    case TokenType::KEYWORD:
-        return "KEYOWRD";
-    case TokenType::IDENIFIER:
-        return "IDENIFIER";
-    case TokenType::OPERATOR:
-        return "OPERATOR";
-    }
+    return "";
 }
 
 void Lexer::initKeywords()
 {
     // Keywords
-    m_keywords["int"] = TokenType::KEYWORD;
-    m_keywords["float"] = TokenType::KEYWORD;
-    m_keywords["void"] = TokenType::KEYWORD;
-    m_keywords["class"] = TokenType::KEYWORD;
-    m_keywords["self"] = TokenType::KEYWORD;
-    m_keywords["isa"] = TokenType::KEYWORD;
-    m_keywords["implementation"] = TokenType::KEYWORD;
-    m_keywords["while"] = TokenType::KEYWORD;
-    m_keywords["if"] = TokenType::KEYWORD;
-    m_keywords["then"] = TokenType::KEYWORD;
-    m_keywords["else"] = TokenType::KEYWORD;
-    m_keywords["read"] = TokenType::KEYWORD;
-    m_keywords["write"] = TokenType::KEYWORD;
-    m_keywords["return"] = TokenType::KEYWORD;
-    m_keywords["local"] = TokenType::KEYWORD;
-    m_keywords["constructor"] = TokenType::KEYWORD;
-    m_keywords["attribute"] = TokenType::KEYWORD;
-    m_keywords["function"] = TokenType::KEYWORD;
-    m_keywords["public"] = TokenType::KEYWORD;
-    m_keywords["private"] = TokenType::KEYWORD;
-
-    // Operators (move out if needed)
-    m_keywords["or"] = TokenType::OPERATOR;
-    m_keywords["and"] = TokenType::OPERATOR;
-    m_keywords["not"] = TokenType::OPERATOR;
+    m_keywords["int"] = TokenType::INT;
+    m_keywords["float"] = TokenType::FLOAT;
+    m_keywords["void"] = TokenType::VOID;
+    m_keywords["class"] = TokenType::CLASS;
+    m_keywords["self"] = TokenType::SELF;
+    m_keywords["isa"] = TokenType::ISA;
+    m_keywords["implementation"] = TokenType::IMPLEMENTATION;
+    m_keywords["while"] = TokenType::WHILE;
+    m_keywords["if"] = TokenType::IF;
+    m_keywords["then"] = TokenType::THEN;
+    m_keywords["else"] = TokenType::ELSE;
+    m_keywords["read"] = TokenType::READ;
+    m_keywords["write"] = TokenType::WRITE;
+    m_keywords["return"] = TokenType::RETURN;
+    m_keywords["local"] = TokenType::LOCAL;
+    m_keywords["constructor"] = TokenType::CONSTRUCTOR;
+    m_keywords["attribute"] = TokenType::ATTRIBUTE;
+    m_keywords["function"] = TokenType::FUNCTION;
+    m_keywords["public"] = TokenType::PUBLIC;
+    m_keywords["private"] = TokenType::PRIVATE;
 
 }
