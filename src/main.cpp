@@ -3,8 +3,6 @@
 #include <sstream>
 #include "Lexer.h"
 
-static std::string _TEST_DIR = ".\\data\\";
-
 int main()
 {
     std::string fileInput;
@@ -12,7 +10,7 @@ int main()
     std::cin >> fileInput;
 
     std::stringstream* buffer = new std::stringstream;
-    std::ifstream srcFile(_TEST_DIR + fileInput + ".src");
+    std::ifstream srcFile(fileInput + ".src");
 
     if (srcFile.is_open())
     {
@@ -40,8 +38,8 @@ int main()
     
 
     // Write token / error files  
-    std::ofstream tokenOutputFile(_TEST_DIR + fileInput + ".outlextokens", std::ofstream::out);
-    std::ofstream errorOutputFile(_TEST_DIR + fileInput + ".outlexerrors", std::ofstream::out);
+    std::ofstream tokenOutputFile(fileInput + ".outlextokens", std::ofstream::out);
+    std::ofstream errorOutputFile(fileInput + ".outlexerrors", std::ofstream::out);
 
     tokenOutputFile.close();
     errorOutputFile.close();
