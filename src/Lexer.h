@@ -86,12 +86,14 @@ struct Token
 
     Token(TokenType t, std::string v, int p) : type(t), lexem(v), position(p) {};
 
+    // Helper function for printing 
     std::string convertTokenTypeToString()
     {
         switch (type) {
         case TokenType::ATTRIBUTE:
             return "attribute";
-         
+        case TokenType::INT:
+            return "int";
 
         default:
             return "$$$$$";
@@ -107,7 +109,7 @@ public:
     Lexer(const std::string source);
 
     // Return the next Token to be used. (Should this be pointer to the Token object??)
-    Token getNextToken();
+    Token* getNextToken();
 
 private:
 
@@ -121,7 +123,7 @@ private:
     char backupChar();
 
     // Tokenize SRC file 
-    std::vector<Token> tokenize();
+    void tokenize();
     Token* createToken(TokenType type, std::string value, int position);
 
     void initKeywords();
@@ -155,11 +157,8 @@ private:
     int m_tokenIndex;
 
 
-    std::vector<Token> m_tokens;
+    std::vector<Token*> m_tokens;
     std::unordered_map<std::string, TokenType> m_keywords;
-
-    
-
 
 };
 

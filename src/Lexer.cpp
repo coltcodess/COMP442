@@ -10,16 +10,24 @@ Lexer::Lexer(const std::string source) : m_position(0), m_linePosition(0)
 {
     std::cout << "Create Lexer" << std::endl;
     this->m_sourceText = source;
-    m_tokens = this->tokenize();
 
-    // remove
-    m_tokens.push_back(Token(TokenType::ATTRIBUTE, "wow", 1));
-       
+    // Initialize keyword list
+    this->initKeywords();
+
+    // Tokenize source file 
+    this->tokenize();    
 }
 
-Token Lexer::getNextToken()
+Token* Lexer::getNextToken()
 {
-    Token token = m_tokens[m_tokenIndex];
+    if (m_tokens.empty())
+    {
+        std::cout << "Error: No tokens found! Must the source file be tokenized? " << std::endl;
+        return nullptr;
+    }
+
+    Token* token = m_tokens[m_tokenIndex];
+
     return token;
 }
 
@@ -40,7 +48,7 @@ bool Lexer::isNonzero(char chr)
 
 bool Lexer::isWhiteSpace(char chr)
 {
-    return chr == ' ' || chr == '\n' || chr == '\r';
+    return chr == ' ' || chr == '\n' || chr == '\r' || chr =='\t';
 }
 
 bool Lexer::isAlpha(char chr)
@@ -56,6 +64,11 @@ bool Lexer::isAlphaNumeric(char chr)
 bool Lexer::isOperator(char chr)
 {
     return (chr == '+' || chr == '-' || chr == '/' || chr == '*');
+}
+
+bool Lexer::IsPunctuation(char chr)
+{
+    return (chr == '(' || chr == ')' || chr == ';' || chr == ',');
 }
 
 std::string Lexer::getNextWord()
@@ -121,14 +134,20 @@ char Lexer::backupChar()
     else return ' ';
 }
 
-std::vector<Token> Lexer::tokenize()
+void Lexer::tokenize()
 {
-    std::vector<Token> tokens; 
-
     while (m_position < m_sourceText.length())
     {
         char currentChar = m_sourceText[m_position];
 
+        // Check cartridge and incre. line position
+        if (currentChar == '\n')
+        {
+            m_linePosition++;
+            m_position++;
+        }
+
+        // Skip whitespace 
         if (isWhiteSpace(currentChar))
         {
             m_position++;
@@ -143,34 +162,31 @@ std::vector<Token> Lexer::tokenize()
             if (m_keywords.find(word) != m_keywords.end())
             {
                 // Add keyword
+                Token* token = createToken(TokenType::INT, word, m_linePosition);
+                m_tokens.push_back(token);
             }
             else
             {
                 // Add Identifier
-                
+                Token* token = createToken(TokenType::id, word, m_linePosition);
+                m_tokens.push_back(token);
             }
+
+            m_position++;
         }
 
         else if (isOperator(currentChar))
         {
-            //createToken(TokenType::OPERATOR, std::string{currentChar}, m_linePosition);
-            m_position++;
-        }
-
-        if (currentChar == '\n')
-        {
-            m_linePosition++;
+            
             m_position++;
         }
 
         // REMOVE ______________________________
 
         m_position++;
-
-
     }
 
-    return tokens;
+    std::cout << "Finished tokenization.... " << std::endl;
 }
 
 Token* Lexer::createToken(TokenType type, std::string value, int position)
@@ -202,5 +218,4 @@ void Lexer::initKeywords()
     m_keywords["function"] = TokenType::FUNCTION;
     m_keywords["public"] = TokenType::PUBLIC;
     m_keywords["private"] = TokenType::PRIVATE;
-
 }
