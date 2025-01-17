@@ -81,7 +81,7 @@ enum class State
 struct Token
 {
     TokenType type = TokenType::ATTRIBUTE; 
-    std::string lexem = "wow";
+    std::string lexem = "ERROR";
     int position = 0;
 
     Token(TokenType t, std::string v, int p) : type(t), lexem(v), position(p) {};
@@ -110,6 +110,7 @@ public:
 
     // Return the next Token to be used. (Should this be pointer to the Token object??)
     Token* getNextToken();
+    bool isFinished();
 
 private:
 
@@ -139,7 +140,7 @@ private:
     bool IsPunctuation(char chr);
 
     // Helper functions.
-    std::string convertTokenTypeToString(TokenType type);
+    void removeSourceWhiteSpace();
     std::string getNextWord();
     std::string getNextNumber();
     std::string getNextLine();
@@ -148,13 +149,13 @@ private:
     std::string m_sourceText;
     
     // Position within the SRC text
-    size_t m_position;
+    size_t m_position = 0;
 
     // Line position within the SRC file 
-    size_t m_linePosition;
+    size_t m_linePosition = 0;
 
     // Get the position of the next token in the vector 
-    int m_tokenIndex;
+    int m_tokenIndex = 0;
 
 
     std::vector<Token*> m_tokens;

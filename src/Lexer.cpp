@@ -4,12 +4,16 @@
 
 #include "Lexer.h"
 #include <string.h>
+#include <algorithm>
 
 // Constructor
 Lexer::Lexer(const std::string source) : m_position(0), m_linePosition(0)
 {
     std::cout << "Create Lexer" << std::endl;
     this->m_sourceText = source;
+
+    // Remove all white space from source text
+    //m_sourceText.erase(std::remove(m_sourceText.begin(), m_sourceText.end(), '\t'), m_sourceText.end());
 
     // Initialize keyword list
     this->initKeywords();
@@ -28,7 +32,14 @@ Token* Lexer::getNextToken()
 
     Token* token = m_tokens[m_tokenIndex];
 
+    m_tokenIndex++;
+
     return token;
+}
+
+bool Lexer::isFinished()
+{
+    return m_tokenIndex > m_tokens.size()-1;
 }
 
 bool Lexer::isIdentifier(char* chr)
@@ -48,7 +59,7 @@ bool Lexer::isNonzero(char chr)
 
 bool Lexer::isWhiteSpace(char chr)
 {
-    return chr == ' ' || chr == '\n' || chr == '\r' || chr =='\t';
+    return chr == ' ' || chr == '\r' || chr == '\t';
 }
 
 bool Lexer::isAlpha(char chr)
@@ -71,14 +82,29 @@ bool Lexer::IsPunctuation(char chr)
     return (chr == '(' || chr == ')' || chr == ';' || chr == ',');
 }
 
+void Lexer::removeSourceWhiteSpace()
+{
+    for (size_t i = 0; i < m_sourceText.length(); i++)
+    {
+        if (m_sourceText[i] == '\t')
+        {
+            m_sourceText.erase(m_sourceText[i]);
+        }
+    }
+}
+
 std::string Lexer::getNextWord()
 {
     size_t start = m_position;
-    while (m_position < m_sourceText.length() && isAlphaNumeric(m_sourceText[m_position]))
+    std::string temp = "";
+
+    while (m_position < m_sourceText.length() && isAlphaNumeric(m_sourceText[m_position]) && !isWhiteSpace(m_sourceText[m_position]))
     {
+        temp += m_sourceText[m_position];
         m_position++;
     }
-    return m_sourceText.substr(start, m_position);
+    
+    return temp;
 }
 
 std::string Lexer::getNextLine()

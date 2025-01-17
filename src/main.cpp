@@ -26,25 +26,27 @@ int main()
 
     srcFile.close();
 
-
+    // Create Lexer with source file  
     Lexer* lexer = new Lexer(buffer->str());
-
-    Token* token = lexer->getNextToken();
-
-    std::cout << "[" + token->convertTokenTypeToString() + ", " + token->lexem + ", " + std::to_string(token->position) + "]" << std::endl;
-
-    std::cout << "------" << std::endl;
-
-    
 
     // Write token / error files  
     std::ofstream tokenOutputFile(fileInput + ".outlextokens", std::ofstream::out);
     std::ofstream errorOutputFile(fileInput + ".outlexerrors", std::ofstream::out);
 
+    int file_position = 0;
+
+    while (!lexer->isFinished())
+    {
+        // Log valid token
+        Token* token = lexer->getNextToken();
+        std::string output = "[" + token->convertTokenTypeToString() + ", " + token->lexem + ", " + std::to_string(token->position) + "]" + '\n';
+        tokenOutputFile << output;
+
+        // Log error token 
+    }
+
     tokenOutputFile.close();
     errorOutputFile.close();
-
-    while (true);
 
     return 0;
 }
