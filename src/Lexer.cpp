@@ -82,17 +82,6 @@ bool Lexer::IsPunctuation(char chr)
     return (chr == '(' || chr == ')' || chr == ';' || chr == ',');
 }
 
-void Lexer::removeSourceWhiteSpace()
-{
-    for (size_t i = 0; i < m_sourceText.length(); i++)
-    {
-        if (m_sourceText[i] == '\t')
-        {
-            m_sourceText.erase(m_sourceText[i]);
-        }
-    }
-}
-
 std::string Lexer::getNextWord()
 {
     size_t start = m_position;
@@ -171,6 +160,7 @@ void Lexer::tokenize()
         {
             m_linePosition++;
             m_position++;
+            continue;
         }
 
         // Skip whitespace 
@@ -180,6 +170,7 @@ void Lexer::tokenize()
             continue;
         }
 
+        // Check Letter
         else if (isAlpha(currentChar))
         {
             std::string word = getNextWord();
@@ -187,9 +178,18 @@ void Lexer::tokenize()
             // Look through map for word
             if (m_keywords.find(word) != m_keywords.end())
             {
-                // Add keyword
-                Token* token = createToken(TokenType::INT, word, m_linePosition);
-                m_tokens.push_back(token);
+                if (word == "int")
+                {
+                    // Add keyword
+                    Token* token = createToken(TokenType::INT, word, m_linePosition);
+                    m_tokens.push_back(token);
+                }
+                else if (word == "while")
+                {
+                    Token* token = createToken(TokenType::WHILE, word, m_linePosition);
+                    m_tokens.push_back(token);
+                }
+
             }
             else
             {
@@ -198,16 +198,35 @@ void Lexer::tokenize()
                 m_tokens.push_back(token);
             }
 
-            m_position++;
+
+        }
+
+        else if (isDigit(currentChar))
+        {
+            
+            if (currentChar == '0')
+            {
+                std::string s(1, currentChar);
+                Token* token = createToken(TokenType::intnum, s, m_linePosition);
+                m_tokens.push_back(token);
+            }
+        
         }
 
         else if (isOperator(currentChar))
         {
-            
-            m_position++;
-        }
+            // Check PLUS
+            if (currentChar == '+')
+            {
+                Token* token = createToken(TokenType::PLUS, "+", m_linePosition);
+                m_tokens.push_back(token);
+            }
 
-        // REMOVE ______________________________
+
+
+
+           
+        }
 
         m_position++;
     }

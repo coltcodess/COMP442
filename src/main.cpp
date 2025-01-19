@@ -33,17 +33,31 @@ int main()
     std::ofstream tokenOutputFile(fileInput + ".outlextokens", std::ofstream::out);
     std::ofstream errorOutputFile(fileInput + ".outlexerrors", std::ofstream::out);
 
-    int file_position = 0;
+    int file_position = 1;
 
     while (!lexer->isFinished())
     {
+        
+        // Handle user input to print next token
+        //std::string input;
+        //std::cout << "Press Y/N to get the next token. " << std::endl;
+        //std::cin >> input;
+
         // Log valid token
         Token* token = lexer->getNextToken();
-        std::string output = "[" + token->convertTokenTypeToString() + ", " + token->lexem + ", " + std::to_string(token->position) + "]" + '\n';
+
+        if (token->position > file_position)
+        {
+            tokenOutputFile << '\n';
+        }
+
+        std::string output = "[" + token->convertTokenTypeToString() + ", " + token->lexem + ", " + std::to_string(token->position) + "]";
+        std::cout << output << std::endl;
         tokenOutputFile << output;
 
-        // Log error token 
     }
+
+    std::cout << "Finished lexical analysis" << std::endl;
 
     tokenOutputFile.close();
     errorOutputFile.close();

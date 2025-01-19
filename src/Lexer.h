@@ -82,18 +82,114 @@ struct Token
 {
     TokenType type = TokenType::ATTRIBUTE; 
     std::string lexem = "ERROR";
-    int position = 0;
+    int position = 1;
 
     Token(TokenType t, std::string v, int p) : type(t), lexem(v), position(p) {};
 
     // Helper function for printing 
     std::string convertTokenTypeToString()
     {
+
+        // Print out the token type as string
         switch (type) {
         case TokenType::ATTRIBUTE:
             return "attribute";
         case TokenType::INT:
             return "int";
+        case TokenType::WHILE:
+            return "while";
+        case TokenType::PLUS:
+            return "plus";
+        case TokenType::intnum:
+            return "intnum";
+        case TokenType::ARROW:
+            return "arrow";
+        case TokenType::AND:
+            return "and";
+        case TokenType::ASSIGN:
+            return "assign";
+        case TokenType::blockcmt:
+            return "blockcmt";
+        case TokenType::CLASS:
+            return "class";
+        case TokenType::CLOSECUBR:
+            return "closecubr";
+        case TokenType::CLOSEPAR:
+            return "closepar";
+        case TokenType::CLOSESQBR:
+            return "closesqbr";
+        case TokenType::COLON:
+            return "colon";
+        case TokenType::COMMA:
+            return "comma";
+        case TokenType::CONSTRUCTOR:
+            return "constructor";
+        case TokenType::DIV:
+            return "div";
+        case TokenType::DOT:
+            return "dot";
+        case TokenType::ELSE:
+            return "else";
+        case TokenType::EQ:
+            return "eq";
+        case TokenType::FLOAT:
+            return "float";
+        case TokenType::floatnum:
+            return "floatnum";
+        case TokenType::FUNCTION:
+            return "function";
+        case TokenType::GEQ:
+            return "geq";
+        case TokenType::GT:
+            return "gt";
+        case TokenType::IF:
+            return "if";
+        case TokenType::IMPLEMENTATION:
+            return "Implementation";
+        case TokenType::inlinecmt:
+            return "inlinecmt";
+        case TokenType::ISA:
+            return "isa";
+        case TokenType::LEQ:
+            return "leq";
+        case TokenType::LOCAL:
+            return "local";
+        case TokenType::LT:
+            return "lt";
+        case TokenType::MINUS:
+            return "minus";
+        case TokenType::MULTI:
+            return "multi";
+        case TokenType::NOTEQ:
+            return "noteq";
+        case TokenType::OPENCUBR:
+            return "opencubr";
+        case TokenType::OPENPAR:
+            return "openpar";
+        case TokenType::OPENSQBR:
+            return "opensqbr";
+        case TokenType::OR:
+            return "or";
+        case TokenType::PRIVATE:
+            return "private";
+        case TokenType::PUBLIC:
+            return "public";
+        case TokenType::READ:
+            return "read";
+        case TokenType::RETURN:
+            return "return";
+        case TokenType::SELF:
+            return "self";
+        case TokenType::SEMI:
+            return "semi";
+        case TokenType::THEN:
+            return "then";
+        case TokenType::VOID:
+            return "void";
+        case TokenType::WRITE:
+            return "write";
+        case TokenType::ERROR:
+            return "ERROR";
 
         default:
             return "$$$$$";
@@ -140,7 +236,6 @@ private:
     bool IsPunctuation(char chr);
 
     // Helper functions.
-    void removeSourceWhiteSpace();
     std::string getNextWord();
     std::string getNextNumber();
     std::string getNextLine();
@@ -152,7 +247,7 @@ private:
     size_t m_position = 0;
 
     // Line position within the SRC file 
-    size_t m_linePosition = 0;
+    size_t m_linePosition = 1;
 
     // Get the position of the next token in the vector 
     int m_tokenIndex = 0;
