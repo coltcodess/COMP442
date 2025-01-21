@@ -190,6 +190,8 @@ struct Token
             return "write";
         case TokenType::ERROR:
             return "ERROR";
+        case TokenType::id:
+            return "id";
 
         default:
             return "$$$$$";
@@ -239,15 +241,16 @@ private:
     std::string getNextWord();
     std::string getNextNumber();
     std::string getNextLine();
+    TokenType getTokenType(std::string str);
 
     // SRC text from driver
     std::string m_sourceText;
     
     // Position within the SRC text
-    size_t m_position = 0;
+    int m_position = 0;
 
     // Line position within the SRC file 
-    size_t m_linePosition = 1;
+    int m_linePosition = 1;
 
     // Get the position of the next token in the vector 
     int m_tokenIndex = 0;

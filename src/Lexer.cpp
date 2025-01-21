@@ -7,7 +7,7 @@
 #include <algorithm>
 
 // Constructor
-Lexer::Lexer(const std::string source) : m_position(0), m_linePosition(0)
+Lexer::Lexer(const std::string source) : m_position(0), m_linePosition(1)
 {
     std::cout << "Create Lexer" << std::endl;
     this->m_sourceText = source;
@@ -178,18 +178,8 @@ void Lexer::tokenize()
             // Look through map for word
             if (m_keywords.find(word) != m_keywords.end())
             {
-                if (word == "int")
-                {
-                    // Add keyword
-                    Token* token = createToken(TokenType::INT, word, m_linePosition);
-                    m_tokens.push_back(token);
-                }
-                else if (word == "while")
-                {
-                    Token* token = createToken(TokenType::WHILE, word, m_linePosition);
-                    m_tokens.push_back(token);
-                }
-
+                Token* token = createToken(m_keywords[word], word, m_position);
+                m_tokens.push_back(token);                
             }
             else
             {
@@ -263,4 +253,18 @@ void Lexer::initKeywords()
     m_keywords["function"] = TokenType::FUNCTION;
     m_keywords["public"] = TokenType::PUBLIC;
     m_keywords["private"] = TokenType::PRIVATE;
+}
+
+TokenType Lexer::getTokenType(std::string str)
+{
+    for (auto& it : m_keywords)
+    {
+        if (it.first == str)
+        {
+            return it.second;
+        }
+    }
+
+    return TokenType::ERROR;
+        
 }
