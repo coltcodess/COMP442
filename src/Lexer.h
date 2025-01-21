@@ -242,6 +242,7 @@ private:
     std::string getNextNumber();
     std::string getNextLine();
     TokenType getTokenType(std::string str);
+    char peekNextChar();
 
     // SRC text from driver
     std::string m_sourceText;

@@ -146,7 +146,21 @@ char Lexer::backupChar()
         char backChar = m_sourceText[temp_pos];
         return backChar;
     }
-    else return ' ';
+    std::cout << "LOG: Cannot backtrack! " << std::endl;
+    return NULL;
+}
+
+char Lexer::peekNextChar()
+{
+    if (m_position != 0)
+    {
+        int temp_pos = m_position;
+        temp_pos++;
+        char nextChar = m_sourceText[temp_pos];
+        return nextChar;
+    }
+    std::cout << "LOG: Cannot peek next char! " << std::endl;
+    return NULL;
 }
 
 void Lexer::tokenize()
@@ -214,11 +228,6 @@ void Lexer::tokenize()
                 Token* token = createToken(TokenType::PLUS, "+", m_linePosition);
                 m_tokens.push_back(token);
             }
-
-
-
-
-           
         }
 
         m_position++;
@@ -271,3 +280,5 @@ TokenType Lexer::getTokenType(std::string str)
     return TokenType::ERROR;
         
 }
+
+
