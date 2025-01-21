@@ -175,9 +175,12 @@ void Lexer::tokenize()
         {
             std::string word = getNextWord();
 
+            // Check if it's an operator 
+
             // Look through map for word
             if (m_keywords.find(word) != m_keywords.end())
             {
+                // Add Keywords
                 Token* token = createToken(m_keywords[word], word, m_position);
                 m_tokens.push_back(token);                
             }
