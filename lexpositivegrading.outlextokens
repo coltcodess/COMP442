@@ -14,7 +14,7 @@
 [self, self, 144]
 [read, read, 150]
 [public, public, 157]
-[isa, isa, 169]
+[$$$$$, isa, 169]
 [write, write, 176]
 [private, private, 184]
 [Implementation, implementation, 204]

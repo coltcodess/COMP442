@@ -1,86 +1,86 @@
-//
-// Created by Colton LeBlond on 2024-12-19.
-//
-
 #ifndef LEXER_H
 #define LEXER_H
 
 #include <iostream>
 #include <fstream>
 #include <unordered_map>
+#include <string>
+
+const int MAX_TOKEN_LENGTH = 512;
 
 enum class TokenType
 {
-    // Data
-    intnum, 
-    floatnum,
-    id,
-    inlinecmt,
-    blockcmt, 
-
     // Punc 
-    EQ,
-    NOTEQ,
-    SEMI,
-    COLON,
-    CLOSEPAR,
-    OPENPAR,
-    CLOSECUBR,
-    OPENCUBR,
-    DOT,
-    COMMA,
-    
-    AND,
-    OR,
-    ISA,
+    EQ = '=',
+    SEMI = ';',
+    COLON = ':',
+    CLOSEPAR = '(',
+    OPENPAR = ')',
+    OPENCUBR = '[',
+    CLOSECUBR = ']',
+    DOT = '.',
+    COMMA = ',',
 
     // Operators
-    MULTI,
-    PLUS,
-    MINUS,
-    DIV,
+    MULTI = '*',
+    PLUS = '+',
+    MINUS = '-',
+    DIV = '/',
     ARROW,
-    OPENSQBR,
-    CLOSESQBR,
-    ASSIGN,
-    LEQ,
-    GEQ,
-    GT,
-    LT,
+    OPENSQBR = '{',
+    CLOSESQBR = '}',
+
+    NOTEQ = 256,
+    ASSIGN = 257,
+    LEQ = 258,
+    GEQ = 259,
+    GT = 260,
+    LT = 261,
 
     // Keywords 
-    INT,
-    FLOAT,
-    LOCAL,
-    ATTRIBUTE,
-    THEN,
-    CLASS,
-    SELF,
-    PUBLIC,
-    PRIVATE,
-    IMPLEMENTATION,
-    RETURN,
-    WRITE,
-    READ,
-    IF, 
-    ELSE,
-    VOID,
-    CONSTRUCTOR,
-    WHILE,   
-    FUNCTION,
+    INT = 262,
+    FLOAT = 263,
+    LOCAL = 264,
+    ATTRIBUTE = 265,
+    THEN = 266,
+    CLASS = 267,
+    SELF = 268,
+    PUBLIC = 269,
+    PRIVATE = 270,
+    IMPLEMENTATION = 271,
+    RETURN = 272,
+    WRITE = 273,
+    READ = 274,
+    IF = 275, 
+    ELSE = 276,
+    VOID = 277,
+    CONSTRUCTOR = 278,
+    WHILE = 279,   
+    FUNCTION = 280,
+    ISA = 281,
+
+    // Bitwise
+    AND = 282,
+    OR = 283,
+
+    // Data
+    intnum = 284,
+    floatnum = 285,
+
+    // Comments
+    inlinecmt = 286,
+    blockcmt = 287,
+
+    // Identifers
+    id = 499,
 
     // Errors 
-    ERROR,
-};
-
-enum class State
-{
-
+    ERROR = 500,
 };
 
 struct Token
 {
-    TokenType type = TokenType::ATTRIBUTE; 
+    TokenType type = TokenType::ERROR; 
     std::string lexem = "ERROR";
     int position = 1;
 
@@ -89,7 +89,6 @@ struct Token
     // Helper function for printing 
     std::string convertTokenTypeToString()
     {
-
         // Print out the token type as string
         switch (type) {
         case TokenType::ATTRIBUTE:
@@ -148,8 +147,6 @@ struct Token
             return "Implementation";
         case TokenType::inlinecmt:
             return "inlinecmt";
-        case TokenType::ISA:
-            return "isa";
         case TokenType::LEQ:
             return "leq";
         case TokenType::LOCAL:
@@ -215,9 +212,6 @@ private:
     // Gets the next character within the SRC file
     char getNextChar();
 
-    // (TO-DO) Checks whether the lexer is in a Final state??? 
-    bool isFinalState(State state);
-
     // Backtracking one character within the SRC file
     char backupChar();
 
@@ -248,10 +242,13 @@ private:
     std::string m_sourceText;
     
     // Position within the SRC text
-    int m_position = 0;
+    int m_current_line_index = 0;
 
     // Line position within the SRC file 
-    int m_linePosition = 1;
+    int m_current_line_number = 1;
+
+    // Track error report lines
+    int m_error_report_line_number = 1;
 
     // Get the position of the next token in the vector 
     int m_tokenIndex = 0;

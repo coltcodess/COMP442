@@ -1,13 +1,9 @@
-//
-// Created by Colton LeBlond on 2024-12-19.
-//
-
 #include "Lexer.h"
 #include <string.h>
 #include <algorithm>
 
 // Constructor
-Lexer::Lexer(const std::string source) : m_position(0), m_linePosition(1)
+Lexer::Lexer(const std::string source) : m_current_line_index(0), m_current_line_number(1)
 {
     std::cout << "Create Lexer" << std::endl;
     this->m_sourceText = source;
@@ -84,13 +80,13 @@ bool Lexer::IsPunctuation(char chr)
 
 std::string Lexer::getNextWord()
 {
-    size_t start = m_position;
+    size_t start = m_current_line_index;
     std::string temp = "";
 
-    while (m_position < m_sourceText.length() && isAlphaNumeric(m_sourceText[m_position]) && !isWhiteSpace(m_sourceText[m_position]))
+    while (m_current_line_index < m_sourceText.length() && isAlphaNumeric(m_sourceText[m_current_line_index]) && !isWhiteSpace(m_sourceText[m_current_line_index]))
     {
-        temp += m_sourceText[m_position];
-        m_position++;
+        temp += m_sourceText[m_current_line_index];
+        m_current_line_index++;
     }
     
     return temp;
@@ -104,7 +100,7 @@ std::string Lexer::getNextLine()
 
     int buffer_index = 0;
 
-    for (int i = m_position; i < temp.length(); i++)
+    for (int i = m_current_line_index; i < temp.length(); i++)
     {
         if (temp[i] != '\n')
         {
@@ -113,7 +109,7 @@ std::string Lexer::getNextLine()
         }
         else
         {
-            m_position = i + 1;
+            m_current_line_index = i + 1;
             return buffer;
         }
     }    
@@ -123,10 +119,10 @@ std::string Lexer::getNextLine()
 
 char Lexer::getNextChar()
 {
-    if (m_position != m_sourceText.length())
+    if (m_current_line_index != m_sourceText.length())
     {
-        char currentChar = m_sourceText[m_position];
-        m_position++;
+        char currentChar = m_sourceText[m_current_line_index];
+        m_current_line_index++;
         return currentChar;
     }
     else
@@ -139,9 +135,9 @@ char Lexer::getNextChar()
 
 char Lexer::backupChar()
 {
-    if (m_position != 0)
+    if (m_current_line_index != 0)
     {
-        int temp_pos = m_position;
+        int temp_pos = m_current_line_index;
         temp_pos--;
         char backChar = m_sourceText[temp_pos];
         return backChar;
@@ -152,9 +148,9 @@ char Lexer::backupChar()
 
 char Lexer::peekNextChar()
 {
-    if (m_position != 0)
+    if (m_current_line_index != 0)
     {
-        int temp_pos = m_position;
+        int temp_pos = m_current_line_index;
         temp_pos++;
         char nextChar = m_sourceText[temp_pos];
         return nextChar;
@@ -165,22 +161,22 @@ char Lexer::peekNextChar()
 
 void Lexer::tokenize()
 {
-    while (m_position < m_sourceText.length())
+    while (m_current_line_index < m_sourceText.length())
     {
-        char currentChar = m_sourceText[m_position];
+        char currentChar = m_sourceText[m_current_line_index];
 
         // Check cartridge and incre. line position
         if (currentChar == '\n')
         {
-            m_linePosition++;
-            m_position++;
+            m_current_line_number++;
+            m_current_line_index++;
             continue;
         }
 
         // Skip whitespace 
         if (isWhiteSpace(currentChar))
         {
-            m_position++;
+            m_current_line_index++;
             continue;
         }
 
@@ -195,13 +191,13 @@ void Lexer::tokenize()
             if (m_keywords.find(word) != m_keywords.end())
             {
                 // Add Keywords
-                Token* token = createToken(m_keywords[word], word, m_position);
+                Token* token = createToken(m_keywords[word], word, m_current_line_index);
                 m_tokens.push_back(token);                
             }
             else
             {
                 // Add Identifier
-                Token* token = createToken(TokenType::id, word, m_linePosition);
+                Token* token = createToken(TokenType::id, word, m_current_line_number);
                 m_tokens.push_back(token);
             }
 
@@ -214,7 +210,7 @@ void Lexer::tokenize()
             if (currentChar == '0')
             {
                 std::string s(1, currentChar);
-                Token* token = createToken(TokenType::intnum, s, m_linePosition);
+                Token* token = createToken(TokenType::intnum, s, m_current_line_number);
                 m_tokens.push_back(token);
             }
         
@@ -225,12 +221,12 @@ void Lexer::tokenize()
             // Check PLUS
             if (currentChar == '+')
             {
-                Token* token = createToken(TokenType::PLUS, "+", m_linePosition);
+                Token* token = createToken(TokenType::PLUS, "+", m_current_line_number);
                 m_tokens.push_back(token);
             }
         }
 
-        m_position++;
+        m_current_line_index++;
     }
 
     std::cout << "Finished tokenization.... " << std::endl;
