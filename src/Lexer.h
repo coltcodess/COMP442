@@ -11,7 +11,7 @@ const int MAX_TOKEN_LENGTH = 512;
 enum class TokenType
 {
     // Punc 
-    EQ = '=',
+
     SEMI = ';',
     COLON = ':',
     CLOSEPAR = '(',
@@ -58,6 +58,7 @@ enum class TokenType
     WHILE = 279,   
     FUNCTION = 280,
     ISA = 281,
+    EQ = 288,
 
     // Bitwise
     AND = 282,

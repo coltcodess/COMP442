@@ -38,11 +38,6 @@ bool Lexer::isFinished()
     return m_tokenIndex > m_tokens.size()-1;
 }
 
-bool Lexer::isIdentifier(char* chr)
-{
-    return false;
-}
-
 bool Lexer::isDigit(char chr)
 {
     return (chr >= '0' && chr <= '9');
@@ -80,11 +75,18 @@ bool Lexer::IsPunctuation(char chr)
 
 std::string Lexer::getNextWord()
 {
-    size_t start = m_current_line_index;
+    int start = m_current_line_index;
     std::string temp = "";
 
     while (m_current_line_index < m_sourceText.length() && isAlphaNumeric(m_sourceText[m_current_line_index]) && !isWhiteSpace(m_sourceText[m_current_line_index]))
     {
+        if (peekNextChar() == '\n')
+        {
+            temp += m_sourceText[m_current_line_index];
+            return temp;
+        }
+
+
         temp += m_sourceText[m_current_line_index];
         m_current_line_index++;
     }
@@ -165,14 +167,6 @@ void Lexer::tokenize()
     {
         char currentChar = m_sourceText[m_current_line_index];
 
-        // Check cartridge and incre. line position
-        if (currentChar == '\n')
-        {
-            m_current_line_number++;
-            m_current_line_index++;
-            continue;
-        }
-
         // Skip whitespace 
         if (isWhiteSpace(currentChar))
         {
@@ -191,7 +185,7 @@ void Lexer::tokenize()
             if (m_keywords.find(word) != m_keywords.end())
             {
                 // Add Keywords
-                Token* token = createToken(m_keywords[word], word, m_current_line_index);
+                Token* token = createToken(m_keywords[word], word, m_current_line_number);
                 m_tokens.push_back(token);                
             }
             else
@@ -200,7 +194,6 @@ void Lexer::tokenize()
                 Token* token = createToken(TokenType::id, word, m_current_line_number);
                 m_tokens.push_back(token);
             }
-
 
         }
 
@@ -216,14 +209,29 @@ void Lexer::tokenize()
         
         }
 
-        else if (isOperator(currentChar))
+        // Check operators
+        else if (currentChar == '+')
         {
-            // Check PLUS
-            if (currentChar == '+')
+            Token* token = createToken(TokenType::PLUS, "+", m_current_line_number);
+            m_tokens.push_back(token);
+        }
+        else if (currentChar == '=')
+        {
+            char c = getNextChar();
+            if (c == '=')
             {
-                Token* token = createToken(TokenType::PLUS, "+", m_current_line_number);
+                Token* token = createToken(TokenType::EQ, "==", m_current_line_number);
                 m_tokens.push_back(token);
+                m_current_line_index++;
             }
+        }
+
+        // Check cartridge and incre. line position - Need to be at the end
+        else if (currentChar == '\n')
+        {
+            m_current_line_number++;
+            m_current_line_index++;
+            continue;
         }
 
         m_current_line_index++;
