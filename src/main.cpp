@@ -53,7 +53,7 @@ int main()
             file_position++;
         }
 
-        std::string output = "[" + token->convertTokenTypeToString() + ", " + token->lexem + ", " + std::to_string(token->position) + "]";
+        std::string output = "[" + token->convertTokenTypeToString() + ", " + token->lexem + ", " + std::to_string(token->position) + "] ";
         std::cout << output << std::endl;
         tokenOutputFile << output;
 

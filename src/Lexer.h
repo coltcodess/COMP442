@@ -77,6 +77,11 @@ enum class TokenType
 
     // Errors 
     ERROR = 500,
+
+    // Invalid
+    invalidchar = 501,
+    invalidid = 502,
+    invalidnum = 503
 };
 
 struct Token
@@ -190,6 +195,8 @@ struct Token
             return "ERROR";
         case TokenType::id:
             return "id";
+        case TokenType::invalidchar:
+            return "invalidchar";
 
         default:
             return "$$$$$";
@@ -229,7 +236,8 @@ private:
     bool isAlpha(char chr);
     bool isOperator(char chr);
     bool isAlphaNumeric(char chr);
-    bool IsPunctuation(char chr);
+    bool isPunctuation(char chr);
+    bool isInvalidChar(char chr);
 
     // Helper functions.
     std::string getNextWord();

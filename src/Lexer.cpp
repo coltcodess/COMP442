@@ -47,6 +47,11 @@ bool Lexer::isNonzero(char chr)
     return (chr >= 1 || chr <= 9);
 }
 
+bool Lexer::isInvalidChar(char chr)
+{
+    return !(chr == '@');
+}
+
 bool Lexer::isWhiteSpace(char chr)
 {
     return chr == ' ' || chr == '\r' || chr == '\t';
@@ -67,7 +72,7 @@ bool Lexer::isOperator(char chr)
     return (chr == '+' || chr == '-' || chr == '/' || chr == '*');
 }
 
-bool Lexer::IsPunctuation(char chr)
+bool Lexer::isPunctuation(char chr)
 {
     return (chr == '(' || chr == ')' || chr == ';' || chr == ',');
 }
@@ -240,7 +245,6 @@ void Lexer::tokenize()
             {
                 Token* token = createToken(TokenType::EQ, "==", m_current_line_number);
                 m_tokens.push_back(token);
-                m_current_line_index++;
             }
             else
             {
@@ -254,6 +258,14 @@ void Lexer::tokenize()
             m_current_line_number++;
             m_current_line_index++;
             continue;
+        }
+
+        // Invalid Char
+        else if (isInvalidChar(currentChar))
+        {
+            std::string s(1, currentChar);
+            Token* token = createToken(TokenType::invalidchar, s, m_current_line_number);
+            m_tokens.push_back(token);
         }
 
 
