@@ -214,7 +214,7 @@ private:
     char getNextChar();
 
     // Backtracking one character within the SRC file
-    char backupChar();
+    char peekBackupChar();
 
     // Tokenize SRC file 
     void tokenize();
@@ -223,7 +223,6 @@ private:
     void initKeywords();
 
     // Checks within SRC file
-    bool isIdentifier(char* chr);
     bool isDigit(char chr);
     bool isWhiteSpace(char chr);
     bool isNonzero(char chr);

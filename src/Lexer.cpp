@@ -1,5 +1,4 @@
 #include "Lexer.h"
-#include <string.h>
 #include <algorithm>
 
 // Constructor
@@ -94,6 +93,25 @@ std::string Lexer::getNextWord()
     return temp;
 }
 
+std::string Lexer::getNextNumber()
+{
+    int start = m_current_line_index;
+    bool decimal = false; 
+    while (m_current_line_index < m_sourceText.length() && 
+        (isDigit(m_sourceText[m_current_line_index])) || 
+        m_sourceText[m_current_line_index] == '.')
+    {
+        if (m_sourceText[m_current_line_index] == '.')
+        {
+            if (decimal) break;
+            decimal = true;
+        }
+        m_current_line_index++;
+    }
+
+    return m_sourceText.substr(start, m_current_line_index - start);
+}
+
 std::string Lexer::getNextLine()
 {  
     std::string temp = m_sourceText;
@@ -135,7 +153,7 @@ char Lexer::getNextChar()
 
 }
 
-char Lexer::backupChar()
+char Lexer::peekBackupChar()
 {
     if (m_current_line_index != 0)
     {
@@ -199,13 +217,11 @@ void Lexer::tokenize()
 
         else if (isDigit(currentChar))
         {
-            
-            if (currentChar == '0')
-            {
-                std::string s(1, currentChar);
-                Token* token = createToken(TokenType::intnum, s, m_current_line_number);
+            std::string number = getNextNumber();
+
+            std::string s(1, currentChar);
+                Token* token = createToken(TokenType::intnum, number, m_current_line_number);
                 m_tokens.push_back(token);
-            }
         
         }
 
@@ -215,6 +231,8 @@ void Lexer::tokenize()
             Token* token = createToken(TokenType::PLUS, "+", m_current_line_number);
             m_tokens.push_back(token);
         }
+
+        // Check equals
         else if (currentChar == '=')
         {
             char c = getNextChar();
@@ -223,6 +241,10 @@ void Lexer::tokenize()
                 Token* token = createToken(TokenType::EQ, "==", m_current_line_number);
                 m_tokens.push_back(token);
                 m_current_line_index++;
+            }
+            else
+            {
+
             }
         }
 
@@ -233,6 +255,7 @@ void Lexer::tokenize()
             m_current_line_index++;
             continue;
         }
+
 
         m_current_line_index++;
     }

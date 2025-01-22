@@ -6,8 +6,6 @@
 
 int main()
 {
-
-
     std::string fileInput;
     std::cout << "Enter file to open. " << std::endl;
     std::cin >> fileInput;
