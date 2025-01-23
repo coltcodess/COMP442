@@ -58,19 +58,20 @@ enum class TokenType
     WHILE = 279,   
     FUNCTION = 280,
     ISA = 281,
-    EQ = 288,
+    EQ = 282,
 
     // Bitwise
-    AND = 282,
-    OR = 283,
+    AND = 283,
+    OR = 284,
+    NOT = 285,
 
     // Data
-    intnum = 284,
-    floatnum = 285,
+    intnum = 286,
+    floatnum = 287,
 
     // Comments
-    inlinecmt = 286,
-    blockcmt = 287,
+    inlinecmt = 288,
+    blockcmt = 289,
 
     // Identifers
     id = 499,
@@ -95,7 +96,7 @@ struct Token
     // Helper function for printing 
     std::string convertTokenTypeToString()
     {
-        // Print out the token type as string
+        // Print out the token type as string for driver / debugging
         switch (type) {
         case TokenType::ATTRIBUTE:
             return "attribute";
@@ -131,6 +132,8 @@ struct Token
             return "constructor";
         case TokenType::DIV:
             return "div";
+        case TokenType::ISA:
+            return "isa";
         case TokenType::DOT:
             return "dot";
         case TokenType::ELSE:
@@ -173,6 +176,8 @@ struct Token
             return "opensqbr";
         case TokenType::OR:
             return "or";
+        case TokenType::NOT:
+            return "not";
         case TokenType::PRIVATE:
             return "private";
         case TokenType::PUBLIC:

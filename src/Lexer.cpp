@@ -7,9 +7,6 @@ Lexer::Lexer(const std::string source) : m_current_line_index(0), m_current_line
     std::cout << "Create Lexer" << std::endl;
     this->m_sourceText = source;
 
-    // Remove all white space from source text
-    //m_sourceText.erase(std::remove(m_sourceText.begin(), m_sourceText.end(), '\t'), m_sourceText.end());
-
     // Initialize keyword list
     this->initKeywords();
 
@@ -49,7 +46,7 @@ bool Lexer::isNonzero(char chr)
 
 bool Lexer::isInvalidChar(char chr)
 {
-    return !(chr == '@');
+    return (chr == '@' || chr == '#' || chr == '$' || chr == '\\' || chr == '~' || chr == '`');
 }
 
 bool Lexer::isWhiteSpace(char chr)
@@ -237,27 +234,96 @@ void Lexer::tokenize()
             m_tokens.push_back(token);
         }
 
+        // Check Minus or negative number
+        else if (currentChar == '-')
+        {
+           
+        }
+
+        // Check Multi
+        else if (currentChar == '*')
+        {
+            Token* token = createToken(TokenType::MULTI, "*", m_current_line_number);
+            m_tokens.push_back(token);
+        }
+
+        else if (currentChar == ')')
+        {
+            Token* token = createToken(TokenType::CLOSEPAR, ")", m_current_line_number);
+            m_tokens.push_back(token);
+        }
+
+        else if (currentChar == '[')
+        {
+            Token* token = createToken(TokenType::OPENSQBR, "[", m_current_line_number);
+            m_tokens.push_back(token);
+        }
+
+        else if (currentChar == ']')
+        {
+            Token* token = createToken(TokenType::CLOSESQBR, "]", m_current_line_number);
+            m_tokens.push_back(token);
+        }
+
+        else if (currentChar == '{')
+        {
+            Token* token = createToken(TokenType::OPENCUBR, "{", m_current_line_number);
+            m_tokens.push_back(token);
+        }
+
+        else if (currentChar == '}')
+        {
+            Token* token = createToken(TokenType::CLOSECUBR, "}", m_current_line_number);
+            m_tokens.push_back(token);
+        }
+
+        else if (currentChar == ';')
+        {
+            Token* token = createToken(TokenType::SEMI, ";", m_current_line_number);
+            m_tokens.push_back(token);
+        }
+
+        else if (currentChar == ',')
+        {
+            Token* token = createToken(TokenType::COMMA, ",", m_current_line_number);
+            m_tokens.push_back(token);
+            }
+
+        else if (currentChar == ':')
+        {
+            
+            char c = peekNextChar();
+
+            if (c == '=')
+            {
+                Token* token = createToken(TokenType::ASSIGN, ":=", m_current_line_number);
+                m_tokens.push_back(token);
+                m_current_line_index++;
+            }
+            else
+            {
+                Token* token = createToken(TokenType::COLON, ":", m_current_line_number);
+                m_tokens.push_back(token);
+            }
+        }
+
         // Check equals
         else if (currentChar == '=')
         {
-            char c = getNextChar();
-            if (c == '=')
+            m_current_line_index++;
+
+            char c = m_sourceText[m_current_line_index];
+
+            if (c == '>')
+            {
+                Token* token = createToken(TokenType::ARROW, "=>", m_current_line_number);
+                m_tokens.push_back(token);
+            }
+            else if(c == '=')
             {
                 Token* token = createToken(TokenType::EQ, "==", m_current_line_number);
                 m_tokens.push_back(token);
             }
-            else
-            {
-
-            }
-        }
-
-        // Check cartridge and incre. line position - Need to be at the end
-        else if (currentChar == '\n')
-        {
-            m_current_line_number++;
-            m_current_line_index++;
-            continue;
         }
 
         // Invalid Char
@@ -266,6 +332,14 @@ void Lexer::tokenize()
             std::string s(1, currentChar);
             Token* token = createToken(TokenType::invalidchar, s, m_current_line_number);
             m_tokens.push_back(token);
+        }
+
+        // Check cartridge and incre. line position - Need to be at the end
+        else if (currentChar == '\n')
+        {
+            m_current_line_number++;
+            m_current_line_index++;
+            continue;
         }
 
 
@@ -304,6 +378,11 @@ void Lexer::initKeywords()
     m_keywords["function"] = TokenType::FUNCTION;
     m_keywords["public"] = TokenType::PUBLIC;
     m_keywords["private"] = TokenType::PRIVATE;
+    
+    // Bitwise OPs
+    m_keywords["and"] = TokenType::AND;
+    m_keywords["or"] = TokenType::OR;
+    m_keywords["not"] = TokenType::NOT;
 }
 
 TokenType Lexer::getTokenType(std::string str)
