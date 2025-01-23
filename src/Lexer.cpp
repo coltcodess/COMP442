@@ -98,16 +98,25 @@ std::string Lexer::getNextWord()
 std::string Lexer::getNextNumber()
 {
     int start = m_current_line_index;
+
     bool decimal = false; 
+
     while (m_current_line_index < m_sourceText.length() && 
         (isDigit(m_sourceText[m_current_line_index])) || 
         m_sourceText[m_current_line_index] == '.')
     {
+    
+        if (peekNextChar() == '\n')
+        {
+            return m_sourceText.substr(start, m_current_line_index - (start-1));
+        }
+
         if (m_sourceText[m_current_line_index] == '.')
         {
             if (decimal) break;
             decimal = true;
         }
+
         m_current_line_index++;
     }
 
@@ -128,15 +137,52 @@ std::string Lexer::getNextLine()
         {
             buffer.insert(buffer_index, 1, temp[i]);
             buffer_index++;
+            
         }
         else
         {
             m_current_line_index = i + 1;
             return buffer;
         }
-    }    
+    } 
 
     return buffer;
+}
+
+std::string Lexer::getNextBlock()
+{
+    std::string temp = m_sourceText;
+
+    std::string buffer;
+
+    int buffer_index = 0;
+
+    for (int i = m_current_line_index; i < temp.length(); i++)
+    {
+        // Check newline 
+        if (temp[i] == '\n')
+        {
+            buffer.insert(buffer_index, 1, '\\n');
+            buffer_index++;
+        } 
+
+        else if (temp[i] != '*')
+        {
+            buffer.insert(buffer_index, 1, temp[i]);
+            buffer_index++;
+        }
+
+        else
+        {
+            m_current_line_index = i + 1;
+        }
+    }
+
+    // Check exit char
+    //if(m_sourceText[m_current_line_index] == '\\') 
+    m_current_line_index++;
+    return buffer;
+    
 }
 
 char Lexer::getNextChar()
@@ -152,7 +198,6 @@ char Lexer::getNextChar()
         std::cout << "End of source file";
         return ' ';
     }
-
 }
 
 char Lexer::peekBackupChar()
@@ -222,12 +267,12 @@ void Lexer::tokenize()
             std::string number = getNextNumber();
 
             std::string s(1, currentChar);
-                Token* token = createToken(TokenType::intnum, number, m_current_line_number);
-                m_tokens.push_back(token);
+            Token* token = createToken(TokenType::intnum, number, m_current_line_number);
+            m_tokens.push_back(token);
         
         }
 
-        // Check operators
+        // Check PLUS
         else if (currentChar == '+')
         {
             Token* token = createToken(TokenType::PLUS, "+", m_current_line_number);
@@ -240,7 +285,7 @@ void Lexer::tokenize()
            
         }
 
-        // Check Multi
+        // Check MULTI
         else if (currentChar == '*')
         {
             Token* token = createToken(TokenType::MULTI, "*", m_current_line_number);
@@ -289,6 +334,7 @@ void Lexer::tokenize()
             m_tokens.push_back(token);
             }
 
+        // Check COLON and ASSIGN
         else if (currentChar == ':')
         {
             
@@ -307,7 +353,34 @@ void Lexer::tokenize()
             }
         }
 
-        // Check equals
+        // Check LT, LEQ, NOTEQ
+        else if (currentChar == '<')
+        {
+
+            char c = peekNextChar();
+
+            if (c == '=')
+            {
+                m_current_line_index++;
+                Token* token = createToken(TokenType::LEQ, "<=", m_current_line_number);
+                m_tokens.push_back(token);
+                
+            }
+            else if (c == '>')
+            {
+                m_current_line_index++;
+                Token* token = createToken(TokenType::NOTEQ, "<>", m_current_line_number);
+                m_tokens.push_back(token);
+                
+            }
+            else
+            {
+                Token* token = createToken(TokenType::LT, "<", m_current_line_number);
+                m_tokens.push_back(token);
+            }
+        }
+
+        // Check equals and arrow
         else if (currentChar == '=')
         {
             m_current_line_index++;
@@ -325,6 +398,37 @@ void Lexer::tokenize()
                 m_tokens.push_back(token);
             }
         }
+
+        // Check INLINE CMT, BLOCK CMT, OR DIV
+        else if (currentChar == '/')
+        {
+            char c = peekNextChar();
+
+            // INLINE CMT
+            if (c == '/')
+            {
+                std::string cmt = getNextLine();
+                Token* token = createToken(TokenType::inlinecmt, cmt, m_current_line_number);
+                m_tokens.push_back(token);
+            }
+
+            // BLOCK CMT
+            else if (c == '*')
+            {
+                std::string cmt = getNextBlock();
+                Token* token = createToken(TokenType::blockcmt, cmt, m_current_line_number);
+                m_tokens.push_back(token);
+            }
+
+            //DIV
+            else
+            {
+                Token* token = createToken(TokenType::DIV, "/", m_current_line_number);
+                m_tokens.push_back(token);
+            }
+
+        }
+
 
         // Invalid Char
         else if (isInvalidChar(currentChar))

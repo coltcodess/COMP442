@@ -248,6 +248,7 @@ private:
     std::string getNextWord();
     std::string getNextNumber();
     std::string getNextLine();
+    std::string getNextBlock();
     TokenType getTokenType(std::string str);
     char peekNextChar();
 
