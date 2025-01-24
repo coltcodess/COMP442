@@ -28,11 +28,10 @@ int main()
     srcFile.close();
 
     // Create Lexer with source file  
-    Lexer* lexer = new Lexer(buffer->str());
+    Lexer* lexer = new Lexer(buffer->str(), fileInput);
 
     // Write token / error files  
     std::ofstream tokenOutputFile(fileInput + ".outlextokens", std::ofstream::out);
-    std::ofstream errorOutputFile(fileInput + ".outlexerrors", std::ofstream::out);
 
     int file_position = 1;
 
@@ -59,10 +58,10 @@ int main()
 
     }
 
-    std::cout << "Finished lexical analysis" << std::endl;
+    std::cout << "Finished lexical analysis...." << std::endl;
 
     tokenOutputFile.close();
-    errorOutputFile.close();
+   
 
     return 0;
 }

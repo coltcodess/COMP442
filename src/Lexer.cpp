@@ -2,7 +2,7 @@
 #include <algorithm>
 
 // Constructor
-Lexer::Lexer(const std::string source) : m_current_line_index(0), m_current_line_number(1)
+Lexer::Lexer(const std::string source, const std::string fileName) : m_current_line_index(0), m_current_line_number(1), m_sourceFileName(fileName)
 {
     std::cout << "Create Lexer" << std::endl;
     this->m_sourceText = source;
@@ -10,8 +10,15 @@ Lexer::Lexer(const std::string source) : m_current_line_index(0), m_current_line
     // Initialize keyword list
     this->initKeywords();
 
+    std::ofstream out(m_sourceFileName + ".outlexerrors", std::ofstream::out);
+
+    m_errorOutputFile = &out;
+
     // Tokenize source file 
-    this->tokenize();    
+    this->tokenize();   
+
+    out.close();
+    m_errorOutputFile = nullptr;
 }
 
 Token* Lexer::getNextToken()
@@ -46,7 +53,7 @@ bool Lexer::isNonzero(char chr)
 
 bool Lexer::isInvalidChar(char chr)
 {
-    return (chr == '@' || chr == '#' || chr == '$' || chr == '\\' || chr == '~' || chr == '`');
+    return (chr == '@' || chr == '#' || chr == '$' || chr == '\\' || chr == '~' || chr == '\'' || chr == '_');
 }
 
 bool Lexer::isWhiteSpace(char chr)
@@ -120,6 +127,38 @@ std::string Lexer::getNextNumber()
         m_current_line_index++;
     }
 
+    // Optional e+/-
+    if (m_sourceText[m_current_line_index] == 'e')
+    {
+        m_current_line_index++;
+
+        if (m_sourceText[m_current_line_index] == '+' || m_sourceText[m_current_line_index] == '-')
+        {
+            m_current_line_index++;
+        }
+    }
+
+    // Fix this (TODO) - Loops over the end of a float checking trailing 0s
+    while (m_current_line_index < m_sourceText.length() &&
+        (isDigit(m_sourceText[m_current_line_index])) ||
+        m_sourceText[m_current_line_index] == '.')
+    {
+
+        if (peekNextChar() == '\n')
+        {
+            return m_sourceText.substr(start, m_current_line_index - (start - 1));
+        }
+
+        if (m_sourceText[m_current_line_index] == '.')
+        {
+            if (decimal) break;
+            decimal = true;
+        }
+
+        m_current_line_index++;
+    }
+    
+
     return m_sourceText.substr(start, m_current_line_index - start);
 }
 
@@ -142,6 +181,7 @@ std::string Lexer::getNextLine()
         else
         {
             m_current_line_index = i + 1;
+            m_current_line_number++;
             return buffer;
         }
     } 
@@ -158,28 +198,59 @@ std::string Lexer::getNextBlock()
     int buffer_index = 0;
 
     for (int i = m_current_line_index; i < temp.length(); i++)
-    {
-        // Check newline 
-        if (temp[i] == '\n')
-        {
-            buffer.insert(buffer_index, 1, '\\n');
-            buffer_index++;
-        } 
-
-        else if (temp[i] != '*')
+    {    
+        if (temp[i] == '*' && peekNextChar() == '/')
         {
             buffer.insert(buffer_index, 1, temp[i]);
             buffer_index++;
-        }
+            buffer.insert(buffer_index, 1, '/');
+            buffer_index++;
+            m_current_line_index++;
+
+            // handle imbricated (TODO)
+            while (temp[m_current_line_index] != '/')
+            {
+                if (temp[i] == '\n')
+                {
+                    buffer.insert(buffer_index, 1, '\\');
+                    buffer_index++;
+                    buffer.insert(buffer_index, 1, 'n');
+                    buffer_index++;
+                    m_current_line_index++;
+                    m_current_line_number++;
+                }
+                else 
+                {
+                    buffer.insert(buffer_index, 1, temp[i]);
+                    buffer_index++;
+                    m_current_line_index++;
+                }
+                
+            }
+
+            break;
+
+        }        
+
+        // Check newline 
+        else if (temp[i] == '\n')
+        {
+            buffer.insert(buffer_index, 1, '\\');
+            buffer_index++;
+            buffer.insert(buffer_index, 1, 'n');
+            buffer_index++;
+            m_current_line_index++;
+            m_current_line_number++;
+        } 
 
         else
         {
-            m_current_line_index = i + 1;
+            buffer.insert(buffer_index, 1, temp[i]);
+            buffer_index++;
+            m_current_line_index++;
         }
     }
 
-    // Check exit char
-    //if(m_sourceText[m_current_line_index] == '\\') 
     m_current_line_index++;
     return buffer;
     
@@ -251,13 +322,15 @@ void Lexer::tokenize()
             {
                 // Add Keywords
                 Token* token = createToken(m_keywords[word], word, m_current_line_number);
-                m_tokens.push_back(token);                
+                m_tokens.push_back(token);  
+                m_current_line_index++;
             }
             else
             {
                 // Add Identifier
                 Token* token = createToken(TokenType::id, word, m_current_line_number);
                 m_tokens.push_back(token);
+                m_current_line_index++;
             }
 
         }
@@ -269,6 +342,7 @@ void Lexer::tokenize()
             std::string s(1, currentChar);
             Token* token = createToken(TokenType::intnum, number, m_current_line_number);
             m_tokens.push_back(token);
+            m_current_line_index++;
         
         }
 
@@ -277,12 +351,13 @@ void Lexer::tokenize()
         {
             Token* token = createToken(TokenType::PLUS, "+", m_current_line_number);
             m_tokens.push_back(token);
+            m_current_line_index++;
         }
 
         // Check Minus or negative number
         else if (currentChar == '-')
         {
-           
+            m_current_line_index++;
         }
 
         // Check MULTI
@@ -290,49 +365,72 @@ void Lexer::tokenize()
         {
             Token* token = createToken(TokenType::MULTI, "*", m_current_line_number);
             m_tokens.push_back(token);
+            m_current_line_index++;
         }
 
         else if (currentChar == ')')
         {
             Token* token = createToken(TokenType::CLOSEPAR, ")", m_current_line_number);
             m_tokens.push_back(token);
+            m_current_line_index++;
+        }
+
+        else if (currentChar == '(')
+        {
+            Token* token = createToken(TokenType::OPENPAR, "(", m_current_line_number);
+            m_tokens.push_back(token);
+            m_current_line_index++;
         }
 
         else if (currentChar == '[')
         {
             Token* token = createToken(TokenType::OPENSQBR, "[", m_current_line_number);
             m_tokens.push_back(token);
+            m_current_line_index++;
         }
 
         else if (currentChar == ']')
         {
             Token* token = createToken(TokenType::CLOSESQBR, "]", m_current_line_number);
             m_tokens.push_back(token);
+            m_current_line_index++;
         }
 
         else if (currentChar == '{')
         {
             Token* token = createToken(TokenType::OPENCUBR, "{", m_current_line_number);
             m_tokens.push_back(token);
+            m_current_line_index++;
         }
 
         else if (currentChar == '}')
         {
             Token* token = createToken(TokenType::CLOSECUBR, "}", m_current_line_number);
             m_tokens.push_back(token);
+            m_current_line_index++;
         }
 
         else if (currentChar == ';')
         {
             Token* token = createToken(TokenType::SEMI, ";", m_current_line_number);
             m_tokens.push_back(token);
+            m_current_line_index++;
         }
 
         else if (currentChar == ',')
         {
             Token* token = createToken(TokenType::COMMA, ",", m_current_line_number);
             m_tokens.push_back(token);
-            }
+            m_current_line_index++;
+        }
+
+        // Check DOT
+        else if (currentChar == '.')
+        {
+            Token* token = createToken(TokenType::DOT, ".", m_current_line_number);
+            m_tokens.push_back(token);
+            m_current_line_index++;
+        }
 
         // Check COLON and ASSIGN
         else if (currentChar == ':')
@@ -350,7 +448,29 @@ void Lexer::tokenize()
             {
                 Token* token = createToken(TokenType::COLON, ":", m_current_line_number);
                 m_tokens.push_back(token);
+                m_current_line_index++;
+
             }
+        }
+
+        // Check GT, GEQ
+        else if (currentChar == '>')
+        {
+            char c = peekNextChar();
+
+            if (c == '=')
+            {
+                m_current_line_index++;
+                Token* token = createToken(TokenType::GEQ, ">=", m_current_line_number);
+                m_tokens.push_back(token);
+            }
+            else
+            {
+                Token* token = createToken(TokenType::GT, ">", m_current_line_number);
+                m_tokens.push_back(token);
+            }
+
+            m_current_line_index++;
         }
 
         // Check LT, LEQ, NOTEQ
@@ -364,7 +484,6 @@ void Lexer::tokenize()
                 m_current_line_index++;
                 Token* token = createToken(TokenType::LEQ, "<=", m_current_line_number);
                 m_tokens.push_back(token);
-                
             }
             else if (c == '>')
             {
@@ -372,12 +491,15 @@ void Lexer::tokenize()
                 Token* token = createToken(TokenType::NOTEQ, "<>", m_current_line_number);
                 m_tokens.push_back(token);
                 
+                
             }
             else
             {
                 Token* token = createToken(TokenType::LT, "<", m_current_line_number);
-                m_tokens.push_back(token);
+                m_tokens.push_back(token); 
             }
+
+            m_current_line_index++;
         }
 
         // Check equals and arrow
@@ -391,12 +513,16 @@ void Lexer::tokenize()
             {
                 Token* token = createToken(TokenType::ARROW, "=>", m_current_line_number);
                 m_tokens.push_back(token);
+                
             }
             else if(c == '=')
             {
                 Token* token = createToken(TokenType::EQ, "==", m_current_line_number);
                 m_tokens.push_back(token);
+                
             }
+
+            m_current_line_index++;
         }
 
         // Check INLINE CMT, BLOCK CMT, OR DIV
@@ -427,8 +553,9 @@ void Lexer::tokenize()
                 m_tokens.push_back(token);
             }
 
-        }
+            m_current_line_index++;
 
+        }
 
         // Invalid Char
         else if (isInvalidChar(currentChar))
@@ -436,6 +563,13 @@ void Lexer::tokenize()
             std::string s(1, currentChar);
             Token* token = createToken(TokenType::invalidchar, s, m_current_line_number);
             m_tokens.push_back(token);
+
+            // LOG 
+            std::string output = "Lexical error: Invalid Character: " + '\n';
+            *m_errorOutputFile << output;
+            
+
+            m_current_line_index++;
         }
 
         // Check cartridge and incre. line position - Need to be at the end
@@ -445,9 +579,7 @@ void Lexer::tokenize()
             m_current_line_index++;
             continue;
         }
-
-
-        m_current_line_index++;
+        
     }
 
     std::cout << "Finished tokenization.... " << std::endl;
@@ -499,6 +631,7 @@ TokenType Lexer::getTokenType(std::string str)
         }
     }
 
+    // Error is a token type....
     return TokenType::ERROR;
         
 }

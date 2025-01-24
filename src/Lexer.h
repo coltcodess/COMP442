@@ -153,7 +153,7 @@ struct Token
         case TokenType::IF:
             return "if";
         case TokenType::IMPLEMENTATION:
-            return "Implementation";
+            return "implementation";
         case TokenType::inlinecmt:
             return "inlinecmt";
         case TokenType::LEQ:
@@ -214,9 +214,8 @@ class Lexer
 {
 
 public:
-    Lexer(const std::string source);
+    Lexer(const std::string source, const std::string fileName);
 
-    // Return the next Token to be used. (Should this be pointer to the Token object??)
     Token* getNextToken();
     bool isFinished();
 
@@ -254,6 +253,7 @@ private:
 
     // SRC text from driver
     std::string m_sourceText;
+    std::string m_sourceFileName;
     
     // Position within the SRC text
     int m_current_line_index = 0;
@@ -270,6 +270,7 @@ private:
 
     std::vector<Token*> m_tokens;
     std::unordered_map<std::string, TokenType> m_keywords;
+    std::ofstream* m_errorOutputFile;
 
 };
 
