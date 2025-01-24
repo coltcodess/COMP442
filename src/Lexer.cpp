@@ -565,7 +565,7 @@ void Lexer::tokenize()
             m_tokens.push_back(token);
 
             // LOG 
-            std::string output = "Lexical error: Invalid Character: " + '\n';
+            std::string output = "Lexical error: Invalid Character: " + s + ": line" + std::to_string(m_current_line_number) + "\n";
             *m_errorOutputFile << output;
             
 

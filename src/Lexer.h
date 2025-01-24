@@ -202,11 +202,14 @@ struct Token
             return "id";
         case TokenType::invalidchar:
             return "invalidchar";
+        case TokenType::invalidid:
+            return "invalidid";
+        case TokenType::invalidnum:
+            return "invalidnum";
 
         default:
             return "$$$$$";
         }
-
     }
 };
 
