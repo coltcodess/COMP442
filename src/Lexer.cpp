@@ -339,7 +339,14 @@ void Lexer::tokenize()
         {
             std::string number = getNextNumber();
 
-            std::string s(1, currentChar);
+            if (number[0] == '0' && number.length() > 1)
+            {
+                Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
+                m_tokens.push_back(token);
+                m_current_line_index++;
+                continue;
+            }
+            
             Token* token = createToken(TokenType::intnum, number, m_current_line_number);
             m_tokens.push_back(token);
             m_current_line_index++;
