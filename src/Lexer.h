@@ -267,11 +267,9 @@ private:
     // Get the position of the next token in the vector 
     int m_tokenIndex = 0;
 
-
     std::vector<Token*> m_tokens;
     std::unordered_map<std::string, TokenType> m_keywords;
     std::ofstream* m_errorOutputFile;
-
 };
 
 #endif // LEXER_H
