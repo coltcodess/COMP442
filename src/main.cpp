@@ -3,35 +3,56 @@
 #include <sstream>
 #include "Lexer.h"
 
+const std::string SOURCE_FILE_TYPE = ".src";
+const std::string OUTPUT_TOKEN_FILE_TYPE = ".outlextokens";
 
 int main()
 {
+    // Intro message:
     std::string fileInput;
     std::cout << "Enter file to open. " << std::endl;
     std::cin >> fileInput;
 
     std::stringstream* buffer = new std::stringstream;
-    std::ifstream srcFile(fileInput + ".src");
+    std::ifstream* srcFile = NULL;
+    srcFile = new std::ifstream(fileInput + SOURCE_FILE_TYPE);
+    bool file_opened = false;
 
-    if (srcFile.is_open())
+    // Reask for valid file
+    if (srcFile->fail())
     {
-        std::cout << "DEBUG - Opened file" << std::endl;
+        while (!file_opened)
+        {
+            std::cout << "Opps file not found: Enter file to open. " << std::endl;
+            std::cin >> fileInput;
+
+            srcFile = new std::ifstream(fileInput + SOURCE_FILE_TYPE);
+
+            if (srcFile->good())
+            {
+                file_opened = true;
+            }
+            else
+            {
+                file_opened = false;
+            }
+        }
     }
-    else
+    
+    // Read source into string buffer
+    if (srcFile != NULL)
     {
-        std::cout << "ERROR - Failed to Open file" << std::endl;
-        return 1;
+        *buffer << srcFile->rdbuf();
     }
 
-    *buffer << srcFile.rdbuf();
-
-    srcFile.close();
+    srcFile->close();
+    srcFile = NULL;
 
     // Create Lexer with source file  
     Lexer* lexer = new Lexer(buffer->str(), fileInput);
 
-    // Write token / error files  
-    std::ofstream tokenOutputFile(fileInput + ".outlextokens", std::ofstream::out);
+    // Write token / error files (MOVE to Lexer - TODO)
+    std::ofstream tokenOutputFile(fileInput + OUTPUT_TOKEN_FILE_TYPE, std::ofstream::out);
 
     int file_position = 1;
 

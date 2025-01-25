@@ -426,6 +426,8 @@ void Lexer::tokenize()
         // Check Minus or negative number
         else if (currentChar == '-')
         {
+            Token* token = createToken(TokenType::MINUS, "-", m_current_line_number);
+            m_tokens.push_back(token);
             m_current_line_index++;
         }
 

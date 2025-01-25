@@ -1,5 +1,5 @@
 [eq, ==, 1] [plus, +, 1] [or, or, 1] [openpar, (, 1] [semi, ;, 1] [int, int, 1] [while, while, 1] [local, local, 1] 
-[noteq, <>, 2] [and, and, 2] [closepar, ), 2] [comma, ,, 2] [float, float, 2] [if, if, 2] [constructor, constructor, 2] 
+[noteq, <>, 2] [minus, -, 2] [and, and, 2] [closepar, ), 2] [comma, ,, 2] [float, float, 2] [if, if, 2] [constructor, constructor, 2] 
 [lt, <, 3] [multi, *, 3] [not, not, 3] [opencubr, {, 3] [dot, ., 3] [void, void, 3] [then, then, 3] [attribute, attribute, 3] 
 [gt, >, 4] [div, /, 4] [closecubr, }, 4] [colon, :, 4] [class, class, 4] [else, else, 4] [function, function, 4] 
 [leq, <=, 5] [assign, :=, 5] [opensqbr, [, 5] [arrow, =>, 5] [self, self, 5] [read, read, 5] [public, public, 5] 
