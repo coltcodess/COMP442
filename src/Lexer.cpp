@@ -339,8 +339,18 @@ void Lexer::tokenize()
         {
             std::string number = getNextNumber();
 
+            //if (number == "0")
+            //{
+            //    Token* token = createToken(TokenType::intnum, number, m_current_line_number);
+            //    m_tokens.push_back(token);
+            //    m_current_line_index++;
+            //    continue;
+            //}
+
             // GetNextNumber() does the same thing... maybe we just need to pass the type? 
             bool isFloat = false;
+            int decimalIndex = 0;
+
 
             // Check leading zeros. 
             if (number[0] == '0' && number.length() > 1)
@@ -349,9 +359,7 @@ void Lexer::tokenize()
                 m_tokens.push_back(token);
                 m_current_line_index++;
                 continue;
-            }
-
-            // Check trailing zeros 
+            }           
 
             // Check whether it's a float or INT
             for (int i = 0; i < number.length(); i++)
@@ -360,9 +368,37 @@ void Lexer::tokenize()
                 {
                     if (isFloat) break;
                     isFloat = true;
+                    decimalIndex = i;
                 }
             }
 
+            // Check trailing zeros 
+            bool hasTrailingZero = false;
+            
+            if (isFloat)
+            {
+                for (int i = decimalIndex; i < number.length(); i++)
+                {
+                    if (number[i] == '0')
+                    {
+                        hasTrailingZero = true;
+                    }
+                    else
+                    {
+                        hasTrailingZero = false;
+                    }
+                }
+            }
+
+            if (hasTrailingZero)
+            {
+                Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
+                m_tokens.push_back(token);
+                m_current_line_index++;
+                continue;
+            }
+
+            // Check of valid float or int
             if (isFloat)
             {
                 Token* token = createToken(TokenType::floatnum, number, m_current_line_number);
