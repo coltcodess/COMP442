@@ -197,61 +197,46 @@ std::string Lexer::getNextBlock()
 
     int buffer_index = 0;
 
-    for (int i = m_current_line_index; i < temp.length(); i++)
-    {    
-        if (temp[i] == '*' && peekNextChar() == '/')
+    int blockcnt = 0;
+
+    while(m_current_line_index < m_sourceText.length())
+    {
+        if (temp[m_current_line_index] == '*')
         {
-            buffer.insert(buffer_index, 1, temp[i]);
+            if (blockcnt == 0) blockcnt++;
+            else blockcnt--;
+
+            buffer.insert(buffer_index, 1, temp[m_current_line_index]);
             buffer_index++;
-            buffer.insert(buffer_index, 1, '/');
-            buffer_index++;
-            m_current_line_index++;
-
-            // handle imbricated (TODO)
-            while (temp[m_current_line_index] != '/')
-            {
-                if (temp[i] == '\n')
-                {
-                    buffer.insert(buffer_index, 1, '\\');
-                    buffer_index++;
-                    buffer.insert(buffer_index, 1, 'n');
-                    buffer_index++;
-                    m_current_line_index++;
-                    m_current_line_number++;
-                }
-                else 
-                {
-                    buffer.insert(buffer_index, 1, temp[i]);
-                    buffer_index++;
-                    m_current_line_index++;
-                }
-                
-            }
-
-            break;
-
-        }        
-
-        // Check newline 
-        else if (temp[i] == '\n')
+        }
+        else if (temp[m_current_line_index] == '\n')
         {
             buffer.insert(buffer_index, 1, '\\');
             buffer_index++;
             buffer.insert(buffer_index, 1, 'n');
             buffer_index++;
-            m_current_line_index++;
-            m_current_line_number++;
-        } 
-
+        }
         else
         {
-            buffer.insert(buffer_index, 1, temp[i]);
+            buffer.insert(buffer_index, 1, temp[m_current_line_index]);
             buffer_index++;
-            m_current_line_index++;
+        }
+
+        m_current_line_index++;
+
+        if (temp[m_current_line_index] == '/' && blockcnt == 0)
+        {
+            buffer.insert(buffer_index, 1, temp[m_current_line_index]);
+            buffer_index++;
+            return buffer;
         }
     }
 
-    m_current_line_index++;
+    if (blockcnt != 0)
+    {
+        return "Bad";
+    }
+
     return buffer;
     
 }
@@ -613,6 +598,8 @@ void Lexer::tokenize()
             else if (c == '*')
             {
                 std::string cmt = getNextBlock();
+                std::cout << cmt << std::endl;
+
                 Token* token = createToken(TokenType::blockcmt, cmt, m_current_line_number);
                 m_tokens.push_back(token);
             }
