@@ -339,6 +339,10 @@ void Lexer::tokenize()
         {
             std::string number = getNextNumber();
 
+            // GetNextNumber() does the same thing... maybe we just need to pass the type? 
+            bool isFloat = false;
+
+            // Check leading zeros. 
             if (number[0] == '0' && number.length() > 1)
             {
                 Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
@@ -346,10 +350,32 @@ void Lexer::tokenize()
                 m_current_line_index++;
                 continue;
             }
-            
-            Token* token = createToken(TokenType::intnum, number, m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
+
+            // Check trailing zeros 
+
+            // Check whether it's a float or INT
+            for (int i = 0; i < number.length(); i++)
+            {
+                if (number[i] == '.')
+                {
+                    if (isFloat) break;
+                    isFloat = true;
+                }
+            }
+
+            if (isFloat)
+            {
+                Token* token = createToken(TokenType::floatnum, number, m_current_line_number);
+                m_tokens.push_back(token);
+                m_current_line_index++;
+            }
+
+            else
+            {
+                Token* token = createToken(TokenType::intnum, number, m_current_line_number);
+                m_tokens.push_back(token);
+                m_current_line_index++;
+            }
         
         }
 
