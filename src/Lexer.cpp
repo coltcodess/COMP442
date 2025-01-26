@@ -304,16 +304,16 @@ void Lexer::tokenize()
             {
                 // Add Keywords
                 Token* token = createToken(m_keywords[word], word, m_current_line_number);
-                m_tokens.push_back(token);  
-                m_current_line_index++;
+                m_tokens.push_back(token);    
             }
             else
             {
                 // Add Identifier
                 Token* token = createToken(TokenType::id, word, m_current_line_number);
                 m_tokens.push_back(token);
-                m_current_line_index++;
             }
+
+            m_current_line_index++;
 
         }
 
@@ -374,8 +374,6 @@ void Lexer::tokenize()
                 }
 
                 m_current_line_index++;
-                continue;
-
             }
 
             // Create intnum
@@ -398,7 +396,6 @@ void Lexer::tokenize()
                 }
 
                 m_current_line_index++;
-                continue;
             }
         
         }
