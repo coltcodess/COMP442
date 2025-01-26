@@ -176,12 +176,10 @@ std::string Lexer::getNextLine()
         {
             buffer.insert(buffer_index, 1, temp[i]);
             buffer_index++;
-            
+            m_current_line_index = i + 1;
         }
         else
         {
-            m_current_line_index = i + 1;
-            m_current_line_number++;
             return buffer;
         }
     } 
@@ -578,12 +576,21 @@ void Lexer::tokenize()
                 std::string cmt = getNextLine();
                 Token* token = createToken(TokenType::inlinecmt, cmt, m_current_line_number);
                 m_tokens.push_back(token);
+                m_current_line_number++;
             }
 
             // BLOCK CMT
             else if (c == '*')
             {
+
                 std::string cmt = getNextBlock();
+
+                // Count all newline counter to be added after creating the token
+                int newlineCnt = 0;
+                for (int i = 0; i < cmt.length(); i++)
+                {
+                    if (cmt[i] == '\\' && cmt[i+1] == 'n') newlineCnt++;
+                }
 
                 if (cmt == "")
                 {
@@ -595,6 +602,8 @@ void Lexer::tokenize()
                     Token* token = createToken(TokenType::blockcmt, cmt, m_current_line_number);
                     m_tokens.push_back(token);
                 }
+
+                m_current_line_number = m_current_line_number + newlineCnt;
             }
 
             //DIV
