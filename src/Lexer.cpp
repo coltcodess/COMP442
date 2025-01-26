@@ -352,12 +352,20 @@ void Lexer::tokenize()
                 {
                     Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
                     m_tokens.push_back(token);
+
+                    // LOG ERROR
+                    std::string output = "Lexical error: Invalid Character: " + number + ": line" + std::to_string(m_current_line_number) + "\n";
+                    *m_errorOutputFile << output;
                 }
                 // Check trailing zero float
                 else if (number[number.length()-1] == '0' && number[number.length() - 2] != '.' && !contains_E_Notation)
                 {
                     Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
                     m_tokens.push_back(token);
+
+                    // LOG ERROR
+                    std::string output = "Lexical error: Invalid Character: " + number + ": line" + std::to_string(m_current_line_number) + "\n";
+                    *m_errorOutputFile << output;
                 }
                 else
                 {
@@ -378,6 +386,10 @@ void Lexer::tokenize()
                 {
                     Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
                     m_tokens.push_back(token);
+
+                    // LOG ERROR
+                    std::string output = "Lexical error: Invalid Character: " + number + ": line" + std::to_string(m_current_line_number) + "\n";
+                    *m_errorOutputFile << output;
                 }
                 else
                 {
@@ -631,7 +643,7 @@ void Lexer::tokenize()
             Token* token = createToken(TokenType::invalidchar, s, m_current_line_number);
             m_tokens.push_back(token);
 
-            // LOG 
+            // LOG ERROR
             std::string output = "Lexical error: Invalid Character: " + s + ": line" + std::to_string(m_current_line_number) + "\n";
             *m_errorOutputFile << output;
             
