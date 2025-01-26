@@ -25,7 +25,7 @@ Token* Lexer::getNextToken()
 {
     if (m_tokens.empty())
     {
-        std::cout << "Error: No tokens found! Must the source file be tokenized? " << std::endl;
+        std::cout << "Error: No tokens found! Has the source file be tokenized? " << std::endl;
         return nullptr;
     }
 
@@ -232,9 +232,10 @@ std::string Lexer::getNextBlock()
         }
     }
 
+    // Return empty but should be a cmt and flag that the cmt is invalid 
     if (blockcnt != 0)
     {
-        return "Bad";
+        return "";
     }
 
     return buffer;
@@ -251,8 +252,8 @@ char Lexer::getNextChar()
     }
     else
     {
-        std::cout << "End of source file";
-        return ' ';
+        std::cout << "LOG: Cannot get next character - End of source file";
+        return NULL;
     }
 }
 
@@ -265,7 +266,7 @@ char Lexer::peekBackupChar()
         char backChar = m_sourceText[temp_pos];
         return backChar;
     }
-    std::cout << "LOG: Cannot backtrack! " << std::endl;
+    std::cout << "LOG: Cannot peer backup character! " << std::endl;
     return NULL;
 }
 
@@ -278,7 +279,7 @@ char Lexer::peekNextChar()
         char nextChar = m_sourceText[temp_pos];
         return nextChar;
     }
-    std::cout << "LOG: Cannot peek next char! " << std::endl;
+    std::cout << "LOG: Cannot peek next character! " << std::endl;
     return NULL;
 }
 
@@ -288,7 +289,7 @@ void Lexer::tokenize()
     {
         char currentChar = m_sourceText[m_current_line_index];
 
-        // Skip whitespace 
+        // Skip whitespace  
         if (isWhiteSpace(currentChar))
         {
             m_current_line_index++;
@@ -300,9 +301,7 @@ void Lexer::tokenize()
         {
             std::string word = getNextWord();
 
-            // Check if it's an operator 
-
-            // Look through map for word
+            // Look through map for keyword
             if (m_keywords.find(word) != m_keywords.end())
             {
                 // Add Keywords
@@ -320,82 +319,69 @@ void Lexer::tokenize()
 
         }
 
+        // Check number 
         else if (isDigit(currentChar))
         {
             std::string number = getNextNumber();
 
-            //if (number == "0")
-            //{
-            //    Token* token = createToken(TokenType::intnum, number, m_current_line_number);
-            //    m_tokens.push_back(token);
-            //    m_current_line_index++;
-            //    continue;
-            //}
-
-            // GetNextNumber() does the same thing... maybe we just need to pass the type? 
             bool isFloat = false;
-            int decimalIndex = 0;
-
-
-            // Check leading zeros. 
-            if (number[0] == '0' && number.length() > 1)
-            {
-                Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
-                m_tokens.push_back(token);
-                m_current_line_index++;
-                continue;
-            }           
+            int decimalIndex = 0;   
+            bool hasTrailingZero = false;
+            bool hasLeadingZero = false;
 
             // Check whether it's a float or INT
             for (int i = 0; i < number.length(); i++)
             {
                 if (number[i] == '.')
                 {
-                    if (isFloat) break;
                     isFloat = true;
                     decimalIndex = i;
                 }
             }
 
-            // Check trailing zeros 
-            bool hasTrailingZero = false;
-            
+            // Create floatnum
             if (isFloat)
             {
-                for (int i = decimalIndex; i < number.length(); i++)
+                // Check leading zero float
+                if (number[0] == '0' && number.length() > 1 && number[1] != '.')
                 {
-                    if (number[i] == '0')
-                    {
-                        hasTrailingZero = true;
-                    }
-                    else
-                    {
-                        hasTrailingZero = false;
-                    }
+                    Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
+                    m_tokens.push_back(token);
                 }
-            }
+                // Check trailing zero float
+                else if (number[number.length()-1] == '0' && number[number.length() - 2] != '.')
+                {
+                    Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
+                    m_tokens.push_back(token);
+                }
+                else
+                {
+                    Token* token = createToken(TokenType::floatnum, number, m_current_line_number);
+                    m_tokens.push_back(token);
+                }
 
-            if (hasTrailingZero)
-            {
-                Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
-                m_tokens.push_back(token);
                 m_current_line_index++;
                 continue;
+
             }
 
-            // Check of valid float or int
-            if (isFloat)
-            {
-                Token* token = createToken(TokenType::floatnum, number, m_current_line_number);
-                m_tokens.push_back(token);
-                m_current_line_index++;
-            }
-
+            // Create intnum
             else
             {
-                Token* token = createToken(TokenType::intnum, number, m_current_line_number);
-                m_tokens.push_back(token);
+                // Check for leading int zeros
+                if (number[0] == '0' && number.length() > 1)
+                {
+                    Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
+                    m_tokens.push_back(token);
+                }
+                else
+                {
+                    Token* token = createToken(TokenType::intnum, number, m_current_line_number);
+                    m_tokens.push_back(token);
+                }
+
                 m_current_line_index++;
+                continue;
             }
         
         }
@@ -598,10 +584,17 @@ void Lexer::tokenize()
             else if (c == '*')
             {
                 std::string cmt = getNextBlock();
-                std::cout << cmt << std::endl;
 
-                Token* token = createToken(TokenType::blockcmt, cmt, m_current_line_number);
-                m_tokens.push_back(token);
+                if (cmt == "")
+                {
+                    Token* token = createToken(TokenType::invalidchar, cmt, m_current_line_number);
+                    m_tokens.push_back(token);
+                }
+                else
+                {
+                    Token* token = createToken(TokenType::blockcmt, cmt, m_current_line_number);
+                    m_tokens.push_back(token);
+                }
             }
 
             //DIV
