@@ -326,6 +326,7 @@ void Lexer::tokenize()
             int decimalIndex = 0;   
             bool hasTrailingZero = false;
             bool hasLeadingZero = false;
+            bool contains_E_Notation = false;
 
             // Check whether it's a float or INT
             for (int i = 0; i < number.length(); i++)
@@ -334,6 +335,12 @@ void Lexer::tokenize()
                 {
                     isFloat = true;
                     decimalIndex = i;
+                }
+
+                // Check valid e notation 
+                else if (number[i] == 'e' && number[i+1] != '0')
+                {
+                    contains_E_Notation = true;
                 }
             }
 
@@ -347,7 +354,7 @@ void Lexer::tokenize()
                     m_tokens.push_back(token);
                 }
                 // Check trailing zero float
-                else if (number[number.length()-1] == '0' && number[number.length() - 2] != '.')
+                else if (number[number.length()-1] == '0' && number[number.length() - 2] != '.' && !contains_E_Notation)
                 {
                     Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
                     m_tokens.push_back(token);
