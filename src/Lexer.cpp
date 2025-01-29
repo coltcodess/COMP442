@@ -111,6 +111,11 @@ std::string Lexer::getNextNumber()
 
     bool decimal = false; 
 
+    char c = peekNextChar();
+    
+    // Return if it's just single digit number
+    if (!isDigit(c) && c != '.') return std::string (1,m_sourceText[m_current_line_index]);
+
     while (m_current_line_index < m_sourceText.length() && 
         (isDigit(m_sourceText[m_current_line_index])) || 
         m_sourceText[m_current_line_index] == '.')
@@ -447,7 +452,6 @@ void Lexer::tokenize()
         // Check COLON and ASSIGN
         else if (currentChar == ':')
         {
-            
             char c = peekNextChar();
 
             if (c == '=')
@@ -480,7 +484,6 @@ void Lexer::tokenize()
         // Check LT, LEQ, NOTEQ
         else if (currentChar == '<')
         {
-
             char c = peekNextChar();
 
             if (c == '=')
