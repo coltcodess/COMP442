@@ -15,7 +15,10 @@ Lexer::Lexer(const std::string source, const std::string fileName) : m_current_l
     m_errorOutputFile = &out;
 
     // Tokenize source file 
-    this->tokenize();   
+    this->tokenize(); 
+
+    Token* EOF_Token = new Token(TokenType::END_OF_FILE, "$", m_current_line_number);
+    m_tokens.push_back(EOF_Token);
 
     out.close();
     m_errorOutputFile = nullptr;

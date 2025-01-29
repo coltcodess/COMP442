@@ -9,7 +9,6 @@
 
 const int MAX_TOKEN_LENGTH = 512;
 
-
 class Lexer
 {
 

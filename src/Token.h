@@ -74,7 +74,9 @@ enum class TokenType
     // Invalid
     invalidchar = 501,
     invalidid = 502,
-    invalidnum = 503
+    invalidnum = 503,
+
+    END_OF_FILE = 900
 };
 
 struct Token
@@ -198,6 +200,8 @@ struct Token
             return "invalidid";
         case TokenType::invalidnum:
             return "invalidnum";
+        case TokenType::END_OF_FILE:
+            return "end_of_file";
 
         default:
             return "$$$$$";
