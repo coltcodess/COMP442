@@ -94,7 +94,9 @@ std::string Lexer::getNextWord()
 
     while (m_current_line_index < m_sourceText.length() && isAlphaNumeric(m_sourceText[m_current_line_index]) && !isWhiteSpace(m_sourceText[m_current_line_index]))
     {
-        if (peekNextChar() == '\n')
+        char c = peekNextChar();
+
+        if (c == '\n' || !(isAlphaNumeric(c)))
         {
             temp += m_sourceText[m_current_line_index];
             return temp;
@@ -273,7 +275,7 @@ char Lexer::peekBackupChar()
 
 char Lexer::peekNextChar()
 {
-    if (m_current_line_index != 0)
+    if (m_current_line_index >= 0)
     {
         int temp_pos = m_current_line_index;
         temp_pos++;
