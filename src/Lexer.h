@@ -50,6 +50,9 @@ private:
     TokenType getTokenType(std::string str);
     char peekNextChar();
 
+    // Log function
+    void logMessage(std::string s, TokenType tokenType);
+
     // SRC text from driver
     std::string m_sourceText;
     std::string m_sourceFileName;

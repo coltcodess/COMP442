@@ -130,7 +130,7 @@ std::string Lexer::getNextNumber()
         m_current_line_index++;
     }
 
-    // Optional e+/-
+    // Skip over Optional e+/- exponent
     if (m_sourceText[m_current_line_index] == 'e')
     {
         m_current_line_index++;
@@ -141,26 +141,18 @@ std::string Lexer::getNextNumber()
         }
     }
 
-    // Fix this (TODO) - Loops over the end of a float checking trailing 0s
+    // Check E notation exponent 
     while (m_current_line_index < m_sourceText.length() &&
         (isDigit(m_sourceText[m_current_line_index])) ||
         m_sourceText[m_current_line_index] == '.')
     {
-
         if (peekNextChar() == '\n')
         {
             return m_sourceText.substr(start, m_current_line_index - (start - 1));
         }
 
-        if (m_sourceText[m_current_line_index] == '.')
-        {
-            if (decimal) break;
-            decimal = true;
-        }
-
         m_current_line_index++;
-    }
-    
+    }    
 
     return m_sourceText.substr(start, m_current_line_index - start);
 }
@@ -357,8 +349,7 @@ void Lexer::tokenize()
                     m_tokens.push_back(token);
 
                     // LOG ERROR
-                    std::string output = "Lexical error: Invalid Character: " + number + ": line" + std::to_string(m_current_line_number) + "\n";
-                    *m_errorOutputFile << output;
+                    logMessage(number, TokenType::invalidnum);
                 }
                 // Check trailing zero float
                 else if (number[number.length()-1] == '0' && number[number.length() - 2] != '.' && !contains_E_Notation)
@@ -367,8 +358,8 @@ void Lexer::tokenize()
                     m_tokens.push_back(token);
 
                     // LOG ERROR
-                    std::string output = "Lexical error: Invalid Character: " + number + ": line" + std::to_string(m_current_line_number) + "\n";
-                    *m_errorOutputFile << output;
+                    logMessage(number, TokenType::invalidnum);
+
                 }
                 else
                 {
@@ -389,8 +380,7 @@ void Lexer::tokenize()
                     m_tokens.push_back(token);
 
                     // LOG ERROR
-                    std::string output = "Lexical error: Invalid Character: " + number + ": line" + std::to_string(m_current_line_number) + "\n";
-                    *m_errorOutputFile << output;
+                    logMessage(number, TokenType::invalidnum);
                 }
                 else
                 {
@@ -644,9 +634,7 @@ void Lexer::tokenize()
             m_tokens.push_back(token);
 
             // LOG ERROR
-            std::string output = "Lexical error: Invalid Character: " + s + ": line" + std::to_string(m_current_line_number) + "\n";
-            *m_errorOutputFile << output;
-            
+            logMessage(s, TokenType::invalidchar);
 
             m_current_line_index++;
         }
@@ -668,6 +656,42 @@ Token* Lexer::createToken(TokenType type, std::string value, int position)
 {
     Token* token = new Token(type, value, position);
     return token;
+}
+
+void Lexer::logMessage(std::string s, TokenType tokenType)
+{
+    switch (tokenType) 
+    {
+    
+        case(TokenType::invalidchar):
+        {
+            std::string output = "Lexical error: Invalid Character: " + s + ": line" + std::to_string(m_current_line_number) + "\n";
+            *m_errorOutputFile << output;
+            break;
+        }
+
+        case(TokenType::invalidid):
+        {
+            std::string output = "Lexical error: Invalid ID: " + s + ": line" + std::to_string(m_current_line_number) + "\n";
+            *m_errorOutputFile << output;
+            break;
+        }
+
+        case(TokenType::invalidnum):
+        {
+            std::string output = "Lexical error: Invalid Number: " + s + ": line" + std::to_string(m_current_line_number) + "\n";
+            *m_errorOutputFile << output;
+            break;
+        }
+
+        default:
+        {
+            std::string output = "Logging error: No TokenType matching invalid types.... check logMessage()\n";
+            *m_errorOutputFile << output;
+        }
+    
+    }
+
 }
 
 void Lexer::initKeywords()
