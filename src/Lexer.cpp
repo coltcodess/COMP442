@@ -171,7 +171,7 @@ std::string Lexer::getNextLine()
         {
             buffer.insert(buffer_index, 1, temp[i]);
             buffer_index++;
-            m_current_line_index = i + 1;
+            m_current_line_index++;
         }
         else
         {
@@ -298,17 +298,13 @@ void Lexer::tokenize()
             if (m_keywords.find(word) != m_keywords.end())
             {
                 // Add Keywords
-                Token* token = createToken(m_keywords[word], word, m_current_line_number);
-                m_tokens.push_back(token);    
+                Token* token = createToken(m_keywords[word], word, m_current_line_number);    
             }
             else
             {
                 // Add Identifier
                 Token* token = createToken(TokenType::id, word, m_current_line_number);
-                m_tokens.push_back(token);
             }
-
-            m_current_line_index++;
 
         }
 
@@ -346,7 +342,6 @@ void Lexer::tokenize()
                 if (number[0] == '0' && number.length() > 1 && number[1] != '.')
                 {
                     Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
-                    m_tokens.push_back(token);
 
                     // LOG ERROR
                     logMessage(number, TokenType::invalidnum);
@@ -355,7 +350,6 @@ void Lexer::tokenize()
                 else if (number[number.length()-1] == '0' && number[number.length() - 2] != '.' && !contains_E_Notation)
                 {
                     Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
-                    m_tokens.push_back(token);
 
                     // LOG ERROR
                     logMessage(number, TokenType::invalidnum);
@@ -364,10 +358,7 @@ void Lexer::tokenize()
                 else
                 {
                     Token* token = createToken(TokenType::floatnum, number, m_current_line_number);
-                    m_tokens.push_back(token);
                 }
-
-                m_current_line_index++;
             }
 
             // Create intnum
@@ -377,7 +368,6 @@ void Lexer::tokenize()
                 if (number[0] == '0' && number.length() > 1)
                 {
                     Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
-                    m_tokens.push_back(token);
 
                     // LOG ERROR
                     logMessage(number, TokenType::invalidnum);
@@ -385,10 +375,7 @@ void Lexer::tokenize()
                 else
                 {
                     Token* token = createToken(TokenType::intnum, number, m_current_line_number);
-                    m_tokens.push_back(token);
                 }
-
-                m_current_line_index++;
             }
         
         }
@@ -397,88 +384,64 @@ void Lexer::tokenize()
         else if (currentChar == '+')
         {
             Token* token = createToken(TokenType::PLUS, "+", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         // Check Minus or negative number
         else if (currentChar == '-')
         {
             Token* token = createToken(TokenType::MINUS, "-", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         // Check MULTI
         else if (currentChar == '*')
         {
             Token* token = createToken(TokenType::MULTI, "*", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         else if (currentChar == ')')
         {
             Token* token = createToken(TokenType::CLOSEPAR, ")", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         else if (currentChar == '(')
         {
             Token* token = createToken(TokenType::OPENPAR, "(", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         else if (currentChar == '[')
         {
             Token* token = createToken(TokenType::OPENSQBR, "[", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         else if (currentChar == ']')
         {
             Token* token = createToken(TokenType::CLOSESQBR, "]", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         else if (currentChar == '{')
         {
             Token* token = createToken(TokenType::OPENCUBR, "{", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         else if (currentChar == '}')
         {
             Token* token = createToken(TokenType::CLOSECUBR, "}", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         else if (currentChar == ';')
         {
             Token* token = createToken(TokenType::SEMI, ";", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         else if (currentChar == ',')
         {
             Token* token = createToken(TokenType::COMMA, ",", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         // Check DOT
         else if (currentChar == '.')
         {
             Token* token = createToken(TokenType::DOT, ".", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         // Check COLON and ASSIGN
@@ -490,15 +453,10 @@ void Lexer::tokenize()
             if (c == '=')
             {
                 Token* token = createToken(TokenType::ASSIGN, ":=", m_current_line_number);
-                m_tokens.push_back(token);
-                m_current_line_index++;
             }
             else
             {
                 Token* token = createToken(TokenType::COLON, ":", m_current_line_number);
-                m_tokens.push_back(token);
-                m_current_line_index++;
-
             }
         }
 
@@ -511,15 +469,12 @@ void Lexer::tokenize()
             {
                 m_current_line_index++;
                 Token* token = createToken(TokenType::GEQ, ">=", m_current_line_number);
-                m_tokens.push_back(token);
             }
             else
             {
                 Token* token = createToken(TokenType::GT, ">", m_current_line_number);
-                m_tokens.push_back(token);
             }
 
-            m_current_line_index++;
         }
 
         // Check LT, LEQ, NOTEQ
@@ -532,23 +487,17 @@ void Lexer::tokenize()
             {
                 m_current_line_index++;
                 Token* token = createToken(TokenType::LEQ, "<=", m_current_line_number);
-                m_tokens.push_back(token);
             }
             else if (c == '>')
             {
                 m_current_line_index++;
-                Token* token = createToken(TokenType::NOTEQ, "<>", m_current_line_number);
-                m_tokens.push_back(token);
-                
-                
+                Token* token = createToken(TokenType::NOTEQ, "<>", m_current_line_number); 
             }
             else
             {
                 Token* token = createToken(TokenType::LT, "<", m_current_line_number);
-                m_tokens.push_back(token); 
             }
 
-            m_current_line_index++;
         }
 
         // Check equals and arrow
@@ -561,17 +510,12 @@ void Lexer::tokenize()
             if (c == '>')
             {
                 Token* token = createToken(TokenType::ARROW, "=>", m_current_line_number);
-                m_tokens.push_back(token);
-                
             }
             else if(c == '=')
             {
                 Token* token = createToken(TokenType::EQ, "==", m_current_line_number);
-                m_tokens.push_back(token);
-                
             }
 
-            m_current_line_index++;
         }
 
         // Check INLINE CMT, BLOCK CMT, OR DIV
@@ -584,8 +528,6 @@ void Lexer::tokenize()
             {
                 std::string cmt = getNextLine();
                 Token* token = createToken(TokenType::inlinecmt, cmt, m_current_line_number);
-                m_tokens.push_back(token);
-                m_current_line_number++;
             }
 
             // BLOCK CMT
@@ -604,12 +546,10 @@ void Lexer::tokenize()
                 if (cmt == "")
                 {
                     Token* token = createToken(TokenType::invalidchar, cmt, m_current_line_number);
-                    m_tokens.push_back(token);
                 }
                 else
                 {
                     Token* token = createToken(TokenType::blockcmt, cmt, m_current_line_number);
-                    m_tokens.push_back(token);
                 }
 
                 m_current_line_number = m_current_line_number + newlineCnt;
@@ -619,10 +559,7 @@ void Lexer::tokenize()
             else
             {
                 Token* token = createToken(TokenType::DIV, "/", m_current_line_number);
-                m_tokens.push_back(token);
             }
-
-            m_current_line_index++;
 
         }
 
@@ -631,12 +568,10 @@ void Lexer::tokenize()
         {
             std::string s(1, currentChar);
             Token* token = createToken(TokenType::invalidchar, s, m_current_line_number);
-            m_tokens.push_back(token);
 
             // LOG ERROR
             logMessage(s, TokenType::invalidchar);
 
-            m_current_line_index++;
         }
 
         // Check cartridge and incre. line position - Need to be at the end
@@ -655,6 +590,8 @@ void Lexer::tokenize()
 Token* Lexer::createToken(TokenType type, std::string value, int position)
 {
     Token* token = new Token(type, value, position);
+    m_tokens.push_back(token);
+    m_current_line_index++;
     return token;
 }
 
