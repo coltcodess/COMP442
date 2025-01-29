@@ -39,7 +39,6 @@ private:
     bool isAlpha(char chr);
     bool isOperator(char chr);
     bool isAlphaNumeric(char chr);
-    bool isPunctuation(char chr);
     bool isInvalidChar(char chr);
 
     // Helper functions.
@@ -65,6 +64,7 @@ private:
 
     // Track error report lines
     int m_error_report_line_number = 1;
+    int m_file_line_number = 1;
 
     // Get the position of the next token in the vector 
     int m_tokenIndex = 0;
@@ -72,6 +72,7 @@ private:
     std::vector<Token*> m_tokens;
     std::unordered_map<std::string, TokenType> m_keywords;
     std::ofstream* m_errorOutputFile;
+    std::ofstream* m_tokenOutputFile;
 };
 
 #endif // LEXER_H

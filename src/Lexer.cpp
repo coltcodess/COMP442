@@ -10,18 +10,26 @@ Lexer::Lexer(const std::string source, const std::string fileName) : m_current_l
     // Initialize keyword list
     this->initKeywords();
 
-    std::ofstream out(m_sourceFileName + ".outlexerrors", std::ofstream::out);
+    std::ofstream outErrors(m_sourceFileName + ".outlexerrors", std::ofstream::out);
+    std::ofstream outTokens(m_sourceFileName + ".outlextokens", std::ofstream::out);
 
-    m_errorOutputFile = &out;
+    m_errorOutputFile = &outErrors;
+    m_tokenOutputFile = &outTokens;
 
     // Tokenize source file 
     this->tokenize(); 
 
-    Token* EOF_Token = new Token(TokenType::END_OF_FILE, "$", m_current_line_number);
-    m_tokens.push_back(EOF_Token);
+    Token* EOF_Token = createToken(TokenType::END_OF_FILE, "$", m_current_line_number);
+    
+    std::cout << "Finished tokenization.... " << std::endl;
 
-    out.close();
+    // Clean up output files / nullptrs 
+    outErrors.close();
+    outTokens.close();
+
     m_errorOutputFile = nullptr;
+    m_tokenOutputFile = nullptr; 
+
 }
 
 Token* Lexer::getNextToken()
@@ -77,11 +85,6 @@ bool Lexer::isAlphaNumeric(char chr)
 bool Lexer::isOperator(char chr)
 {
     return (chr == '+' || chr == '-' || chr == '/' || chr == '*');
-}
-
-bool Lexer::isPunctuation(char chr)
-{
-    return (chr == '(' || chr == ')' || chr == ';' || chr == ',');
 }
 
 std::string Lexer::getNextWord()
@@ -587,7 +590,6 @@ void Lexer::tokenize()
         
     }
 
-    std::cout << "Finished tokenization.... " << std::endl;
 }
 
 Token* Lexer::createToken(TokenType type, std::string value, int position)
@@ -595,6 +597,17 @@ Token* Lexer::createToken(TokenType type, std::string value, int position)
     Token* token = new Token(type, value, position);
     m_tokens.push_back(token);
     m_current_line_index++;
+
+    if (m_file_line_number < token->position)
+    {
+        *m_tokenOutputFile << '\n';
+        m_file_line_number++;
+    }
+
+    std::string output = "[" + token->convertTokenTypeToString() + ", " + token->lexem + ", " + std::to_string(token->position) + "] ";
+    std::cout << output << std::endl;
+    *m_tokenOutputFile << output;
+
     return token;
 }
 
