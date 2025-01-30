@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include "Lexer.h"
+#include "Parser.h"
 
 const std::string SOURCE_FILE_TYPE = ".src";
 const std::string OUTPUT_TOKEN_FILE_TYPE = ".outlextokens";
@@ -50,6 +51,7 @@ int main()
 
     // Create Lexer with source file  
     Lexer* lexer = new Lexer(buffer->str(), fileInput);
+    Parser* parser = new Parser();
 
     // Loop through tokens and 
     while (!lexer->isFinished())
