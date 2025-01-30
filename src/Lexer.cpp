@@ -10,15 +10,26 @@ Lexer::Lexer(const std::string source, const std::string fileName) : m_current_l
     // Initialize keyword list
     this->initKeywords();
 
-    std::ofstream out(m_sourceFileName + ".outlexerrors", std::ofstream::out);
+    std::ofstream outErrors(m_sourceFileName + ".outlexerrors", std::ofstream::out);
+    std::ofstream outTokens(m_sourceFileName + ".outlextokens", std::ofstream::out);
 
-    m_errorOutputFile = &out;
+    m_errorOutputFile = &outErrors;
+    m_tokenOutputFile = &outTokens;
 
     // Tokenize source file 
-    this->tokenize();   
+    this->tokenize(); 
 
-    out.close();
+    Token* EOF_Token = createToken(TokenType::END_OF_FILE, "$", m_current_line_number);
+    
+    std::cout << "Finished tokenization.... " << std::endl;
+
+    // Clean up output files / nullptrs 
+    outErrors.close();
+    outTokens.close();
+
     m_errorOutputFile = nullptr;
+    m_tokenOutputFile = nullptr; 
+
 }
 
 Token* Lexer::getNextToken()
@@ -76,11 +87,6 @@ bool Lexer::isOperator(char chr)
     return (chr == '+' || chr == '-' || chr == '/' || chr == '*');
 }
 
-bool Lexer::isPunctuation(char chr)
-{
-    return (chr == '(' || chr == ')' || chr == ';' || chr == ',');
-}
-
 std::string Lexer::getNextWord()
 {
     int start = m_current_line_index;
@@ -88,7 +94,9 @@ std::string Lexer::getNextWord()
 
     while (m_current_line_index < m_sourceText.length() && isAlphaNumeric(m_sourceText[m_current_line_index]) && !isWhiteSpace(m_sourceText[m_current_line_index]))
     {
-        if (peekNextChar() == '\n')
+        char c = peekNextChar();
+
+        if (c == '\n' || !(isAlphaNumeric(c)))
         {
             temp += m_sourceText[m_current_line_index];
             return temp;
@@ -107,6 +115,11 @@ std::string Lexer::getNextNumber()
     int start = m_current_line_index;
 
     bool decimal = false; 
+
+    char c = peekNextChar();
+    
+    // Return if it's just single digit number
+    if (!isDigit(c) && c != '.') return std::string (1,m_sourceText[m_current_line_index]);
 
     while (m_current_line_index < m_sourceText.length() && 
         (isDigit(m_sourceText[m_current_line_index])) || 
@@ -127,7 +140,7 @@ std::string Lexer::getNextNumber()
         m_current_line_index++;
     }
 
-    // Optional e+/-
+    // Skip over Optional e+/- exponent
     if (m_sourceText[m_current_line_index] == 'e')
     {
         m_current_line_index++;
@@ -138,26 +151,18 @@ std::string Lexer::getNextNumber()
         }
     }
 
-    // Fix this (TODO) - Loops over the end of a float checking trailing 0s
+    // Check E notation exponent 
     while (m_current_line_index < m_sourceText.length() &&
         (isDigit(m_sourceText[m_current_line_index])) ||
         m_sourceText[m_current_line_index] == '.')
     {
-
         if (peekNextChar() == '\n')
         {
             return m_sourceText.substr(start, m_current_line_index - (start - 1));
         }
 
-        if (m_sourceText[m_current_line_index] == '.')
-        {
-            if (decimal) break;
-            decimal = true;
-        }
-
         m_current_line_index++;
-    }
-    
+    }    
 
     return m_sourceText.substr(start, m_current_line_index - start);
 }
@@ -176,7 +181,7 @@ std::string Lexer::getNextLine()
         {
             buffer.insert(buffer_index, 1, temp[i]);
             buffer_index++;
-            m_current_line_index = i + 1;
+            m_current_line_index++;
         }
         else
         {
@@ -270,7 +275,7 @@ char Lexer::peekBackupChar()
 
 char Lexer::peekNextChar()
 {
-    if (m_current_line_index != 0)
+    if (m_current_line_index >= 0)
     {
         int temp_pos = m_current_line_index;
         temp_pos++;
@@ -303,17 +308,13 @@ void Lexer::tokenize()
             if (m_keywords.find(word) != m_keywords.end())
             {
                 // Add Keywords
-                Token* token = createToken(m_keywords[word], word, m_current_line_number);
-                m_tokens.push_back(token);    
+                Token* token = createToken(m_keywords[word], word, m_current_line_number);    
             }
             else
             {
                 // Add Identifier
                 Token* token = createToken(TokenType::id, word, m_current_line_number);
-                m_tokens.push_back(token);
             }
-
-            m_current_line_index++;
 
         }
 
@@ -351,29 +352,23 @@ void Lexer::tokenize()
                 if (number[0] == '0' && number.length() > 1 && number[1] != '.')
                 {
                     Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
-                    m_tokens.push_back(token);
 
                     // LOG ERROR
-                    std::string output = "Lexical error: Invalid Character: " + number + ": line" + std::to_string(m_current_line_number) + "\n";
-                    *m_errorOutputFile << output;
+                    logMessage(number, TokenType::invalidnum);
                 }
                 // Check trailing zero float
                 else if (number[number.length()-1] == '0' && number[number.length() - 2] != '.' && !contains_E_Notation)
                 {
                     Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
-                    m_tokens.push_back(token);
 
                     // LOG ERROR
-                    std::string output = "Lexical error: Invalid Character: " + number + ": line" + std::to_string(m_current_line_number) + "\n";
-                    *m_errorOutputFile << output;
+                    logMessage(number, TokenType::invalidnum);
+
                 }
                 else
                 {
                     Token* token = createToken(TokenType::floatnum, number, m_current_line_number);
-                    m_tokens.push_back(token);
                 }
-
-                m_current_line_index++;
             }
 
             // Create intnum
@@ -383,19 +378,14 @@ void Lexer::tokenize()
                 if (number[0] == '0' && number.length() > 1)
                 {
                     Token* token = createToken(TokenType::invalidnum, number, m_current_line_number);
-                    m_tokens.push_back(token);
 
                     // LOG ERROR
-                    std::string output = "Lexical error: Invalid Character: " + number + ": line" + std::to_string(m_current_line_number) + "\n";
-                    *m_errorOutputFile << output;
+                    logMessage(number, TokenType::invalidnum);
                 }
                 else
                 {
                     Token* token = createToken(TokenType::intnum, number, m_current_line_number);
-                    m_tokens.push_back(token);
                 }
-
-                m_current_line_index++;
             }
         
         }
@@ -404,108 +394,78 @@ void Lexer::tokenize()
         else if (currentChar == '+')
         {
             Token* token = createToken(TokenType::PLUS, "+", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         // Check Minus or negative number
         else if (currentChar == '-')
         {
             Token* token = createToken(TokenType::MINUS, "-", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         // Check MULTI
         else if (currentChar == '*')
         {
             Token* token = createToken(TokenType::MULTI, "*", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         else if (currentChar == ')')
         {
             Token* token = createToken(TokenType::CLOSEPAR, ")", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         else if (currentChar == '(')
         {
             Token* token = createToken(TokenType::OPENPAR, "(", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         else if (currentChar == '[')
         {
             Token* token = createToken(TokenType::OPENSQBR, "[", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         else if (currentChar == ']')
         {
             Token* token = createToken(TokenType::CLOSESQBR, "]", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         else if (currentChar == '{')
         {
             Token* token = createToken(TokenType::OPENCUBR, "{", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         else if (currentChar == '}')
         {
             Token* token = createToken(TokenType::CLOSECUBR, "}", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         else if (currentChar == ';')
         {
             Token* token = createToken(TokenType::SEMI, ";", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         else if (currentChar == ',')
         {
             Token* token = createToken(TokenType::COMMA, ",", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         // Check DOT
         else if (currentChar == '.')
         {
             Token* token = createToken(TokenType::DOT, ".", m_current_line_number);
-            m_tokens.push_back(token);
-            m_current_line_index++;
         }
 
         // Check COLON and ASSIGN
         else if (currentChar == ':')
         {
-            
             char c = peekNextChar();
 
             if (c == '=')
             {
                 Token* token = createToken(TokenType::ASSIGN, ":=", m_current_line_number);
-                m_tokens.push_back(token);
-                m_current_line_index++;
             }
             else
             {
                 Token* token = createToken(TokenType::COLON, ":", m_current_line_number);
-                m_tokens.push_back(token);
-                m_current_line_index++;
-
             }
         }
 
@@ -518,44 +478,34 @@ void Lexer::tokenize()
             {
                 m_current_line_index++;
                 Token* token = createToken(TokenType::GEQ, ">=", m_current_line_number);
-                m_tokens.push_back(token);
             }
             else
             {
                 Token* token = createToken(TokenType::GT, ">", m_current_line_number);
-                m_tokens.push_back(token);
             }
 
-            m_current_line_index++;
         }
 
         // Check LT, LEQ, NOTEQ
         else if (currentChar == '<')
         {
-
             char c = peekNextChar();
 
             if (c == '=')
             {
                 m_current_line_index++;
                 Token* token = createToken(TokenType::LEQ, "<=", m_current_line_number);
-                m_tokens.push_back(token);
             }
             else if (c == '>')
             {
                 m_current_line_index++;
-                Token* token = createToken(TokenType::NOTEQ, "<>", m_current_line_number);
-                m_tokens.push_back(token);
-                
-                
+                Token* token = createToken(TokenType::NOTEQ, "<>", m_current_line_number); 
             }
             else
             {
                 Token* token = createToken(TokenType::LT, "<", m_current_line_number);
-                m_tokens.push_back(token); 
             }
 
-            m_current_line_index++;
         }
 
         // Check equals and arrow
@@ -568,17 +518,12 @@ void Lexer::tokenize()
             if (c == '>')
             {
                 Token* token = createToken(TokenType::ARROW, "=>", m_current_line_number);
-                m_tokens.push_back(token);
-                
             }
             else if(c == '=')
             {
                 Token* token = createToken(TokenType::EQ, "==", m_current_line_number);
-                m_tokens.push_back(token);
-                
             }
 
-            m_current_line_index++;
         }
 
         // Check INLINE CMT, BLOCK CMT, OR DIV
@@ -591,8 +536,6 @@ void Lexer::tokenize()
             {
                 std::string cmt = getNextLine();
                 Token* token = createToken(TokenType::inlinecmt, cmt, m_current_line_number);
-                m_tokens.push_back(token);
-                m_current_line_number++;
             }
 
             // BLOCK CMT
@@ -611,12 +554,10 @@ void Lexer::tokenize()
                 if (cmt == "")
                 {
                     Token* token = createToken(TokenType::invalidchar, cmt, m_current_line_number);
-                    m_tokens.push_back(token);
                 }
                 else
                 {
                     Token* token = createToken(TokenType::blockcmt, cmt, m_current_line_number);
-                    m_tokens.push_back(token);
                 }
 
                 m_current_line_number = m_current_line_number + newlineCnt;
@@ -626,10 +567,7 @@ void Lexer::tokenize()
             else
             {
                 Token* token = createToken(TokenType::DIV, "/", m_current_line_number);
-                m_tokens.push_back(token);
             }
-
-            m_current_line_index++;
 
         }
 
@@ -638,14 +576,10 @@ void Lexer::tokenize()
         {
             std::string s(1, currentChar);
             Token* token = createToken(TokenType::invalidchar, s, m_current_line_number);
-            m_tokens.push_back(token);
 
             // LOG ERROR
-            std::string output = "Lexical error: Invalid Character: " + s + ": line" + std::to_string(m_current_line_number) + "\n";
-            *m_errorOutputFile << output;
-            
+            logMessage(s, TokenType::invalidchar);
 
-            m_current_line_index++;
         }
 
         // Check cartridge and incre. line position - Need to be at the end
@@ -658,13 +592,61 @@ void Lexer::tokenize()
         
     }
 
-    std::cout << "Finished tokenization.... " << std::endl;
 }
 
 Token* Lexer::createToken(TokenType type, std::string value, int position)
 {
     Token* token = new Token(type, value, position);
+    m_tokens.push_back(token);
+    m_current_line_index++;
+
+    if (m_file_line_number < token->position)
+    {
+        *m_tokenOutputFile << '\n';
+        m_file_line_number++;
+    }
+
+    std::string output = "[" + token->convertTokenTypeToString() + ", " + token->lexem + ", " + std::to_string(token->position) + "] ";
+    std::cout << output << std::endl;
+    *m_tokenOutputFile << output;
+
     return token;
+}
+
+void Lexer::logMessage(std::string s, TokenType tokenType)
+{
+    switch (tokenType) 
+    {
+    
+        case(TokenType::invalidchar):
+        {
+            std::string output = "Lexical error: Invalid Character: " + s + ": line" + std::to_string(m_current_line_number) + "\n";
+            *m_errorOutputFile << output;
+            break;
+        }
+
+        case(TokenType::invalidid):
+        {
+            std::string output = "Lexical error: Invalid ID: " + s + ": line" + std::to_string(m_current_line_number) + "\n";
+            *m_errorOutputFile << output;
+            break;
+        }
+
+        case(TokenType::invalidnum):
+        {
+            std::string output = "Lexical error: Invalid Number: " + s + ": line" + std::to_string(m_current_line_number) + "\n";
+            *m_errorOutputFile << output;
+            break;
+        }
+
+        default:
+        {
+            std::string output = "Logging error: No TokenType matching invalid types.... check logMessage()\n";
+            *m_errorOutputFile << output;
+        }
+    
+    }
+
 }
 
 void Lexer::initKeywords()

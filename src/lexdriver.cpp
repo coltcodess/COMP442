@@ -51,38 +51,16 @@ int main()
     // Create Lexer with source file  
     Lexer* lexer = new Lexer(buffer->str(), fileInput);
 
-    // Write token / error files (MOVE to Lexer - TODO)
-    std::ofstream tokenOutputFile(fileInput + OUTPUT_TOKEN_FILE_TYPE, std::ofstream::out);
-
-    int file_position = 1;
-
+    // Loop through tokens and 
     while (!lexer->isFinished())
     {
-        
-        // Handle user input to print next token
-        //std::string input;
-        //std::cout << "Press Y/N to get the next token. " << std::endl;
-        //std::cin >> input;
-
         // Log valid token
         Token* token = lexer->getNextToken();
 
-        if (token->position > file_position)
-        {
-            tokenOutputFile << '\n';
-            file_position++;
-        }
-
-        std::string output = "[" + token->convertTokenTypeToString() + ", " + token->lexem + ", " + std::to_string(token->position) + "] ";
-        std::cout << output << std::endl;
-        tokenOutputFile << output;
-
+        // Pass to Parser! 
     }
 
-    std::cout << "Finished lexical analysis...." << std::endl;
-
-    tokenOutputFile.close();
-   
+    std::cout << "Finished lexical analysis...." << std::endl;   
 
     return 0;
 }

@@ -24,3 +24,4 @@
 [blockcmt, /* this is a single line block comment */, 33] 
 [blockcmt, /* this is a \nmultiple line\nblock comment \n*/, 35] 
 [blockcmt, /* this is an imbricated \n/* block comment\n*/\n*/, 41] 
+[end_of_file, $, 47] 
