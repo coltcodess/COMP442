@@ -51,7 +51,7 @@ int main()
 
     // Create Lexer with source file  
     Lexer* lexer = new Lexer(buffer->str(), fileInput);
-    Parser* parser = new Parser();
+    Parser* parser = new Parser(fileInput, *lexer);
 
     // Loop through tokens and 
     while (!lexer->isFinished())

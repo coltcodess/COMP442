@@ -1,0 +1,95 @@
+START               -> prog
+prog                -> classOrImplOrFunc 
+
+classOrImplOrFunc   -> classDecl 
+classOrImplOrFunc   -> implDef 
+classOrImplOrFunc   -> funcDef 
+
+classDecl           -> 'class' 'id' '{' rept-classDecl_1 '}' ';'
+classDecl1          -> 'id' opt-classDecl1 '{'  '}'
+
+opt-classDecl_1     -> 'isa' 'id' rept-opt-classDecl
+opt-classDecl_1     -> EPSILON 
+
+rept-opt-classDec_l -> ',' 'id' rept-opt-classDecl 
+rept-opt-classDec_l -> EPSILON 
+
+rept-classDecl_1    -> visibility memberDecl rept-classDec_1
+rept-classDecl_1    -> EPSILON 
+
+implDef            -> 'implementation' 'id' '{' funcDef '}'
+
+funcDef            -> funcHead funcBody 
+funcDef            -> EPSILON
+
+visibility         -> 'public' | 'private' | EPSILON
+memberDecl         -> funcDecl | attributeDecl | EPSILON
+
+funcDecl           -> funcHead ';' 
+funcHead           -> 'function' 'id' '(' fParams ')' '=>' returnType 
+funcHead           -> 'constructor' '(' fParams ')'
+funcBody           -> '{' localVarDeclOrStat '}'
+
+localVarDeclOrStat -> localVarDecl 
+localVarDeclOrStat -> statement 
+
+attributeDecl      -> 'attribute' varDecl
+localVarDecl       -> 'local' varDecl 
+varDecl            -> 'id' ':' type arraySize ';'
+
+statement          -> assignStat ';' 
+statement          -> 'if' '(' relExpr ')' 'then' statBlock 'else' statBlock ';' 
+statement          -> 'while' '(' relExpr ')' statBlock ';' 
+statement          -> 'read' '(' variable ')' ';' 
+statement          -> 'write' '(' expr ')' ';' 
+statement          -> 'return' '(' expr ')' ';' 
+statement          -> functionCall ';' 
+statBlock          -> '{' statement '}' | statement | EPSILON  
+
+assignStat         -> variable assignOp expr
+
+expr               -> arithExpr 
+expr               -> relExpr 
+arithExpr          -> term arithExpr2
+arithExpr2         -> addOp term arithExpr2 
+arithExpr2         -> EPSILON
+
+relExpr            -> arithExpr relOp arithExpr 
+
+factor             -> functionCall
+factor             -> 'intLit'
+factor             -> 'floatLit'
+factor             -> '(' arithExpr ')'
+factor             -> 'not' factor
+factor             -> sign factor
+term               -> factor term2
+term2              -> multOp factor term2 
+term2              -> EPSILON
+
+variable           -> idnest 'id' indice
+functionCall       -> idnest 'id' '(' aParams ')'
+
+idnest             -> idOrSelf indice '.'
+idnest             -> idOrSelf '(' aParams ')' '.'
+indice             -> '[' arithExpr ']'
+
+arraySize          -> '[' arraySize1
+arraySize1         -> 'intNum' ']'| ']'
+
+type               -> 'int' | 'float' | 'id'
+returnType         -> type |  'void'
+
+fParams            -> 'id' ':' type arraySize fParamsTail 
+fParams            -> EPSILON
+fParamsTail        -> ',' 'id' ':' type arraySize
+aParams            -> expr aParamsTail
+aParamsTail        -> ',' expr aParamsTail
+aParamsTail        -> EPSILON    
+assignOp           -> ':='
+relOp              -> '==' | '<>' | '<' | '>' | '<=' | '>=' 
+addOp              -> '+' | '-' | 'or' 
+multOp             -> '*' | '/' | 'and'
+idOrSelf           -> 'id' 
+idOrSelf           -> 'self' 
+sign               -> '+' 
+sign               -> '-'
