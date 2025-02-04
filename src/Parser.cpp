@@ -10,7 +10,6 @@ Parser::Parser(const std::string fileName, Lexer& lexer) : m_sourceFileName(file
 
 
 
-
 	// Close Files 
 	m_derivationFile = &outDev;
 	m_syntaxErrorsFile = &outErrors;
@@ -72,4 +71,17 @@ void Parser::nextToken()
 {
 	m_consumedToken = m_lookAheadToken;
 	m_lookAheadToken = m_lexer.getNextToken();
+}
+
+bool Parser::assignOp()
+{
+	if (m_lookAheadToken->type == TokenType::ASSIGN)
+	{
+		*m_derivationFile << "assignOp -> :="; 
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

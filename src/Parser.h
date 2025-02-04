@@ -40,5 +40,13 @@ private:
 
 	std::ofstream* m_derivationFile;
 	std::ofstream* m_syntaxErrorsFile;
+
+	// Non Terminals
+
+	// Terminals
+	bool assignOp();
+
+
+
 };
 
