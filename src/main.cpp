@@ -54,7 +54,7 @@ int main()
     Parser* parser = new Parser(fileInput, *lexer);
 
 
-    std::cout << "Finished lexical analysis...." << std::endl;   
+      
 
     return 0;
 }

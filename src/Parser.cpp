@@ -65,11 +65,12 @@ void Parser::nextToken()
 bool Parser::startsymbol()
 {
 	// Test
-	if (assignOp())
+	if (assignOp() && sign())
 	{
-
-		return true;
+		return true;		
 	}
+
+	else return false;
 }
 
 bool Parser::assignOp()
@@ -77,18 +78,48 @@ bool Parser::assignOp()
 	std::vector<std::string> _first = {":="};
 
 	// Check First 
-	if (std::find(_first.begin(), _first.end(), m_lookAheadToken->lexem) != _first.end())
+	if (_first[0] == m_lookAheadToken->lexem)
 	{
 		if (match(":="))
 		{
 			*m_derivationFile << "assignOp -> :=";
+			
 			return true;
 		}
 		else return false;
 	}
+	else return false;
+}
 
-	else
+bool Parser::sign()
+{
+	std::vector<std::string> _first = { "+", "-"};
+
+	// Check First 
+	if (_first[0] == m_lookAheadToken->lexem)
 	{
-		return false;
+		if (match("+"))
+		{
+			*m_derivationFile << "sign -> +";
+
+			return true;
+		}
+		else return false;
+
 	}
+	else if (_first[1] == m_lookAheadToken->lexem)
+	{
+		if (match("-"))
+		{
+			*m_derivationFile << "sign -> -";
+
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+
+
+
+
 }

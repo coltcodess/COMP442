@@ -48,6 +48,8 @@ private:
 
 	// Terminals
 	bool assignOp();
+	bool sign();
+
 
 
 
