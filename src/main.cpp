@@ -53,14 +53,6 @@ int main()
     Lexer* lexer = new Lexer(buffer->str(), fileInput);
     Parser* parser = new Parser(fileInput, *lexer);
 
-    // Loop through tokens and 
-    while (!lexer->isFinished())
-    {
-        // Log valid token
-        Token* token = lexer->getNextToken();
-
-        // Pass to Parser! 
-    }
 
     std::cout << "Finished lexical analysis...." << std::endl;   
 

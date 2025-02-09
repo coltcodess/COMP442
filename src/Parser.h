@@ -26,20 +26,23 @@ public:
 	bool parse();
 
 private:
-	bool match(Token* token); 
+	bool match(std::string lexem);
 	void nextToken();
+
 
 	Lexer& m_lexer;
 	Grammar* m_grammar;
 
 	// Reference to tokens 
-	Token* m_lookAheadToken;
-	Token* m_consumedToken;
+	Token* m_lookAheadToken = nullptr;
+	Token* m_consumedToken = nullptr;
 
 	std::string m_sourceFileName;
 
 	std::ofstream* m_derivationFile;
 	std::ofstream* m_syntaxErrorsFile;
+
+	bool startsymbol();
 
 	// Non Terminals
 

@@ -7,13 +7,19 @@ Parser::Parser(const std::string fileName, Lexer& lexer) : m_sourceFileName(file
 	std::ofstream outDev(m_sourceFileName + ".outderivation", std::ofstream::out);
 	std::ofstream outErrors(m_sourceFileName + ".outsyntaxerrors", std::ofstream::out);
 
-
-
-
-	// Close Files 
 	m_derivationFile = &outDev;
 	m_syntaxErrorsFile = &outErrors;
 
+	if (this->parse())
+	{
+		std::cout << "-------------- Successful Parse" << std::endl;
+	}
+	else
+	{
+		std::cout << "-------------- Failed to Parse" << std::endl; 
+	}
+
+	// Close Files 
 	m_derivationFile->close();
 	m_syntaxErrorsFile->close();
 
@@ -26,60 +32,61 @@ Parser::~Parser()
 {
 }
 
-bool Parser::match(Token* token)
+bool Parser::match(std::string lexem)
 {
-	if (m_lookAheadToken == token)
+	if (m_lookAheadToken->lexem == lexem)
 	{
-		m_lookAheadToken = m_lexer.getNextToken();
+		nextToken();
 		return true;
 	}
 	else
 	{
-		m_lookAheadToken = m_lexer.getNextToken();
+		nextToken();
 		return false;
 	}
 }
 
 bool Parser::parse()
 {
-	//m_lookAheadToken = m_lexer.getNextToken();
+	nextToken();
+	if (startsymbol() && match("$")) return true;
+	else return false;
 
-	//// Create EOF token type
-	//Token* token = new Token(TokenType::END_OF_FILE, "$", -1);
-
-	//// Check start symbol and last token 
-	//if (startSymbol() && match(token))
-	//{
-	//	free(token);
-	//	token = nullptr;
-
-	//	return true;
-	//}
-	//else
-	//{
-	//	free(token);
-	//	token = nullptr;
-
-	//	return false;
-	//}
-
-
-	return true;
 }
 
 void Parser::nextToken()
 {
 	m_consumedToken = m_lookAheadToken;
+	
+
 	m_lookAheadToken = m_lexer.getNextToken();
+}
+
+bool Parser::startsymbol()
+{
+	// Test
+	if (assignOp())
+	{
+
+		return true;
+	}
 }
 
 bool Parser::assignOp()
 {
-	if (m_lookAheadToken->type == TokenType::ASSIGN)
+	std::vector<std::string> _first = {":="};
+
+	// Check First 
+	if (std::find(_first.begin(), _first.end(), m_lookAheadToken->lexem) != _first.end())
 	{
-		*m_derivationFile << "assignOp -> :="; 
-		return true;
+		if (match(":="))
+		{
+			*m_derivationFile << "assignOp -> :=";
+			return true;
+		}
+		else return false;
 	}
+
 	else
 	{
 		return false;

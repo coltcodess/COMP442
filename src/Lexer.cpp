@@ -34,14 +34,13 @@ Lexer::Lexer(const std::string source, const std::string fileName) : m_current_l
 
 Token* Lexer::getNextToken()
 {
-    if (m_tokens.empty())
+    if (m_tokenIndex > m_tokens.size()-1)
     {
         std::cout << "Error: No tokens found! Has the source file be tokenized? " << std::endl;
         return nullptr;
     }
 
     Token* token = m_tokens[m_tokenIndex];
-
     m_tokenIndex++;
 
     return token;
