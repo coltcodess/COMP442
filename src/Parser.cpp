@@ -41,6 +41,7 @@ bool Parser::match(std::string lexem)
 	}
 	else
 	{
+		*m_syntaxErrorsFile << "Syntax error at line: " + std::to_string(m_lookAheadToken->position) + " expected - " + lexem;
 		nextToken();
 		return false;
 	}
@@ -57,25 +58,74 @@ bool Parser::parse()
 void Parser::nextToken()
 {
 	m_consumedToken = m_lookAheadToken;
-	
-
 	m_lookAheadToken = m_lexer.getNextToken();
+}
+
+
+
+bool Parser::skipErrors(std::vector<std::string> first, std::vector<std::string> follow)
+{
+
+	if(std::find(first.begin(), first.end(), m_lookAheadToken->lexem) != first.end() || 
+		(std::find(first.begin(), first.end(), "EPSILON") != first.end() &&
+			std::find(follow.begin(), follow.end(), m_lookAheadToken->lexem) != follow.end()))
+	{
+		return true;
+	}
+	else
+	{
+		*m_syntaxErrorsFile << "Syntax error at line:  " + m_lookAheadToken->position << std::endl;
+
+		while (std::find(first.begin(), first.end(), m_lookAheadToken->lexem) != first.end() ||
+			std::find(follow.begin(), follow.end(), m_lookAheadToken->lexem) != follow.end())
+		{
+			nextToken();
+			if (std::find(first.begin(), first.end(), "EPSILON") != first.end() &&
+				std::find(follow.begin(), follow.end(), m_lookAheadToken->lexem) != follow.end())
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 }
 
 bool Parser::startsymbol()
 {
-	// Test
-	if (assignOp() && sign())
-	{
-		return true;		
-	}
+	std::vector<std::string> _first = { "function", "constructor", "EPSILON", "class", "implementation"};
+	std::vector<std::string> _follow = {"$"};
 
+	if (!skipErrors(_first, _follow)) return false;
+
+	// Check First 
+	if (m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor" || 
+		m_lookAheadToken->lexem == "class" || m_lookAheadToken->lexem == "implementation")
+	{
+		if (prog())
+		{
+			*m_derivationFile << "startsymbol -> prog\n"; 
+			return true;
+		}
+		else return false;
+	}
 	else return false;
+
+}
+
+bool Parser::prog()
+{
+	nextToken();
+	return true;
 }
 
 bool Parser::assignOp()
 {
 	std::vector<std::string> _first = {":="};
+	std::vector<std::string> _follow = {};
+
+	if (!skipErrors(_first, _follow)) return false;
 
 	// Check First 
 	if (_first[0] == m_lookAheadToken->lexem)
@@ -94,13 +144,16 @@ bool Parser::assignOp()
 bool Parser::sign()
 {
 	std::vector<std::string> _first = { "+", "-"};
+	std::vector<std::string> _follow = {};
+
+	if (!skipErrors(_first, _follow)) return false;
 
 	// Check First 
 	if (_first[0] == m_lookAheadToken->lexem)
 	{
 		if (match("+"))
 		{
-			*m_derivationFile << "sign -> +";
+			*m_derivationFile << "sign -> +\n";
 
 			return true;
 		}
@@ -111,7 +164,7 @@ bool Parser::sign()
 	{
 		if (match("-"))
 		{
-			*m_derivationFile << "sign -> -";
+			*m_derivationFile << "sign -> -\n";
 
 			return true;
 		}
@@ -119,7 +172,48 @@ bool Parser::sign()
 	}
 	else return false;
 
+}
 
+bool Parser::multOp()
+{
+	std::vector<std::string> _first = { "and", "/", "*"};
+	std::vector<std::string> _follow = {};
 
+	if (!skipErrors(_first, _follow)) return false;
+
+	// Check First 
+	if (_first[0] == m_lookAheadToken->lexem)
+	{
+		if (match("and"))
+		{
+			*m_derivationFile << "sign -> and\n";
+
+			return true;
+		}
+		else return false;
+
+	}
+	else if (_first[1] == m_lookAheadToken->lexem)
+	{
+		if (match("/"))
+		{
+			*m_derivationFile << "sign -> /\n";
+
+			return true;
+		}
+		else return false;
+	}
+	else if (_first[2] == m_lookAheadToken->lexem)
+	{
+		if (match("*"))
+		{
+			*m_derivationFile << "sign -> *\n";
+
+			return true;
+		}
+		else return false;
+	}
+
+	else return false;
 
 }

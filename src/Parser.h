@@ -42,13 +42,16 @@ private:
 	std::ofstream* m_derivationFile;
 	std::ofstream* m_syntaxErrorsFile;
 
-	bool startsymbol();
+	bool skipErrors(std::vector<std::string> first, std::vector<std::string> follow);
 
 	// Non Terminals
+	bool startsymbol();
+	bool prog();
 
 	// Terminals
 	bool assignOp();
 	bool sign();
+	bool multOp();
 
 
 
