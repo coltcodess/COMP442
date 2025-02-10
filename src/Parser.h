@@ -31,7 +31,7 @@ private:
 
 
 	Lexer& m_lexer;
-	Grammar* m_grammar;
+	//Grammar* m_grammar;
 
 	// Reference to tokens 
 	Token* m_lookAheadToken = nullptr;
@@ -47,6 +47,7 @@ private:
 	// Non Terminals
 	bool startsymbol();
 	bool prog();
+	bool classOrImplOrFunc();
 
 	// Terminals
 	bool assignOp();

@@ -61,8 +61,6 @@ void Parser::nextToken()
 	m_lookAheadToken = m_lexer.getNextToken();
 }
 
-
-
 bool Parser::skipErrors(std::vector<std::string> first, std::vector<std::string> follow)
 {
 
@@ -74,7 +72,7 @@ bool Parser::skipErrors(std::vector<std::string> first, std::vector<std::string>
 	}
 	else
 	{
-		*m_syntaxErrorsFile << "Syntax error at line:  " + m_lookAheadToken->position << std::endl;
+		*m_syntaxErrorsFile << "Syntax error at line:  " + std::to_string(m_lookAheadToken->position) << std::endl;
 
 		while (std::find(first.begin(), first.end(), m_lookAheadToken->lexem) != first.end() ||
 			std::find(follow.begin(), follow.end(), m_lookAheadToken->lexem) != follow.end())
@@ -116,8 +114,33 @@ bool Parser::startsymbol()
 
 bool Parser::prog()
 {
+	std::vector<std::string> _first = { "function", "constructor", "EPSILON", "class", "implementation" };
+	std::vector<std::string> _follow = { "$" };
+
+	if (!skipErrors(_first, _follow)) return false;
+
+	// Check First 
+	if (m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor" ||
+		m_lookAheadToken->lexem == "class" || m_lookAheadToken->lexem == "implementation")
+	{
+		if (classOrImplOrFunc())
+		{
+			*m_derivationFile << "prog -> classOrImplOrFunc\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+
+}
+
+bool Parser::classOrImplOrFunc()
+{
 	nextToken();
 	return true;
+
+
+
 }
 
 bool Parser::assignOp()
