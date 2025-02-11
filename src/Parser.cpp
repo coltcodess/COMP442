@@ -136,11 +136,56 @@ bool Parser::prog()
 
 bool Parser::classOrImplOrFunc()
 {
-	nextToken();
+	std::vector<std::string> _first = { "function", "constructor", "EPSILON", "class", "implementation" };
+	std::vector<std::string> _follow = { "$" };
+
+	if (!skipErrors(_first, _follow)) return false;
+
+	if (m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor" || m_lookAheadToken->lexem == "EPSILON")
+	{
+		if (funcDef())
+		{
+			*m_derivationFile << "classOrImplOrFunc -> funcDef";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == "class")
+	{
+		
+		if (classDecl())
+		{
+			*m_derivationFile << "classOrImplOrFunc -> classDecl";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == "implementation")
+	{
+		if (implDef())
+		{
+			*m_derivationFile << "classOrImplOrFunc -> implDef";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::funcDef()
+{
+	return false;
+}
+
+bool Parser::implDef()
+{
+	return false;
+}
+
+bool Parser::classDecl()
+{
+	nextToken(); // temp need to hit terminal token;
 	return true;
-
-
-
 }
 
 bool Parser::assignOp()
@@ -156,7 +201,6 @@ bool Parser::assignOp()
 		if (match(":="))
 		{
 			*m_derivationFile << "assignOp -> :=";
-			
 			return true;
 		}
 		else return false;

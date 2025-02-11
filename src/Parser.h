@@ -48,6 +48,9 @@ private:
 	bool startsymbol();
 	bool prog();
 	bool classOrImplOrFunc();
+	bool funcDef();
+	bool implDef();
+	bool classDecl();
 
 	// Terminals
 	bool assignOp();
