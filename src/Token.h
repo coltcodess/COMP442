@@ -1,6 +1,6 @@
 #pragma once
 
-enum class TokenType
+enum TokenType
 {
     // Punc 
 

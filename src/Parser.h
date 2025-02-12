@@ -26,7 +26,7 @@ public:
 	bool parse();
 
 private:
-	bool match(std::string lexem);
+	bool match(TokenType type);
 	void nextToken();
 
 
@@ -51,6 +51,8 @@ private:
 	bool funcDef();
 	bool implDef();
 	bool classDecl();
+	bool reptClassDecl_1();
+	bool visibility();
 
 	// Terminals
 	bool assignOp();
