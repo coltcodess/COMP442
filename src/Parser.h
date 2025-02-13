@@ -63,6 +63,8 @@ private:
 	bool fParams();
 
 	bool arithExpr();
+	bool arraySize();
+	bool arraySize1();
 
 	// Terminals
 	bool assignOp();

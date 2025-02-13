@@ -40,8 +40,19 @@ Token* Lexer::getNextToken()
         return nullptr;
     }
 
+    
     Token* token = m_tokens[m_tokenIndex];
     m_tokenIndex++;
+
+    // Skip all comments tokens
+    while (token->type == TokenType::blockcmt || token->type == TokenType::inlinecmt)
+    {
+        token = m_tokens[m_tokenIndex];
+        m_tokenIndex++;
+    }
+
+
+    
 
     return token;
 }
