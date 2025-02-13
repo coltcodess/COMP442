@@ -1,1 +1,5 @@
-[class, class, 1] [id, a, 1] [opencubr, {, 1] [public, public, 1] [closecubr, }, 1] [semi, ;, 1] [end_of_file, $, 1] 
+[class, class, 1] [id, a, 1] [opencubr, {, 1] 
+[private, private, 3] 
+[function, function, 3] [id, a, 3] [openpar, (, 3] [closepar, ), 3] [arrow, =>, 3] [id, poop, 3] [semi, ;, 3] 
+[closecubr, }, 5] 
+[semi, ;, 5] [end_of_file, $, 5] 

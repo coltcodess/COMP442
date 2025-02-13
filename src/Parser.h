@@ -27,7 +27,7 @@ public:
 
 private:
 	bool match(TokenType type);
-	void nextToken();
+	bool nextToken();
 
 
 	Lexer& m_lexer;
@@ -53,11 +53,23 @@ private:
 	bool classDecl();
 	bool reptClassDecl_1();
 	bool visibility();
+	bool memberDecl();
+	bool funcDec1();
+	bool funcHead();
+	bool attributeDec1();
+	bool returnType();
+
+	bool fParams();
+
 
 	// Terminals
 	bool assignOp();
 	bool sign();
 	bool multOp();
+	bool addOp();
+	bool relOp();
+	bool type();
+
 
 
 

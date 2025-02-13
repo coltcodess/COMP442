@@ -6,8 +6,8 @@ enum TokenType
 
     SEMI = ';',
     COLON = ':',
-    CLOSEPAR = '(',
-    OPENPAR = ')',
+    CLOSEPAR = ')',
+    OPENPAR = '(',
     OPENCUBR = '[',
     CLOSECUBR = ']',
     DOT = '.',

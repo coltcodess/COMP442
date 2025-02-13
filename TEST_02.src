@@ -1,1 +1,5 @@
-class a { public } ;
+class a { 
+
+private function a () => poop;
+
+};
