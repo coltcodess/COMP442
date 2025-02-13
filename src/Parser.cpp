@@ -379,6 +379,7 @@ bool Parser::returnType()
 	std::vector<std::string> _first = { "int", "float", "id", "void"};
 	std::vector<std::string> _follow = {};
 
+	// Checks lexem and not the tokentype >:(
 	//if (!skipErrors(_first, _follow)) return false;
 	
 	if (m_lookAheadToken->type == TokenType::INT ||
@@ -404,11 +405,75 @@ bool Parser::returnType()
 	else return false;
 }
 
+bool Parser::indice()
+{
+	std::vector<std::string> _first = { "[" };
+
+	if (m_lookAheadToken->lexem == "[")
+	{
+		if (match(TokenType::OPENSQBR) && arithExpr() && match(TokenType::CLOSESQBR))
+		{
+			*m_derivationFile << "indice -> '[' arithExpr ']'\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::arraySize()
+{
+	std::vector<std::string> _first = { "[" };
+
+	if (m_lookAheadToken->lexem == "[")
+	{
+		if (match(TokenType::OPENSQBR) && arraySize1())
+		{
+			*m_derivationFile << "arraySize -> '[' arraySize1\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+
+	return false;
+}
+
+bool Parser::arraySize1()
+{
+	std::vector<std::string> _first = { "]", "intnum" };
+
+	if (m_lookAheadToken->lexem == "]")
+	{
+		if (match(TokenType::CLOSESQBR))
+		{
+			*m_derivationFile << "'['\n";
+			return true;
+		}
+	}
+	else if (m_lookAheadToken->type == TokenType::intnum)
+	{
+		if (match(TokenType::intnum) && match(TokenType::CLOSESQBR))
+		{
+			*m_derivationFile << "'intnum' ']'\n";
+			return true;
+		}
+	}
+	else return false;
+}
+
 bool Parser::fParams()
 {
 
 	return true;
 }
+
+bool Parser::arithExpr()
+{
+	return true;
+}
+
+
 
 
 /*

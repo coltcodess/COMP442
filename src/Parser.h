@@ -58,9 +58,11 @@ private:
 	bool funcHead();
 	bool attributeDec1();
 	bool returnType();
+	bool indice();
 
 	bool fParams();
 
+	bool arithExpr();
 
 	// Terminals
 	bool assignOp();
