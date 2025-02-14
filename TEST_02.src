@@ -2,8 +2,11 @@ class a {
 
 	private function a (a : int[10], b : float[], c : float) => poop;
 
-	private function b () => crap;
+	private function b () => void;
 
-	public function c (f : float) => shit;
+	public constructor (f : float[9]);
+
+	private attribute b : poop[10];
 
 };
+

@@ -126,6 +126,15 @@ bool Parser::startsymbol()
 		}
 		else return false;
 	}
+	else if (m_lookAheadToken->type == TokenType::END_OF_FILE)
+	{
+		if (match(TokenType::END_OF_FILE))
+		{
+			*m_derivationFile << "startsymbol -> $\n";
+			return true;
+		}
+		else return false;
+	}
 	else return false;
 
 }
@@ -168,7 +177,7 @@ bool Parser::classOrImplOrFunc()
 
 	if (!skipErrors(_first, _follow)) return false;
 
-	if (m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor" || m_lookAheadToken->lexem == "EPSILON")
+	if (m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor")
 	{
 		if (funcDef())
 		{
@@ -196,6 +205,14 @@ bool Parser::classOrImplOrFunc()
 		}
 		else return false;
 	}
+	else if (m_lookAheadToken->type == TokenType::END_OF_FILE)
+	{
+		if (match(TokenType::END_OF_FILE))
+		{
+			*m_derivationFile << "classOrImplOrFunc -> EPSILON\n";
+			return true;
+		}
+	}
 	else return false;
 }
 
@@ -221,7 +238,7 @@ bool Parser::classDecl()
 		if (match(TokenType::CLASS) && match(TokenType::id) && match(TokenType::OPENCUBR) && 
 			reptClassDecl_1() && match(TokenType::CLOSECUBR) && match(TokenType::SEMI))
 		{
-			*m_derivationFile << "classDecl -> 'class' 'id' '{' reptClassDecl_2 '}' ';'\n";
+			*m_derivationFile << "classDecl -> 'class' 'id' '{' reptClassDecl_1 '}' ';'\n";
 			return true;
 		}
 		else return false;
@@ -378,8 +395,36 @@ bool Parser::funcHead()
 
 bool Parser::attributeDec1()
 {
-	nextToken();
-	return true;
+	std::vector<std::string> _first = { "attribute"};
+	std::vector<std::string> _follow = {};
+
+	if (m_lookAheadToken->lexem == "attribute")
+	{
+		if (match(TokenType::ATTRIBUTE) && varDec1())
+		{
+			*m_derivationFile << "attributeDec1 -> 'attribute' varDec1\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::varDec1()
+{
+	std::vector<std::string> _first = { "id" };
+	std::vector<std::string> _follow = {};
+
+	if (m_lookAheadToken->type == TokenType::id)
+	{
+		if (match(TokenType::id) && match(TokenType::COLON) && type() && arraySize())
+		{
+			*m_derivationFile << "varDec1 -> 'id' ':' type arraySize\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
 }
 
 bool Parser::returnType()

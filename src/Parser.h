@@ -57,6 +57,7 @@ private:
 	bool funcDec1();
 	bool funcHead();
 	bool attributeDec1();
+	bool varDec1();
 	bool returnType();
 	bool indice();
 
