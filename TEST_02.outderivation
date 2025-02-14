@@ -2,6 +2,30 @@ visibility -> 'private'
 type -> 'int'
 arraySize1 -> 'intnum' ']'
 arraySize -> '[' arraySize1
+type -> 'float'
+arraySize1 -> ']'
+arraySize -> '[' arraySize1
+type -> 'float'
+arraySize -> EPSILON
+fParamsTail -> EPSILON
+fParasTail -> ',' 'id' ':' type arraySize
+fParasTail -> ',' 'id' ':' type arraySize
+fParams -> 'id' ':' type arraySize fParamsTail
+type -> 'id'
+returnType -> type
+'function' 'id' '(' fParams ')' '=>' returnType
+funcDec1 -> funcHead
+memberDecl -> funcDec1
+visibility -> 'private'
+fParams -> EPSILON
+type -> 'id'
+returnType -> type
+'function' 'id' '(' fParams ')' '=>' returnType
+funcDec1 -> funcHead
+memberDecl -> funcDec1
+visibility -> 'public'
+type -> 'float'
+arraySize -> EPSILON
 fParamsTail -> EPSILON
 fParams -> 'id' ':' type arraySize fParamsTail
 type -> 'id'
@@ -9,8 +33,11 @@ returnType -> type
 'function' 'id' '(' fParams ')' '=>' returnType
 funcDec1 -> funcHead
 memberDecl -> funcDec1
-reptclassDecl_1 -> visibility memberDec1
-classDecl -> 'class' 'id' '{' reptclassDecl_1 '}' ';'
+reptclassDecl_1 -> EPSILON
+reptclassDecl_1 -> visibility memberDec1 reptClassDecl_1
+reptclassDecl_1 -> visibility memberDec1 reptClassDecl_1
+reptclassDecl_1 -> visibility memberDec1 reptClassDecl_1
+classDecl -> 'class' 'id' '{' reptClassDecl_2 '}' ';'
 classOrImplOrFunc -> classDecl
 prog -> classOrImplOrFunc
 startsymbol -> prog

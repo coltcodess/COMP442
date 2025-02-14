@@ -68,6 +68,8 @@ private:
 	bool aParams();
 	bool aParamsTail();
 
+	bool expr();
+
 	bool arithExpr();
 	bool arraySize();
 	bool arraySize1();

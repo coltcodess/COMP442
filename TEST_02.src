@@ -1,5 +1,9 @@
 class a { 
 
-private function a (a : int[10]) => poop;
+	private function a (a : int[10], b : float[], c : float) => poop;
+
+	private function b () => crap;
+
+	public function c (f : float) => shit;
 
 };

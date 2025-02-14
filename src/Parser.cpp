@@ -221,7 +221,7 @@ bool Parser::classDecl()
 		if (match(TokenType::CLASS) && match(TokenType::id) && match(TokenType::OPENCUBR) && 
 			reptClassDecl_1() && match(TokenType::CLOSECUBR) && match(TokenType::SEMI))
 		{
-			*m_derivationFile << "classDecl -> 'class' 'id' '{' reptclassDecl_1 '}' ';'\n";
+			*m_derivationFile << "classDecl -> 'class' 'id' '{' reptClassDecl_2 '}' ';'\n";
 			return true;
 		}
 		else return false;
@@ -231,7 +231,7 @@ bool Parser::classDecl()
 
 bool Parser::reptClassDecl_1()
 {
-	std::vector<std::string> _first = { "private", "public", "function", "constructor", "attribute", "EPSILON", "EPSILON"};
+	std::vector<std::string> _first = { "private", "public", "function", "constructor", "attribute", "EPSILON"};
 	std::vector<std::string> _follow = {"}"};
 
 	if (!skipErrors(_first, _follow));
@@ -240,9 +240,9 @@ bool Parser::reptClassDecl_1()
 		m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor" || 
 		m_lookAheadToken->lexem == "attribute")
 	{
-		if (visibility() && memberDecl())
+		if (visibility() && memberDecl() && reptClassDecl_1())
 		{
-			*m_derivationFile << "reptclassDecl_1 -> visibility memberDec1\n";
+			*m_derivationFile << "reptclassDecl_1 -> visibility memberDec1 reptClassDecl_1\n";
 			return true;
 		}
 		else return false;
@@ -260,7 +260,7 @@ bool Parser::reptClassDecl_1()
 bool Parser::visibility()
 {
 	std::vector<std::string> _first = {"private", "public", "EPSILON"};
-	std::vector<std::string> _follow = { "function", "constructor", "attribute", "}"};
+	std::vector<std::string> _follow = { "function", "constructor", "attribute"};
 
 	if (!skipErrors(_first, _follow));
 
@@ -283,7 +283,7 @@ bool Parser::visibility()
 		else return false;
 	}
 	else if (m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor" ||
-		m_lookAheadToken->lexem == "attribute" || m_lookAheadToken->lexem == "}")
+		m_lookAheadToken->lexem == "attribute")
 	{
 		*m_derivationFile << "visibility -> 'EPSILON'\n";
 		return true;
@@ -432,6 +432,7 @@ bool Parser::indice()
 bool Parser::arraySize()
 {
 	std::vector<std::string> _first = { "[" };
+	std::vector<std::string> _follow = { ",", ")", ";"};
 
 	if (m_lookAheadToken->lexem == "[")
 	{
@@ -441,6 +442,11 @@ bool Parser::arraySize()
 			return true;
 		}
 		else return false;
+	}
+	else if (m_lookAheadToken->lexem == ";" || m_lookAheadToken->lexem == ")" || m_lookAheadToken->lexem == ",")
+	{
+		*m_derivationFile << "arraySize -> EPSILON\n";
+		return true;
 	}
 	else return false;
 }
@@ -497,11 +503,13 @@ bool Parser::fParamsTail()
 	
 	if (m_lookAheadToken->lexem == ",")
 	{
-		if (match(TokenType::COMMA) && match(TokenType::COLON) && type() && arraySize())
+		if (match(TokenType::COMMA) && match(TokenType::id) && match(TokenType::COLON) && type() && arraySize() &&
+			fParamsTail())
 		{
 			*m_derivationFile << "fParasTail -> ',' 'id' ':' type arraySize\n";
 			return true;
 		}
+		else return false;
 	}
 	else if (m_lookAheadToken->lexem == ")")
 	{
@@ -513,9 +521,52 @@ bool Parser::fParamsTail()
 
 bool Parser::aParams()
 {
-	std::vector<std::string> _first = { "(", "floatLit", "id", "intLit", "not", "+", "-"};
+	std::vector<std::string> _first = { ",", "floatLit", "id", "intLit", "not", "+", "-"};
+	std::vector<std::string> _follow = { };
+
+	if (m_lookAheadToken->lexem == "(" || m_lookAheadToken->type == TokenType::floatnum
+		|| m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::intnum
+		|| m_lookAheadToken->lexem == "not" || m_lookAheadToken->lexem == "+" || m_lookAheadToken->lexem == "-")
+	{
+		if (expr() && aParamsTail())
+		{
+			*m_derivationFile << "aParams -> expr aParamsTail\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::aParamsTail()
+{
+	std::vector<std::string> _first = { ",", "EPSILON" };
 	std::vector<std::string> _follow = { ")" };
-	return false;
+
+	if (m_lookAheadToken->lexem == ",")
+	{
+		if (match(TokenType::COMMA) && expr() && aParamsTail())
+		{
+			*m_derivationFile << "aParamsTail -> ',' expr aParamsTail\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == ")")
+	{
+		if (match(TokenType::CLOSEPAR))
+		{
+			*m_derivationFile << "aParamsTail -> EPSILON\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::expr()
+{
+	return true;
 }
 
 bool Parser::arithExpr()
@@ -523,8 +574,9 @@ bool Parser::arithExpr()
 	return true;
 }
 
-
-
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
 
 /*
 	Terminal 

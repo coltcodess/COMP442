@@ -14,7 +14,8 @@ opt-classDecl_1     -> EPSILON
 rept-opt-classDec_l -> ',' 'id' rept-opt-classDec_l 
 rept-opt-classDec_l -> EPSILON 
 
-rept-classDecl_1    -> visibility memberDecl
+rept-classDecl_1    -> visibility memberDecl rept-classDecl_1
+rept-classDecl_1    -> EPSILON
 
 implDef            -> 'implementation' 'id' '{' funcDef '}'
 
@@ -22,9 +23,9 @@ funcDef            -> funcHead funcBody
 funcDef            -> EPSILON
 
 visibility         -> 'public' | 'private' | EPSILON
-memberDecl         -> funcDecl | attributeDecl | EPSILON
+memberDecl         -> funcDecl | attributeDecl
 
-funcDecl           -> funcHead ';' 
+funcDecl           -> funcHead 
 
 funcHead           -> 'function' 'id' '(' fParams ')' '=>' returnType 
 funcHead           -> 'constructor' '(' fParams ')'
@@ -36,7 +37,7 @@ localVarDeclOrStat -> statement
 
 attributeDecl      -> 'attribute' varDecl
 localVarDecl       -> 'local' varDecl 
-varDecl            -> 'id' ':' type arraySize ';'
+varDecl            -> 'id' ':' type arraySize
 
 statement          -> 'if' '(' relExpr ')' 'then' statBlock 'else' statBlock ';' 
 statement          -> 'while' '(' relExpr ')' statBlock ';' 
@@ -84,6 +85,7 @@ idOrSelf           -> 'id' | 'self'
 indice             -> '[' arithExpr ']'
 
 arraySize          -> '[' arraySize1
+arraySize          -> EPSILON
 arraySize1         -> 'intNum' ']'| ']'
 
 type               -> 'int' | 'float' | 'id'
@@ -91,7 +93,7 @@ returnType         -> type |  'void'
 
 fParams            -> 'id' ':' type arraySize fParamsTail 
 fParams            -> EPSILON
-fParamsTail        -> ',' 'id' ':' type arraySize
+fParamsTail        -> ',' 'id' ':' type arraySize fParamsTail
 fParamsTail        -> EPSILON
 
 aParams            -> expr aParamsTail
