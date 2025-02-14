@@ -1,5 +1,5 @@
 class a { 
 
-private function a () => poop;
+private function a (a : int[10]) => poop;
 
 };

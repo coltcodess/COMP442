@@ -148,6 +148,15 @@ bool Parser::prog()
 		}
 		else return false;
 	}
+	else if (m_lookAheadToken->type == TokenType::END_OF_FILE)
+	{
+		if (match(TokenType::END_OF_FILE))
+		{
+			*m_derivationFile << "prog -> $\n";
+			return true;
+		}
+		else return false;
+	}
 	else return false;
 
 }
@@ -233,8 +242,7 @@ bool Parser::reptClassDecl_1()
 	{
 		if (visibility() && memberDecl())
 		{
-			*m_derivationFile << "reptclassDecl_1 -> visibility\n";
-			*m_derivationFile << "reptclassDecl_1 -> memberDec1\n";
+			*m_derivationFile << "reptclassDecl_1 -> visibility memberDec1\n";
 			return true;
 		}
 		else return false;
@@ -435,8 +443,6 @@ bool Parser::arraySize()
 		else return false;
 	}
 	else return false;
-
-	return false;
 }
 
 bool Parser::arraySize1()
@@ -447,7 +453,7 @@ bool Parser::arraySize1()
 	{
 		if (match(TokenType::CLOSESQBR))
 		{
-			*m_derivationFile << "'['\n";
+			*m_derivationFile << "arraySize1 -> ']'\n";
 			return true;
 		}
 	}
@@ -455,7 +461,7 @@ bool Parser::arraySize1()
 	{
 		if (match(TokenType::intnum) && match(TokenType::CLOSESQBR))
 		{
-			*m_derivationFile << "'intnum' ']'\n";
+			*m_derivationFile << "arraySize1 -> 'intnum' ']'\n";
 			return true;
 		}
 	}
@@ -464,8 +470,52 @@ bool Parser::arraySize1()
 
 bool Parser::fParams()
 {
+	std::vector<std::string> _first = { "id", "EPSILON" };
+	std::vector<std::string> _follow = { ")" };
 
-	return true;
+	if (m_lookAheadToken->type == TokenType::id)
+	{
+		if (match(TokenType::id) && match(TokenType::COLON) && type() && arraySize() && fParamsTail())
+		{
+			*m_derivationFile << "fParams -> 'id' ':' type arraySize fParamsTail\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == ")")
+	{
+		*m_derivationFile << "fParams -> EPSILON\n";
+		return true;
+	}
+	else return false;
+}
+
+bool Parser::fParamsTail()
+{
+	std::vector<std::string> _first = { ",", "EPSILON"};
+	std::vector<std::string> _follow = { ")"};
+	
+	if (m_lookAheadToken->lexem == ",")
+	{
+		if (match(TokenType::COMMA) && match(TokenType::COLON) && type() && arraySize())
+		{
+			*m_derivationFile << "fParasTail -> ',' 'id' ':' type arraySize\n";
+			return true;
+		}
+	}
+	else if (m_lookAheadToken->lexem == ")")
+	{
+		*m_derivationFile << "fParamsTail -> EPSILON\n";
+		return true;
+	}
+	else return false;
+}
+
+bool Parser::aParams()
+{
+	std::vector<std::string> _first = { "(", "floatLit", "id", "intLit", "not", "+", "-"};
+	std::vector<std::string> _follow = { ")" };
+	return false;
 }
 
 bool Parser::arithExpr()

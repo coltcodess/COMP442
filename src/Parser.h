@@ -60,7 +60,13 @@ private:
 	bool returnType();
 	bool indice();
 
+
+
 	bool fParams();
+	bool fParamsTail();
+
+	bool aParams();
+	bool aParamsTail();
 
 	bool arithExpr();
 	bool arraySize();

@@ -92,6 +92,7 @@ returnType         -> type |  'void'
 fParams            -> 'id' ':' type arraySize fParamsTail 
 fParams            -> EPSILON
 fParamsTail        -> ',' 'id' ':' type arraySize
+fParamsTail        -> EPSILON
 
 aParams            -> expr aParamsTail
 aParamsTail        -> ',' expr aParamsTail

@@ -51,9 +51,6 @@ Token* Lexer::getNextToken()
         m_tokenIndex++;
     }
 
-
-    
-
     return token;
 }
 
@@ -123,7 +120,7 @@ std::string Lexer::getNextWord()
 std::string Lexer::getNextNumber()
 {
     int start = m_current_line_index;
-
+    int end = m_current_line_index;
     bool decimal = false; 
 
     char c = peekNextChar();
@@ -131,50 +128,53 @@ std::string Lexer::getNextNumber()
     // Return if it's just single digit number
     if (!isDigit(c) && c != '.') return std::string (1,m_sourceText[m_current_line_index]);
 
-    while (m_current_line_index < m_sourceText.length() && 
-        (isDigit(m_sourceText[m_current_line_index])) || 
-        m_sourceText[m_current_line_index] == '.')
+    while (end < m_sourceText.length() &&
+        (isDigit(m_sourceText[end])) ||
+        m_sourceText[end] == '.')
     {
-    
-        if (peekNextChar() == '\n')
+        char c = peekNextChar();
+        if (c == '\n' && c != 'e' && !isDigit(c))
         {
-            return m_sourceText.substr(start, m_current_line_index - (start-1));
+            m_current_line_index = end-1;
+            return m_sourceText.substr(start, end - (start-1));
         }
 
-        if (m_sourceText[m_current_line_index] == '.')
+        if (m_sourceText[end] == '.')
         {
             if (decimal) break;
             decimal = true;
         }
 
-        m_current_line_index++;
+        end++;
     }
 
     // Skip over Optional e+/- exponent
-    if (m_sourceText[m_current_line_index] == 'e')
+    if (m_sourceText[end] == 'e')
     {
-        m_current_line_index++;
+        end++;
 
-        if (m_sourceText[m_current_line_index] == '+' || m_sourceText[m_current_line_index] == '-')
+        if (m_sourceText[end] == '+' || m_sourceText[end] == '-')
         {
-            m_current_line_index++;
+            end++;
         }
     }
 
     // Check E notation exponent 
-    while (m_current_line_index < m_sourceText.length() &&
-        (isDigit(m_sourceText[m_current_line_index])) ||
-        m_sourceText[m_current_line_index] == '.')
+    while (end < m_sourceText.length() &&
+        (isDigit(m_sourceText[end])) ||
+        m_sourceText[end] == '.')
     {
         if (peekNextChar() == '\n')
         {
-            return m_sourceText.substr(start, m_current_line_index - (start - 1));
+            m_current_line_index = end-1;
+            return m_sourceText.substr(start, end - (start - 1));
         }
 
-        m_current_line_index++;
+        end++;
     }    
 
-    return m_sourceText.substr(start, m_current_line_index - start);
+    m_current_line_index = end-1;
+    return m_sourceText.substr(start, end - start);
 }
 
 std::string Lexer::getNextLine()

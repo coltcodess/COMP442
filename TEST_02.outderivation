@@ -1,11 +1,15 @@
 visibility -> 'private'
+type -> 'int'
+arraySize1 -> 'intnum' ']'
+arraySize -> '[' arraySize1
+fParamsTail -> EPSILON
+fParams -> 'id' ':' type arraySize fParamsTail
 type -> 'id'
 returnType -> type
 'function' 'id' '(' fParams ')' '=>' returnType
 funcDec1 -> funcHead
 memberDecl -> funcDec1
-reptclassDecl_1 -> visibility
-reptclassDecl_1 -> memberDec1
+reptclassDecl_1 -> visibility memberDec1
 classDecl -> 'class' 'id' '{' reptclassDecl_1 '}' ';'
 classOrImplOrFunc -> classDecl
 prog -> classOrImplOrFunc
