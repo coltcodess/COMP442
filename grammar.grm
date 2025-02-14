@@ -1,5 +1,6 @@
 START               -> prog
-prog                -> classOrImplOrFunc 
+prog                -> classOrImplOrFunc prog
+prog                -> EPSILON
 
 classOrImplOrFunc   -> classDecl 
 classOrImplOrFunc   -> implDef 
@@ -20,7 +21,6 @@ rept-classDecl_1    -> EPSILON
 implDef            -> 'implementation' 'id' '{' funcDef '}'
 
 funcDef            -> funcHead funcBody 
-funcDef            -> EPSILON
 
 visibility         -> 'public' | 'private' | EPSILON
 memberDecl         -> funcDecl | attributeDecl

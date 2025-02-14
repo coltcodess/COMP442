@@ -45,5 +45,10 @@ reptclassDecl_1 -> visibility memberDec1 reptClassDecl_1
 reptclassDecl_1 -> visibility memberDec1 reptClassDecl_1
 classDecl -> 'class' 'id' '{' reptClassDecl_1 '}' ';'
 classOrImplOrFunc -> classDecl
-prog -> classOrImplOrFunc
+reptclassDecl_1 -> EPSILON
+classDecl -> 'class' 'id' '{' reptClassDecl_1 '}' ';'
+classOrImplOrFunc -> classDecl
+prog -> $
+prog -> classOrImplOrFunc prog
+prog -> classOrImplOrFunc prog
 startsymbol -> prog

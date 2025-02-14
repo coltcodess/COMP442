@@ -51,7 +51,7 @@ bool Parser::match(TokenType type)
 bool Parser::parse()
 {
 	if(!nextToken()) return false;
-	if (startsymbol() && match(TokenType::END_OF_FILE)) return true;
+	if (startsymbol()) return true;
 	else return false;
 
 }
@@ -150,9 +150,9 @@ bool Parser::prog()
 	if (m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor" ||
 		m_lookAheadToken->lexem == "class" || m_lookAheadToken->lexem == "implementation")
 	{
-		if (classOrImplOrFunc())
+		if (classOrImplOrFunc() && prog())
 		{
-			*m_derivationFile << "prog -> classOrImplOrFunc\n";
+			*m_derivationFile << "prog -> classOrImplOrFunc prog\n";
 			return true;
 		}
 		else return false;
