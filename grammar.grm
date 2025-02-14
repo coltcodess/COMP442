@@ -37,7 +37,7 @@ localVarDeclOrStat -> statement
 
 attributeDecl      -> 'attribute' varDecl
 localVarDecl       -> 'local' varDecl 
-varDecl            -> 'id' ':' type arraySize
+varDecl            -> 'id' ':' type arraySize ';'
 
 statement          -> 'if' '(' relExpr ')' 'then' statBlock 'else' statBlock ';' 
 statement          -> 'while' '(' relExpr ')' statBlock ';' 
