@@ -1,3 +1,22 @@
+type -> 'int'
+arraySize1 -> ']'
+arraySize -> '[' arraySize1
+type -> 'int'
+arraySize -> EPSILON
+fParamsTail -> EPSILON
+fParasTail -> ',' 'id' ':' type arraySize
+fParams -> 'id' ':' type arraySize fParamsTail
+returnType -> 'void'
+'function' 'id' '(' fParams ')' '=>' returnType
+type -> 'int'
+arraySize1 -> 'intnum' ']'
+arraySize -> '[' arraySize1
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl
+localVarDeclOrStat -> localVarDecl
+funcBody -> '(' localVarDeclOrStat ')'
+classOrImplOrFunc -> EPSILON
+classOrImplOrFunc -> funcDef
 visibility -> 'private'
 type -> 'int'
 arraySize1 -> 'intnum' ']'
@@ -35,7 +54,7 @@ visibility -> 'private'
 type -> 'id'
 arraySize1 -> 'intnum' ']'
 arraySize -> '[' arraySize1
-varDec1 -> 'id' ':' type arraySize
+varDec1 -> 'id' ':' type arraySize ';'
 attributeDec1 -> 'attribute' varDec1
 memberDecl -> attributeDec1
 reptclassDecl_1 -> EPSILON
@@ -49,6 +68,7 @@ reptclassDecl_1 -> EPSILON
 classDecl -> 'class' 'id' '{' reptClassDecl_1 '}' ';'
 classOrImplOrFunc -> classDecl
 prog -> $
+prog -> classOrImplOrFunc prog
 prog -> classOrImplOrFunc prog
 prog -> classOrImplOrFunc prog
 startsymbol -> prog

@@ -1,3 +1,8 @@
+function coolFunc(arr: int[], size: int) => void 
+{
+	local d : int[10];
+}
+
 class a { 
 
 	private function a (a : int[10], b : float[], c : float) => poop;

@@ -218,7 +218,19 @@ bool Parser::classOrImplOrFunc()
 
 bool Parser::funcDef()
 {
-	return false;
+	std::vector<std::string> _first = { "function", "constructor"};
+	std::vector<std::string> _follow = { };
+
+	if (m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor")
+	{
+		if (funcHead() && funcBody())
+		{
+			*m_derivationFile << "classOrImplOrFunc -> EPSILON\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
 }
 
 bool Parser::implDef()
@@ -393,6 +405,73 @@ bool Parser::funcHead()
 
 }
 
+bool Parser::funcBody()
+{
+	std::vector<std::string> _first = { "{" };
+	std::vector<std::string> _follow = {};
+
+	if (m_lookAheadToken->lexem == "{")
+	{
+		if (match(TokenType::OPENCUBR) && localVarDeclOrStat() && match(TokenType::CLOSECUBR))
+		{
+			*m_derivationFile << "funcBody -> '(' localVarDeclOrStat ')'\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+
+}
+
+bool Parser::localVarDeclOrStat()
+{
+	std::vector<std::string> _first = { "local", "if", "read", "return", "while", "write"};
+	std::vector<std::string> _follow = {};
+
+	if (m_lookAheadToken->lexem == "local")
+	{
+		if (localVarDecl())
+		{
+			*m_derivationFile << "localVarDeclOrStat -> localVarDecl\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == "if" || m_lookAheadToken->lexem == "read"
+		|| m_lookAheadToken->lexem == "while" || m_lookAheadToken->lexem == "write")
+	{
+		if (statement())
+		{
+			*m_derivationFile << "localVarDeclOrStat -> statement\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::localVarDecl()
+{
+	std::vector<std::string> _first = { "local"};
+	std::vector<std::string> _follow = {};
+
+	if (m_lookAheadToken->lexem == "local")
+	{
+		if (match(TokenType::LOCAL) && varDec1())
+		{
+			*m_derivationFile << "localVarDecl -> 'local' varDecl\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::statement()
+{
+	return true;
+}
+
 bool Parser::attributeDec1()
 {
 	std::vector<std::string> _first = { "attribute"};
@@ -417,9 +496,9 @@ bool Parser::varDec1()
 
 	if (m_lookAheadToken->type == TokenType::id)
 	{
-		if (match(TokenType::id) && match(TokenType::COLON) && type() && arraySize())
+		if (match(TokenType::id) && match(TokenType::COLON) && type() && arraySize() && match(TokenType::SEMI))
 		{
-			*m_derivationFile << "varDec1 -> 'id' ':' type arraySize\n";
+			*m_derivationFile << "varDec1 -> 'id' ':' type arraySize ';'\n";
 			return true;
 		}
 		else return false;

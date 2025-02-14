@@ -56,6 +56,11 @@ private:
 	bool memberDecl();
 	bool funcDec1();
 	bool funcHead();
+	bool funcBody();
+	bool localVarDeclOrStat();
+	bool localVarDecl();
+	bool statement();
+
 	bool attributeDec1();
 	bool varDec1();
 	bool returnType();
