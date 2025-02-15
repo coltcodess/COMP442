@@ -412,9 +412,9 @@ bool Parser::funcBody()
 
 	if (m_lookAheadToken->lexem == "{")
 	{
-		if (match(TokenType::OPENCUBR) && localVarDeclOrStat() && match(TokenType::CLOSECUBR))
+ 		if (match(TokenType::OPENCUBR) && localVarDeclOrStatRep() && match(TokenType::CLOSECUBR))
 		{
-			*m_derivationFile << "funcBody -> '(' localVarDeclOrStat ')'\n";
+			*m_derivationFile << "funcBody -> '(' localVarDeclOrStatRep ')'\n";
 			return true;
 		}
 		else return false;
@@ -423,10 +423,34 @@ bool Parser::funcBody()
 
 }
 
+bool Parser::localVarDeclOrStatRep()
+{
+	std::vector<std::string> _first = { "local", "if", "read", "return", "while", "write", "EPSILON"};
+	std::vector<std::string> _follow = { "}" };
+
+	if (m_lookAheadToken->lexem == "if" || m_lookAheadToken->lexem == "read"
+		|| m_lookAheadToken->lexem == "while" || m_lookAheadToken->lexem == "write"
+		|| m_lookAheadToken->lexem == "return" || m_lookAheadToken->lexem == "local")
+	{
+		if (localVarDeclOrStat() && localVarDeclOrStatRep())
+		{
+			*m_derivationFile << "localVarDeclOrStatRep -> localVarDeclOrStat\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == "}")
+	{
+		*m_derivationFile << "localVarDeclOrStatRep -> EPSILON\n";
+		return true;
+	}
+	else return false;
+}
+
 bool Parser::localVarDeclOrStat()
 {
 	std::vector<std::string> _first = { "local", "if", "read", "return", "while", "write"};
-	std::vector<std::string> _follow = {};
+	std::vector<std::string> _follow = { "}" };
 
 	if (m_lookAheadToken->lexem == "local")
 	{
@@ -459,7 +483,7 @@ bool Parser::localVarDecl()
 	{
 		if (match(TokenType::LOCAL) && varDec1())
 		{
-			*m_derivationFile << "localVarDecl -> 'local' varDecl\n";
+			*m_derivationFile << "localVarDecl -> 'local' varDecl ';'\n";
 			return true;
 		}
 		else return false;
@@ -469,7 +493,19 @@ bool Parser::localVarDecl()
 
 bool Parser::statement()
 {
-	return true;
+	std::vector<std::string> _first = { "write", "while", "return", "read", "if"};
+	std::vector<std::string> _follow = {};
+
+	if (m_lookAheadToken->lexem == "write")
+	{
+		if (match(TokenType::WRITE) && match(TokenType::OPENPAR) && expr() && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
+		{
+			*m_derivationFile << "statement -> 'write' '(' expr ')'\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
 }
 
 bool Parser::attributeDec1()

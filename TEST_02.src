@@ -1,6 +1,14 @@
 function coolFunc(arr: int[], size: int) => void 
 {
 	local d : int[10];
+	local g : int[10];
+	
+}
+
+function badFunc() => void 
+{
+
+	
 }
 
 class a { 

@@ -1,162 +1,111 @@
+START               -> prog
+prog                -> classOrImplOrFunc prog
+prog                -> EPSILON
 
-START -> prog 
+classOrImplOrFunc   -> classDecl 
+classOrImplOrFunc   -> implDef 
+classOrImplOrFunc   -> funcDef 
 
-aParams -> expr rept-aParams1 
-aParams -> EPSILON 
+classDecl           -> 'class' 'id' '{' rept-classDecl_1 '}' ';'
+classDecl_1          -> 'id' opt-classDecl_1  '{'  '}'
 
-aParamsTail -> ',' expr 
+opt-classDecl_1     -> 'isa' 'id' rept-opt-classDec_l
+opt-classDecl_1     -> EPSILON 
+
+rept-opt-classDec_l -> ',' 'id' rept-opt-classDec_l 
+rept-opt-classDec_l -> EPSILON 
+
+rept-classDecl_1    -> visibility memberDecl rept-classDecl_1
+rept-classDecl_1    -> EPSILON
+
+implDef            -> 'implementation' 'id' '{' funcDef '}'
+
+funcDef            -> funcHead funcBody 
+
+visibility         -> 'public' | 'private' | EPSILON
+memberDecl         -> funcDecl | attributeDecl
+
+funcDecl           -> funcHead 
+
+funcHead           -> 'function' 'id' '(' fParams ')' '=>' returnType 
+funcHead           -> 'constructor' '(' fParams ')'
+
+funcBody           -> '{' localVarDeclOrStatRep '}'
+
+localVarDeclOrStatRep -> localVarDeclOrStat localVarDeclOrStatRep
+localVarDeclOrStatRep -> EPSILON
+
+localVarDeclOrStat -> localVarDecl 
+localVarDeclOrStat -> statement 
+
+attributeDecl      -> 'attribute' varDecl
+localVarDecl       -> 'local' varDecl 
+varDecl            -> 'id' ':' type arraySize ';'
+
+statement          -> 'if' '(' relExpr ')' 'then' statBlock 'else' statBlock ';' 
+statement          -> 'while' '(' relExpr ')' statBlock ';' 
+statement          -> 'read' '(' reptVariableORFunctionCall ')' ';' 
+statement          -> 'write' '(' expr ')' ';' 
+statement          -> 'return' '(' expr ')' ';' 
+
+statBlock          -> '{' statement '}' | statement | EPSILON  
+
+assignStat         -> reptVariableORFunctionCall assignOp expr
+
+expr               -> arithExpr exp2
+exp2               -> relOp arithExpr | EPSILON  
 
 arithExpr          -> term arithExpr2
 arithExpr2         -> addOp term arithExpr2 
 arithExpr2         -> EPSILON
 
+relExpr            -> arithExpr relOp arithExpr 
+
+factor             -> 'id' factor2 reptVariableORFunctionCall
+factor             -> 'intLit'
+factor             -> 'floatLit'
+factor             -> '(' arithExpr ')'
+factor             -> 'not' factor
+factor             -> sign factor
+factor2            -> '(' aParams ')'
+factor2            -> reptIdnest1
+
+term               -> factor rightRecTerm
+rightRecTerm       -> multOp factor rightRecTerm 
+rightRecTerm       -> EPSILON
+
+reptVariableORFunctionCall -> idnest reptVariableORFunctionCall
+reptVariableORFunctionCall -> EPSILON
+
+idnest             -> '.' 'id' idnest2
+idnest2             -> '(' aParams ')'
+idnest2             -> reptIdnest1
+reptIdnest1         -> indice reptIdnest1
+reptIdnest1         -> EPSILON
+
+idOrSelf           -> 'id' | 'self'
+
+indice             -> '[' arithExpr ']'
+
 arraySize          -> '[' arraySize1
 arraySize          -> EPSILON
 arraySize1         -> 'intNum' ']'| ']'
 
-assignOp -> ':=' 
+type               -> 'int' | 'float' | 'id'
+returnType         -> type |  'void'
 
-assignStat -> variable assignOp expr 
+fParams            -> 'id' ':' type arraySize fParamsTail 
+fParams            -> EPSILON
+fParamsTail        -> ',' 'id' ':' type arraySize fParamsTail
+fParamsTail        -> EPSILON
 
-attributeDecl -> 'attribute' varDecl 
+aParams            -> expr aParamsTail
+aParamsTail        -> ',' expr aParamsTail
+aParamsTail        -> EPSILON    
 
-classDecl -> 'class' 'id' opt-classDecl2 '{' rept-classDecl4 '}' ';' 
-
-classOrImplOrFunc -> classDecl 
-classOrImplOrFunc -> implDef 
-classOrImplOrFunc -> funcDef 
-
-expr -> arithExpr 
-expr -> relExpr 
-
-fParams -> 'id' ':' type rept-fParams3 rept-fParams4 
-fParams -> EPSILON 
-
-fParamsTail -> ',' 'id' ':' type rept-fParamsTail4 
-
-factor -> variable 
-factor -> functionCall 
-factor -> 'intLit' 
-factor -> 'floatLit' 
-factor -> '(' arithExpr ')' 
-factor -> 'not' factor 
-factor -> sign factor 
-
-funcBody -> '{' rept-funcBody1 '}' 
-
-funcDecl -> funcHead ';' 
-
-funcDef -> funcHead funcBody 
-
-funcHead -> 'function' 'id' '(' fParams ')' '=' returnType 
-funcHead -> 'constructor' '(' fParams ')' 
-
-functionCall -> rept-functionCall0 ids (missing '(' 'aParams' )missing ')' 'idnest::= idOrSelf rept-functionCall7 '.' 
-functionCall -> idOrSelf '(' aParams ')' '.' 
-
-idOrSelf -> 'id' 
-idOrSelf -> 'self' 
-
-implDef -> 'implementation' 'id' '{' rept-implDef3 '}' 
-
-indice -> '[' arithExpr ']' 
-
-localVarDecl -> 'local' varDecl 
-
-localVarDeclOrStat -> localVarDecl 
-localVarDeclOrStat -> statement 
-
-memberDecl -> funcDecl 
-memberDecl -> attributeDecl 
-
-multOp -> '*' 
-multOp -> '/' 
-multOp -> 'and' 
-
-opt-classDecl2 -> 'isa' 'id' rept-opt-classDecl22 
-opt-classDecl2 -> EPSILON 
-
-prog -> rept-prog0 
-
-relExpr -> arithExpr relOp arithExpr 
-
-relOp   -> '==' | '<>' | '<' | '>' | '<=' | '>=' 
-
-rept-aParams1 -> aParamsTail rept-aParams1 
-rept-aParams1 -> EPSILON 
-
-rept-classDecl4 -> visibility memberDecl rept-classDecl4 
-rept-classDecl4 -> EPSILON 
-
-rept-fParams3 -> arraySize rept-fParams3 
-rept-fParams3 -> EPSILON 
-
-rept-fParams4 -> fParamsTail rept-fParams4 
-rept-fParams4 -> EPSILON 
-
-rept-fParamsTail4 -> arraySize rept-fParamsTail4 
-rept-fParamsTail4 -> EPSILON 
-
-rept-funcBody1 -> localVarDeclOrStat rept-funcBody1 
-rept-funcBody1 -> EPSILON 
-
-rept-functionCall0 -> idnest rept-functionCall0 
-rept-functionCall0 -> EPSILON 
-
-rept-functionCall7 -> indice rept-functionCall7 
-rept-functionCall7 -> EPSILON 
-
-rept-implDef3 -> funcDef rept-implDef3 
-rept-implDef3 -> EPSILON 
-
-rept-opt-classDecl22 -> ',' 'id' rept-opt-classDecl22 
-rept-opt-classDecl22 -> EPSILON 
-
-rept-prog0 -> classOrImplOrFunc rept-prog0 
-rept-prog0 -> EPSILON 
-
-rept-statBlock1 -> statement rept-statBlock1 
-rept-statBlock1 -> EPSILON 
-
-rept-varDecl3 -> arraySize rept-varDecl3 
-rept-varDecl3 -> EPSILON 
-
-rept-variable0 -> idnest rept-variable0 
-rept-variable0 -> EPSILON 
-
-rept-variable2 -> indice rept-variable2 
-rept-variable2 -> EPSILON 
-
-returnType -> type 
-returnType -> 'void' 
-
-sign -> '+' 
-sign -> '-' 
-
-statBlock -> '{' rept-statBlock1 '}' 
-statBlock -> statement 
-statBlock -> EPSILON 
-
-statement -> assignStat ';' 
-statement -> 'if' '(' relExpr ')' 'then' statBlock 'else' statBlock ';' 
-statement -> 'while' '(' relExpr ')' statBlock ';' 
-statement -> 'read' '(' variable ')' ';' 
-statement -> 'write' '(' expr ')' ';' 
-statement -> 'return' '(' expr ')' ';' 
-statement -> functionCall ';' 
-
-term -> term multOp factor 
-term -> factor 
-
-type -> 'int' 
-type -> 'float' 
-type -> 'id' 
-
-varDecl -> 'id' ':' type rept-varDecl3 ';' 
-
-variable -> rept-variable0 ids rept-variable2 
-
-visibility -> 'public' 
-visibility -> 'private' 
-
-
+assignOp           -> ':='
+relOp              -> '==' | '<>' | '<' | '>' | '<=' | '>=' 
+addOp              -> '+' | '-' | 'or' 
+multOp             -> '*' | '/' | 'and'
+sign               -> '+' 
+sign               -> '-'

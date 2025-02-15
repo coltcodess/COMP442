@@ -57,6 +57,7 @@ private:
 	bool funcDec1();
 	bool funcHead();
 	bool funcBody();
+	bool localVarDeclOrStatRep();
 	bool localVarDeclOrStat();
 	bool localVarDecl();
 	bool statement();

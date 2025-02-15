@@ -12,9 +12,25 @@ type -> 'int'
 arraySize1 -> 'intnum' ']'
 arraySize -> '[' arraySize1
 varDec1 -> 'id' ':' type arraySize ';'
-localVarDecl -> 'local' varDecl
+localVarDecl -> 'local' varDecl ';'
 localVarDeclOrStat -> localVarDecl
-funcBody -> '(' localVarDeclOrStat ')'
+type -> 'int'
+arraySize1 -> 'intnum' ']'
+arraySize -> '[' arraySize1
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+localVarDeclOrStat -> localVarDecl
+localVarDeclOrStatRep -> EPSILON
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+funcBody -> '(' localVarDeclOrStatRep ')'
+classOrImplOrFunc -> EPSILON
+classOrImplOrFunc -> funcDef
+fParams -> EPSILON
+returnType -> 'void'
+'function' 'id' '(' fParams ')' '=>' returnType
+localVarDeclOrStatRep -> EPSILON
+funcBody -> '(' localVarDeclOrStatRep ')'
 classOrImplOrFunc -> EPSILON
 classOrImplOrFunc -> funcDef
 visibility -> 'private'
@@ -68,6 +84,7 @@ reptclassDecl_1 -> EPSILON
 classDecl -> 'class' 'id' '{' reptClassDecl_1 '}' ';'
 classOrImplOrFunc -> classDecl
 prog -> $
+prog -> classOrImplOrFunc prog
 prog -> classOrImplOrFunc prog
 prog -> classOrImplOrFunc prog
 prog -> classOrImplOrFunc prog

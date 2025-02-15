@@ -30,7 +30,10 @@ funcDecl           -> funcHead
 funcHead           -> 'function' 'id' '(' fParams ')' '=>' returnType 
 funcHead           -> 'constructor' '(' fParams ')'
 
-funcBody           -> '{' localVarDeclOrStat '}'
+funcBody           -> '{' localVarDeclOrStatRep '}'
+
+localVarDeclOrStatRep -> localVarDeclOrStat localVarDeclOrStatRep
+localVarDeclOrStatRep -> EPSILON
 
 localVarDeclOrStat -> localVarDecl 
 localVarDeclOrStat -> statement 
