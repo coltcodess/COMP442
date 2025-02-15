@@ -31,7 +31,6 @@ private:
 
 
 	Lexer& m_lexer;
-	//Grammar* m_grammar;
 
 	// Reference to tokens 
 	Token* m_lookAheadToken = nullptr;
@@ -61,6 +60,19 @@ private:
 	bool localVarDeclOrStat();
 	bool localVarDecl();
 	bool statement();
+	bool reptVariableOrFunctionCall();
+
+	bool expr();
+	bool expr2();
+	bool arithExpr();
+	bool arithExpr2();
+	bool term();
+	bool factor();
+	bool factor2();
+	bool rightRecTerm();
+
+	bool relExpr();
+	bool statBlock();
 
 	bool attributeDec1();
 	bool varDec1();
@@ -75,9 +87,6 @@ private:
 	bool aParams();
 	bool aParamsTail();
 
-	bool expr();
-
-	bool arithExpr();
 	bool arraySize();
 	bool arraySize1();
 

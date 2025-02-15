@@ -500,12 +500,244 @@ bool Parser::statement()
 	{
 		if (match(TokenType::WRITE) && match(TokenType::OPENPAR) && expr() && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
 		{
-			*m_derivationFile << "statement -> 'write' '(' expr ')'\n";
+			*m_derivationFile << "statement -> 'write' '(' expr ')' ';'\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == "return")
+	{
+		if (match(TokenType::RETURN) && match(TokenType::OPENPAR) && expr() && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
+		{
+			*m_derivationFile << "statement -> 'return' '(' expr ')' ';'\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == "read")
+	{
+		if (match(TokenType::READ) && match(TokenType::OPENPAR) && reptVariableOrFunctionCall() && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
+		{
+			*m_derivationFile << "statement -> 'read' '(' reptVariableOrFunctionCall ')' ';'\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == "while")
+	{
+		if (match(TokenType::WHILE) && match(TokenType::OPENPAR) && relExpr() && match(TokenType::CLOSEPAR) && statBlock() && match(TokenType::SEMI))
+		{
+			*m_derivationFile << "statement -> 'while' '(' relExpr ')' statBlock ';'\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == "if")
+	{
+		if (match(TokenType::IF) && match(TokenType::OPENPAR) && relExpr() && match(TokenType::THEN) && statBlock() && 
+			match(TokenType::ELSE) && statBlock() && match(TokenType::SEMI))
+		{
+			*m_derivationFile << "'if' '(' relExpr ')' 'then' statBlock 'else' statBlock ';'\n";
 			return true;
 		}
 		else return false;
 	}
 	else return false;
+}
+
+bool Parser::expr()
+{
+	std::vector<std::string> _first = { "(", "floatLit", "id", "intLit", "not", "+", "-"};
+	std::vector<std::string> _follow = {};
+
+	if (m_lookAheadToken->lexem == "(" || m_lookAheadToken->type == TokenType::floatnum
+		|| m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::intnum
+		|| m_lookAheadToken->lexem == "not" || m_lookAheadToken->lexem == "+"
+		|| m_lookAheadToken->lexem == "-")
+	{
+		if (arithExpr() && expr2())
+		{
+			*m_derivationFile << "expr -> arithExpr exp2\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::expr2()
+{
+	return true;
+}
+
+bool Parser::arithExpr()
+{
+	std::vector<std::string> _first = { "(", "floatLit", "id", "intLit", "not", "+", "-" };
+	std::vector<std::string> _follow = {};
+
+	if (m_lookAheadToken->lexem == "(" || m_lookAheadToken->type == TokenType::floatnum
+		|| m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::intnum
+		|| m_lookAheadToken->lexem == "not" || m_lookAheadToken->lexem == "+"
+		|| m_lookAheadToken->lexem == "-")
+	{
+		if (term() && arithExpr2())
+		{
+			*m_derivationFile << "arithExpr -> term arithExpr2\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::arithExpr2()
+{
+	std::vector<std::string> _first = { "+", "-", "or", "EPSILON"};
+	std::vector<std::string> _follow = { ")", ",", "<", "<=" , "<>",  "==" , ">",  ">=" , "]"};
+
+	if(m_lookAheadToken->lexem == "+" || m_lookAheadToken->lexem == "-" || m_lookAheadToken->lexem == "or")
+	{ 
+		if (addOp() && term() && arithExpr2())
+		{
+			*m_derivationFile << "arithExpr2 -> addOp term arithExpr2\n";
+			return true;
+		}
+		else return false;
+	
+	}
+	else if (m_lookAheadToken->lexem == ")" || m_lookAheadToken->lexem == "," || m_lookAheadToken->lexem == "<" ||
+		m_lookAheadToken->lexem == "<=" || m_lookAheadToken->lexem == "<>" || m_lookAheadToken->lexem == "==" ||
+		m_lookAheadToken->lexem == ">" || m_lookAheadToken->lexem == ">=" || m_lookAheadToken->lexem == "]")
+	{
+		*m_derivationFile << "arithExpr2 -> EPSILON\n";
+		return true;
+	}
+	else return false;
+}
+
+bool Parser::term()
+{
+	std::vector<std::string> _first = { "(", "floatLit", "id", "intLit", "not", "+", "-" };
+	std::vector<std::string> _follow = {};
+
+	if (m_lookAheadToken->lexem == "(" || m_lookAheadToken->type == TokenType::floatnum
+		|| m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::intnum
+		|| m_lookAheadToken->lexem == "not" || m_lookAheadToken->lexem == "+"
+		|| m_lookAheadToken->lexem == "-")
+	{
+		if (factor() && rightRecTerm())
+		{
+			*m_derivationFile << "term -> factor rightRecTerm\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::factor()
+{
+	std::vector<std::string> _first = { "(", "floatLit", "id", "intLit", "not", "+", "-" };
+	std::vector<std::string> _follow = {};
+
+	if (m_lookAheadToken->lexem == "+" || m_lookAheadToken->lexem == "-")
+	{
+		if (sign() && factor())
+		{
+			*m_derivationFile << "factor -> sign factor\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == "not")
+	{
+		if (match(TokenType::NOT) && factor())
+		{
+			*m_derivationFile << "factor -> 'not' factor\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == TokenType::intnum)
+	{
+		if (match(TokenType::intnum))
+		{
+			*m_derivationFile << "factor -> 'intLit'\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == TokenType::id)
+	{
+		if (match(TokenType::id) && factor2() && reptVariableOrFunctionCall())
+		{
+			*m_derivationFile << "factor -> 'id' factor2 reptVariableOrFunctionCall\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == TokenType::floatnum)
+	{
+		if (match(TokenType::floatnum))
+		{
+			*m_derivationFile << "factor -> 'floatnum'\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == "(")
+	{
+		if (match(TokenType::OPENPAR) && arithExpr() && match(TokenType::CLOSEPAR))
+		{
+			*m_derivationFile << "factor -> '(' arithExpr ')'\n";
+			return true;
+		}
+		else return false;
+	}
+
+	return true;
+}
+
+bool Parser::factor2()
+{
+	return true;
+}
+
+bool Parser::rightRecTerm()
+{
+	std::vector<std::string> _first = { "*", "/", "and", "EPSILON" };
+	std::vector<std::string> _follow = { ")", "," "<", "<=", "<>", "==", ">", ">=", "]", "+", "-", "or" };
+
+	if (m_lookAheadToken->lexem == "*" || m_lookAheadToken->lexem == "/" || m_lookAheadToken->lexem == "and")
+	{
+		if (multOp() && factor() && rightRecTerm())
+		{
+			*m_derivationFile << "rightRecTerm -> multiOp factor rightRecTerm\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == ")" || m_lookAheadToken->lexem == "," || m_lookAheadToken->lexem == "<" || m_lookAheadToken->lexem == "<=" || m_lookAheadToken->lexem == "<>" || m_lookAheadToken->lexem == "==" || m_lookAheadToken->lexem == ">" || m_lookAheadToken->lexem == ">=" || m_lookAheadToken->lexem == "]" || m_lookAheadToken->lexem == "+" || m_lookAheadToken->lexem == "-" || m_lookAheadToken->lexem == "or")
+	{
+		*m_derivationFile << "rightRecTerm -> EPSILON\n";
+		return true;
+	}
+	else return false;
+}
+
+bool Parser::reptVariableOrFunctionCall()
+{
+	return true;
+}
+
+bool Parser::relExpr()
+{
+	return true;
+}
+
+bool Parser::statBlock()
+{
+	return true;
 }
 
 bool Parser::attributeDec1()
@@ -724,15 +956,6 @@ bool Parser::aParamsTail()
 	else return false;
 }
 
-bool Parser::expr()
-{
-	return true;
-}
-
-bool Parser::arithExpr()
-{
-	return true;
-}
 
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////

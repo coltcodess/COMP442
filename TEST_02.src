@@ -2,7 +2,7 @@ function coolFunc(arr: int[], size: int) => void
 {
 	local d : int[10];
 	local g : int[10];
-	
+	write(2);
 }
 
 function badFunc() => void 

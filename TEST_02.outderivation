@@ -20,7 +20,16 @@ arraySize -> '[' arraySize1
 varDec1 -> 'id' ':' type arraySize ';'
 localVarDecl -> 'local' varDecl ';'
 localVarDeclOrStat -> localVarDecl
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr -> arithExpr exp2
+statement -> 'write' '(' expr ')' ';'
+localVarDeclOrStat -> statement
 localVarDeclOrStatRep -> EPSILON
+localVarDeclOrStatRep -> localVarDeclOrStat
 localVarDeclOrStatRep -> localVarDeclOrStat
 localVarDeclOrStatRep -> localVarDeclOrStat
 funcBody -> '(' localVarDeclOrStatRep ')'
