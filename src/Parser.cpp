@@ -579,9 +579,9 @@ bool Parser::statement()
 	}
 	else if (m_lookAheadToken->type == TokenType::id)
 	{
-		if (match(TokenType::id) && reptVariableOrFunctionCall())
+		if (assignStat() && match(SEMI))
 		{
-			*m_derivationFile << "statement -> 'id' idOrFunction reptVariableOrFunctionCall ';'\n";
+			*m_derivationFile << "statement -> assignStat ';'\n";
 			return true;
 		}
 		else return false;
@@ -636,11 +636,11 @@ bool Parser::statement()
 
 bool Parser::assignStat()
 {
-	std::vector<std::string> _first = { ".", ":="};
+	std::vector<std::string> _first = { "id"};
 
-	if (m_lookAheadToken->lexem == "(" || m_lookAheadToken->lexem == "." || m_lookAheadToken->lexem == ":=")
+	if (m_lookAheadToken->type == TokenType::id)
 	{
-		if (reptVariableOrFunctionCall() && assignOp() && expr())
+		if (variable() && assignOp() && expr())
 		{
 			*m_derivationFile << "assignStat -> variable assignOp expr\n";
 			return true;
@@ -650,21 +650,21 @@ bool Parser::assignStat()
 	else return false;
 }
 
-//bool Parser::variable()
-//{
-//	std::vector<std::string> _first = { "id" };
-//
-//	if (m_lookAheadToken->type == TokenType::id)
-//	{
-//		if (idnest())
-//		{
-//			*m_derivationFile << "variable -> idnest indice\n";
-//			return true;
-//		}
-//		else return false;
-//	}
-//	else return false;
-//}
+bool Parser::variable()
+{
+	std::vector<std::string> _first = { "id" };
+
+	if (m_lookAheadToken->type == TokenType::id)
+	{
+		if (match(id) && idnest())
+		{
+			*m_derivationFile << "variable -> 'id' idnest\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
 
 bool Parser::expr()
 {

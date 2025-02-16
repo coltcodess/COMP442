@@ -47,7 +47,6 @@ statement          -> 'while' '(' relExpr ')' statBlock ';'
 statement          -> 'read' '(' reptVariableORFunctionCall ')' ';' 
 statement          -> 'write' '(' expr ')' ';' 
 statement          -> 'return' '(' expr ')' ';' 
-statement          ->  reptVariableORFunctionCall ';'
 statement          ->  assignStat ';'
 
 reptVariableORFunctionCall           -> idnest reptVariableORFunctionCall
@@ -60,7 +59,8 @@ repIdNest1           -> EPSILON
 
 statBlock          -> '{' statement '}' | statement | EPSILON  
 
-assignStat         -> vara assignOp expr
+assignStat         -> variable assignOp expr
+variable           -> 'id' idnest
 
 expr               -> arithExpr exp2
 exp2               -> relOp arithExpr | EPSILON  

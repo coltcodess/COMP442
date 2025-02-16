@@ -43,7 +43,9 @@ implementation QUADRATIC {
   function build(A: float, B: float, C: float) => QUADRATIC 
   {
     local new_function: QUADRATIC ;
-
+	new_function.a := A;
+	new_function.a := A;
+	new_function.a := A;
 
     return (new_function);
   }
