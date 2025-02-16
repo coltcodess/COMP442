@@ -34,23 +34,31 @@ class wia {
 
 };
 
-implementation QUADRATIC { 
-  function evaluate(x: float) => float
-  {
-    local result: float;
+/* print the array */
+function printArray(arr: int[], size: int) => void 
+{
+  local n: int;
+  local i: int; 
+  n := size;
+  i := 0; 
+  while (i<n) { 
+    write(2);
+      i := i+1;
+  };
+} 
 
-  }
-  function build(A: float, B: float, C: float) => QUADRATIC 
-  {
-    local new_function: QUADRATIC ;
-	new_function.a := A;
-	new_function.a := A;
-	new_function.a := A;
-
-	counter := 1;
-
-    return (new_function);
-  }
+// main funtion to test above
+function main() => void
+{
+  local arr: int[7]; 
+  arr[0] := 64;
+  arr[1] := 34;
+  arr[2] := 25;
+  arr[3] := 12;
+  arr[4] := 22;
+  arr[5] := 11;
+  arr[6] := 90;
+ 
 }
 
 

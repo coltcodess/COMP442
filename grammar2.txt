@@ -54,13 +54,15 @@ reptVariableORFunctionCall           -> EPSILON
 
 idOrFunction           -> '(' aParams ')'
 idOrFunction           -> repIdNest1
-repIdNest1           -> indice repIdNest1
-repIdNest1           -> EPSILON
 
-statBlock          -> '{' statement '}' | statement | EPSILON  
+indice             -> '[' arithExpr ']' 
+repIdNest1         ->  repIdNest1 indice | EPSILON
 
-assignStat         -> variable assignOp expr
-variable           -> 'id' idnest
+statBlock          -> '{' repStatBlock '}' 
+repStatBlock       -> statement repStatBlock | EPSILON  
+
+assignStat         -> variable repIdNest1 assignOp expr
+variable           -> 'id' idnest2
 
 expr               -> arithExpr exp2
 exp2               -> relOp arithExpr | EPSILON  
@@ -89,7 +91,7 @@ idnest2          -> repIdNest1
 
 idOrSelf           -> 'id' | 'self'
 
-indice             -> '[' arithExpr ']'
+
 
 arraySize          -> '[' arraySize1
 arraySize          -> EPSILON

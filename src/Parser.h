@@ -81,6 +81,7 @@ private:
 
 	bool relExpr();
 	bool statBlock();
+	bool repStatBlock();
 
 	bool attributeDec1();
 	bool varDec1();

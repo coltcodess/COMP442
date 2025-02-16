@@ -869,7 +869,7 @@ bool Parser::idOrFunction()
 bool Parser::repIdNest1()
 {
 	std::vector<std::string> _first = { "[", "EPSILON" };
-	std::vector<std::string> _follow = { ")", ";", ",", "<", "<=" , "<>",  "==" , ">",  ">=" , "]", "+", "-", "or", "*", "/", "and", "."};
+	std::vector<std::string> _follow = { ")", ";", ",", "<", "<=" , "<>",  "==" , ">",  ">=" , "]", "+", "-", "or", "*", "/", "and", ".", ":="};
 
 	if (m_lookAheadToken->lexem == "[")
 	{
@@ -956,35 +956,40 @@ bool Parser::relExpr()
 
 bool Parser::statBlock()
 {
-	std::vector<std::string> _first = { "if", "read", "while", "return", "write", "{", "EPSILON"};
-	std::vector<std::string> _follow = {"else", ";"};
+	std::vector<std::string> _first = { "{" };
 
-	if (m_lookAheadToken->lexem == "if" || m_lookAheadToken->lexem == "read" || m_lookAheadToken->lexem == "while" ||
-		m_lookAheadToken->lexem == "return" || m_lookAheadToken->lexem == "write" || m_lookAheadToken->type == TokenType::id || m_lookAheadToken->lexem == "." || m_lookAheadToken->lexem == ":=")
+	if (m_lookAheadToken->type == OPENCUBR)
 	{
-		if (statement())
+		if (match(OPENCUBR) && repStatBlock() && match(CLOSECUBR))
 		{
-			*m_derivationFile << "statement -> statement\n";
+			*m_derivationFile << "statement -> '{' repStatBlock '}'\n";
 			return true;
 		}
 		else return false;
-	}
-	else if (m_lookAheadToken->lexem == "{")
-	{
-		if (match(TokenType::OPENCUBR) && statement() && match(TokenType::CLOSECUBR))
-		{
-			*m_derivationFile << "statement -> '{' statement '}' \n";
-			return true;
-		}
-		else return false;
-	}
-	else if (m_lookAheadToken->lexem == "else" || m_lookAheadToken->lexem == ";")
-	{
-		*m_derivationFile << "statement -> EPSILON \n";
-		return true;
 	}
 	else return false;
 
+}
+
+bool Parser::repStatBlock()
+{
+	std::vector<std::string> _first = { "if", "read", "while", "return", "write", "id", "EPSILON" };
+
+	if (m_lookAheadToken->type == IF || m_lookAheadToken->type == READ || m_lookAheadToken->type == WHILE || m_lookAheadToken->type == RETURN || m_lookAheadToken->type == WRITE || m_lookAheadToken->type == id)
+	{
+		if (statement() && repStatBlock())
+		{
+			*m_derivationFile << "repStatBlock -> statement\n";
+			return true;
+		}
+		else return false;
+	}
+	else if ( m_lookAheadToken->type == CLOSECUBR || m_lookAheadToken->type == ELSE || m_lookAheadToken->type == SEMI)
+	{
+		*m_derivationFile << "repStatBlock -> ESPILON\n";
+		return true;
+	}
+	else return false;
 }
 
 bool Parser::attributeDec1()
