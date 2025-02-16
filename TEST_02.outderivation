@@ -23,25 +23,63 @@ localVarDeclOrStat -> localVarDecl
 factor -> 'intLit'
 rightRecTerm -> EPSILON
 term -> factor rightRecTerm
+addOp -> '+'
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
 arithExpr2 -> EPSILON
+arithExpr2 -> addOp term arithExpr2
 arithExpr -> term arithExpr2
+expr2 -> EPSILON
 expr -> arithExpr exp2
 statement -> 'write' '(' expr ')' ';'
+localVarDeclOrStat -> statement
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+relOp -> '<'
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+relExpr -> arithExpr relOp arithExpr
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+addOp -> '+'
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr2 -> addOp term arithExpr2
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+statement -> 'write' '(' expr ')' ';'
+statement -> '{' statement '}' 
+statement -> 'while' '(' relExpr ')' statBlock ';'
 localVarDeclOrStat -> statement
 localVarDeclOrStatRep -> EPSILON
 localVarDeclOrStatRep -> localVarDeclOrStat
 localVarDeclOrStatRep -> localVarDeclOrStat
 localVarDeclOrStatRep -> localVarDeclOrStat
-funcBody -> '(' localVarDeclOrStatRep ')'
-classOrImplOrFunc -> EPSILON
+localVarDeclOrStatRep -> localVarDeclOrStat
+funcBody -> '{' localVarDeclOrStatRep '}'
+funcDef -> funcHead funcBody
 classOrImplOrFunc -> funcDef
 fParams -> EPSILON
 returnType -> 'void'
 'function' 'id' '(' fParams ')' '=>' returnType
 localVarDeclOrStatRep -> EPSILON
-funcBody -> '(' localVarDeclOrStatRep ')'
-classOrImplOrFunc -> EPSILON
+funcBody -> '{' localVarDeclOrStatRep '}'
+funcDef -> funcHead funcBody
 classOrImplOrFunc -> funcDef
+reptOptClassDecl -> EPSILON
+reptOptClassDecl -> ',' 'id' reptOptClassDecl
+optClassDecl -> 'isa' 'id' reptOptClassDecl
 visibility -> 'private'
 type -> 'int'
 arraySize1 -> 'intnum' ']'
@@ -87,12 +125,67 @@ reptclassDecl_1 -> visibility memberDec1 reptClassDecl_1
 reptclassDecl_1 -> visibility memberDec1 reptClassDecl_1
 reptclassDecl_1 -> visibility memberDec1 reptClassDecl_1
 reptclassDecl_1 -> visibility memberDec1 reptClassDecl_1
-classDecl -> 'class' 'id' '{' reptClassDecl_1 '}' ';'
+classDecl -> 'class' 'id' optClassDecl() '{' reptClassDecl_1 '}' ';'
 classOrImplOrFunc -> classDecl
+optClassDecl -> 'isa' 'id' reptOptClassDecl
 reptclassDecl_1 -> EPSILON
-classDecl -> 'class' 'id' '{' reptClassDecl_1 '}' ';'
+classDecl -> 'class' 'id' optClassDecl() '{' reptClassDecl_1 '}' ';'
 classOrImplOrFunc -> classDecl
+type -> 'float'
+arraySize -> EPSILON
+fParamsTail -> EPSILON
+fParams -> 'id' ':' type arraySize fParamsTail
+type -> 'float'
+returnType -> type
+'function' 'id' '(' fParams ')' '=>' returnType
+type -> 'float'
+arraySize -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+localVarDeclOrStat -> localVarDecl
+localVarDeclOrStatRep -> EPSILON
+localVarDeclOrStatRep -> localVarDeclOrStat
+funcBody -> '{' localVarDeclOrStatRep '}'
+type -> 'float'
+arraySize -> EPSILON
+type -> 'float'
+arraySize -> EPSILON
+type -> 'float'
+arraySize -> EPSILON
+fParamsTail -> EPSILON
+fParasTail -> ',' 'id' ':' type arraySize
+fParasTail -> ',' 'id' ':' type arraySize
+fParams -> 'id' ':' type arraySize fParamsTail
+type -> 'id'
+returnType -> type
+'function' 'id' '(' fParams ')' '=>' returnType
+type -> 'id'
+arraySize -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+localVarDeclOrStat -> localVarDecl
+factor2 -> EPSILON
+reptVariableOrFunctionCall -> EPSILON
+factor -> 'id' factor2 reptVariableOrFunctionCall
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+statement -> 'return' '(' expr ')' ';'
+localVarDeclOrStat -> statement
+localVarDeclOrStatRep -> EPSILON
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+funcBody -> '{' localVarDeclOrStatRep '}'
+funcDef -> ESPILON
+funcDef -> funcHead funcBody
+funcDef -> funcHead funcBody
+implDef -> 'implementation' 'id' '{' funcDef '}'
+classOrImplOrFunc -> implDef
 prog -> $
+prog -> classOrImplOrFunc prog
 prog -> classOrImplOrFunc prog
 prog -> classOrImplOrFunc prog
 prog -> classOrImplOrFunc prog

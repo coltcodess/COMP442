@@ -1,16 +1,14 @@
 START               -> prog
 prog                -> classOrImplOrFunc prog
-prog                -> EPSILON
 
 classOrImplOrFunc   -> classDecl 
 classOrImplOrFunc   -> implDef 
-classOrImplOrFunc   -> funcDef 
+classOrImplOrFunc   -> funcDecl 
 
-classDecl           -> 'class' 'id' '{' rept-classDecl_1 '}' ';'
-classDecl_1          -> 'id' opt-classDecl_1  '{'  '}'
+classDecl           -> 'class' 'id' opt-classDecl  '{' rept-classDecl_1 '}' ';'
 
-opt-classDecl_1     -> 'isa' 'id' rept-opt-classDec_l
-opt-classDecl_1     -> EPSILON 
+opt-classDecl     -> 'isa' 'id' rept-opt-classDec_l
+opt-classDecl     -> EPSILON 
 
 rept-opt-classDec_l -> ',' 'id' rept-opt-classDec_l 
 rept-opt-classDec_l -> EPSILON 
@@ -18,9 +16,11 @@ rept-opt-classDec_l -> EPSILON
 rept-classDecl_1    -> visibility memberDecl rept-classDecl_1
 rept-classDecl_1    -> EPSILON
 
-implDef            -> 'implementation' 'id' '{' funcDef '}'
+implDef            -> 'implementation' 'id' '{' rep-funcDef '}'
 
-funcDef            -> funcHead funcBody 
+funcDef            -> funcHead funcBody
+rep-funcDef        -> funcHead funcBody rep-funcDef
+rep-funcDef        -> EPSILON
 
 visibility         -> 'public' | 'private' | EPSILON
 memberDecl         -> funcDecl | attributeDecl
@@ -47,10 +47,13 @@ statement          -> 'while' '(' relExpr ')' statBlock ';'
 statement          -> 'read' '(' reptVariableORFunctionCall ')' ';' 
 statement          -> 'write' '(' expr ')' ';' 
 statement          -> 'return' '(' expr ')' ';' 
+statement          ->  assignStat ';'
 
 statBlock          -> '{' statement '}' | statement | EPSILON  
 
-assignStat         -> reptVariableORFunctionCall assignOp expr
+assignStat         -> variable assignOp expr
+
+variable           -> 'id' indice
 
 expr               -> arithExpr exp2
 exp2               -> relOp arithExpr | EPSILON  
@@ -81,11 +84,10 @@ idnest             -> '.' 'id' idnest2
 idnest2             -> '(' aParams ')'
 idnest2             -> reptIdnest1
 reptIdnest1         -> indice reptIdnest1
-reptIdnest1         -> EPSILON
 
 idOrSelf           -> 'id' | 'self'
 
-indice             -> '[' arithExpr ']'
+indice             -> '[' arithExpr ']' | EPSILON
 
 arraySize          -> '[' arraySize1
 arraySize          -> EPSILON

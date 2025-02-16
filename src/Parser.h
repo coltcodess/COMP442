@@ -48,9 +48,13 @@ private:
 	bool prog();
 	bool classOrImplOrFunc();
 	bool funcDef();
+	bool reptFuncDef();
 	bool implDef();
 	bool classDecl();
 	bool reptClassDecl_1();
+	bool optClassDecl();
+	bool reptOptClassDecl();
+
 	bool visibility();
 	bool memberDecl();
 	bool funcDec1();
@@ -60,6 +64,8 @@ private:
 	bool localVarDeclOrStat();
 	bool localVarDecl();
 	bool statement();
+	bool assignStat();
+	bool variable();
 	bool reptVariableOrFunctionCall();
 
 	bool expr();
@@ -79,6 +85,9 @@ private:
 	bool returnType();
 	bool indice();
 
+	bool idnest();
+	bool idnest2();
+	bool repIdnest1();
 
 
 	bool fParams();

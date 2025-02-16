@@ -172,8 +172,8 @@ bool Parser::prog()
 
 bool Parser::classOrImplOrFunc()
 {
-	std::vector<std::string> _first = { "function", "constructor", "EPSILON", "class", "implementation" };
-	std::vector<std::string> _follow = { "$" };
+	std::vector<std::string> _first = { "function", "constructor", "class", "implementation" };
+	std::vector<std::string> _follow = {  };
 
 	if (!skipErrors(_first, _follow)) return false;
 
@@ -188,7 +188,6 @@ bool Parser::classOrImplOrFunc()
 	}
 	else if (m_lookAheadToken->lexem == "class")
 	{
-		
 		if (classDecl())
 		{
 			*m_derivationFile << "classOrImplOrFunc -> classDecl\n";
@@ -205,37 +204,67 @@ bool Parser::classOrImplOrFunc()
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->type == TokenType::END_OF_FILE)
-	{
-		if (match(TokenType::END_OF_FILE))
-		{
-			*m_derivationFile << "classOrImplOrFunc -> EPSILON\n";
-			return true;
-		}
-	}
 	else return false;
 }
 
 bool Parser::funcDef()
 {
-	std::vector<std::string> _first = { "function", "constructor"};
-	std::vector<std::string> _follow = { };
+	std::vector<std::string> _first = { "function", "constructor", "ESPILON" };
+	std::vector<std::string> _follow = { "}" };
 
 	if (m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor")
 	{
 		if (funcHead() && funcBody())
 		{
-			*m_derivationFile << "classOrImplOrFunc -> EPSILON\n";
+			*m_derivationFile << "funcDef -> funcHead funcBody\n";
 			return true;
 		}
 		else return false;
+	}
+	else if (m_lookAheadToken->lexem == "}")
+	{
+		*m_derivationFile << "funcDef -> ESPILON\n";
+		return true;
+	}
+	else return false;
+}
+
+bool Parser::reptFuncDef()
+{
+	std::vector<std::string> _first = { "function", "constructor", "ESPILON" };
+	std::vector<std::string> _follow = { "}" };
+
+	if (m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor")
+	{
+		if (funcHead() && funcBody() && reptFuncDef())
+		{
+			*m_derivationFile << "funcDef -> funcHead funcBody\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == "}")
+	{
+		*m_derivationFile << "funcDef -> ESPILON\n";
+		return true;
 	}
 	else return false;
 }
 
 bool Parser::implDef()
 {
-	return false;
+	std::vector<std::string> _first = { "implementation" };
+
+	if (m_lookAheadToken->lexem == "implementation")
+	{
+		if (match(TokenType::IMPLEMENTATION) && match(TokenType::id) && match(TokenType::OPENCUBR) && reptFuncDef() && match(TokenType::CLOSECUBR))
+		{
+			*m_derivationFile << "implDef -> 'implementation' 'id' '{' funcDef '}'\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
 }
 
 bool Parser::classDecl()
@@ -247,10 +276,10 @@ bool Parser::classDecl()
 
 	if (m_lookAheadToken->lexem == "class")
 	{
-		if (match(TokenType::CLASS) && match(TokenType::id) && match(TokenType::OPENCUBR) && 
+		if (match(TokenType::CLASS) && match(TokenType::id) && optClassDecl() && match(TokenType::OPENCUBR) &&
 			reptClassDecl_1() && match(TokenType::CLOSECUBR) && match(TokenType::SEMI))
 		{
-			*m_derivationFile << "classDecl -> 'class' 'id' '{' reptClassDecl_1 '}' ';'\n";
+			*m_derivationFile << "classDecl -> 'class' 'id' optClassDecl() '{' reptClassDecl_1 '}' ';'\n";
 			return true;
 		}
 		else return false;
@@ -284,6 +313,49 @@ bool Parser::reptClassDecl_1()
 	}
 	else return false;
 	
+}
+
+bool Parser::optClassDecl()
+{
+	std::vector<std::string> _first = { "isa", "EPSILON"};
+	std::vector<std::string> _follow = { "{" };
+
+	if (m_lookAheadToken->lexem == "isa")
+	{
+		if (match(TokenType::ISA) && match(TokenType::id) && reptOptClassDecl())
+		{
+			*m_derivationFile << "optClassDecl -> 'isa' 'id' reptOptClassDecl\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == "{")
+	{
+		*m_derivationFile << "optClassDecl -> 'isa' 'id' reptOptClassDecl\n";
+		return true;
+	}
+	else return false;
+}
+
+bool Parser::reptOptClassDecl()
+{
+	std::vector<std::string> _first = { "isa", "EPSILON" };
+	std::vector<std::string> _follow = { "{" };
+
+	if (m_lookAheadToken->lexem == ",")
+	{
+		if (match(TokenType::COMMA) && match(TokenType::id) && reptOptClassDecl())
+		{
+			*m_derivationFile << "reptOptClassDecl -> ',' 'id' reptOptClassDecl\n";
+			return true;
+		}
+	}
+	else if (m_lookAheadToken->lexem == "{")
+	{
+		*m_derivationFile << "reptOptClassDecl -> EPSILON\n";
+		return true;
+	}
+	else return false;
 }
 
 bool Parser::visibility()
@@ -414,7 +486,7 @@ bool Parser::funcBody()
 	{
  		if (match(TokenType::OPENCUBR) && localVarDeclOrStatRep() && match(TokenType::CLOSECUBR))
 		{
-			*m_derivationFile << "funcBody -> '(' localVarDeclOrStatRep ')'\n";
+			*m_derivationFile << "funcBody -> '{' localVarDeclOrStatRep '}'\n";
 			return true;
 		}
 		else return false;
@@ -425,12 +497,12 @@ bool Parser::funcBody()
 
 bool Parser::localVarDeclOrStatRep()
 {
-	std::vector<std::string> _first = { "local", "if", "read", "return", "while", "write", "EPSILON"};
+	std::vector<std::string> _first = { "local", "if", "read", "return", "while", "write", "id", "EPSILON"};
 	std::vector<std::string> _follow = { "}" };
 
 	if (m_lookAheadToken->lexem == "if" || m_lookAheadToken->lexem == "read"
 		|| m_lookAheadToken->lexem == "while" || m_lookAheadToken->lexem == "write"
-		|| m_lookAheadToken->lexem == "return" || m_lookAheadToken->lexem == "local")
+		|| m_lookAheadToken->lexem == "return" || m_lookAheadToken->lexem == "local" || m_lookAheadToken->type == TokenType::id)
 	{
 		if (localVarDeclOrStat() && localVarDeclOrStatRep())
 		{
@@ -449,7 +521,7 @@ bool Parser::localVarDeclOrStatRep()
 
 bool Parser::localVarDeclOrStat()
 {
-	std::vector<std::string> _first = { "local", "if", "read", "return", "while", "write"};
+	std::vector<std::string> _first = { "local", "if", "read", "return", "while", "write", "id"};
 	std::vector<std::string> _follow = { "}" };
 
 	if (m_lookAheadToken->lexem == "local")
@@ -462,7 +534,7 @@ bool Parser::localVarDeclOrStat()
 		else return false;
 	}
 	else if (m_lookAheadToken->lexem == "if" || m_lookAheadToken->lexem == "read"
-		|| m_lookAheadToken->lexem == "while" || m_lookAheadToken->lexem == "write")
+		|| m_lookAheadToken->lexem == "while" || m_lookAheadToken->lexem == "write" || m_lookAheadToken->lexem == "return" || m_lookAheadToken->type == TokenType::id)
 	{
 		if (statement())
 		{
@@ -493,7 +565,7 @@ bool Parser::localVarDecl()
 
 bool Parser::statement()
 {
-	std::vector<std::string> _first = { "write", "while", "return", "read", "if"};
+	std::vector<std::string> _first = { "write", "while", "return", "read", "if", ".", ":="};
 	std::vector<std::string> _follow = {};
 
 	if (m_lookAheadToken->lexem == "write")
@@ -504,6 +576,14 @@ bool Parser::statement()
 			return true;
 		}
 		else return false;
+	}
+	else if (m_lookAheadToken->type == TokenType::id)
+	{
+		if (assignStat() && match(TokenType::SEMI))
+		{
+			*m_derivationFile << "statement -> assignStat ';'\n";
+			return true;
+		}
 	}
 	else if (m_lookAheadToken->lexem == "return")
 	{
@@ -545,6 +625,38 @@ bool Parser::statement()
 	else return false;
 }
 
+bool Parser::assignStat()
+{
+	std::vector<std::string> _first = { "id" };
+
+	if (m_lookAheadToken->type == TokenType::id)
+	{
+		if (match(TokenType::id) && assignOp() && expr())
+		{
+			*m_derivationFile << "assignStat -> variable assignOp expr\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::variable()
+{
+	std::vector<std::string> _first = { "id" };
+
+	if (m_lookAheadToken->type == TokenType::id)
+	{
+		if (match(TokenType::id) && indice())
+		{
+			*m_derivationFile << "variable -> 'id' indice\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
 bool Parser::expr()
 {
 	std::vector<std::string> _first = { "(", "floatLit", "id", "intLit", "not", "+", "-"};
@@ -567,7 +679,25 @@ bool Parser::expr()
 
 bool Parser::expr2()
 {
-	return true;
+	std::vector<std::string> _first = {"<","<=","<>","==",">",">=", "EPSILON"};
+	std::vector<std::string> _follow = {")",","};
+
+	if (m_lookAheadToken->lexem == "<" || m_lookAheadToken->lexem == "<=" || m_lookAheadToken->lexem == "<>" ||
+		m_lookAheadToken->lexem == "==" || m_lookAheadToken->lexem == ">" || m_lookAheadToken->lexem == "<=")
+	{
+		if (relOp() && arithExpr())
+		{
+			*m_derivationFile << "expr2 -> relOp arithExpr\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == ")" || m_lookAheadToken->lexem == ",")
+	{
+		*m_derivationFile << "expr2 -> EPSILON\n";
+		return true;
+	}
+	else return false;
 }
 
 bool Parser::arithExpr()
@@ -700,7 +830,32 @@ bool Parser::factor()
 
 bool Parser::factor2()
 {
-	return true;
+	std::vector<std::string> _first = { "[", "(", "EPSILON" };
+	std::vector<std::string> _follow = { ")", "," "<", "<=", "<>", "==", ">", ">=", "]", "+", "-", "or", "and", "."};
+
+	if (m_lookAheadToken->lexem == "[")
+	{
+		if (repIdnest1())
+		{
+			*m_derivationFile << "factor2 -> repIdnest1\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == "(")
+	{
+		if (match(TokenType::OPENPAR) && aParams() && match(TokenType::CLOSEPAR))
+		{
+			*m_derivationFile << "factor2 -> '(' aParams ')'\n";
+			return true;
+		}
+	}
+	else if (m_lookAheadToken->lexem == ")" || m_lookAheadToken->lexem == "," || m_lookAheadToken->lexem == "<" || m_lookAheadToken->lexem == "<=" || m_lookAheadToken->lexem == "<>" || m_lookAheadToken->lexem == "==" || m_lookAheadToken->lexem == ">" || m_lookAheadToken->lexem == ">=" || m_lookAheadToken->lexem == "]" || m_lookAheadToken->lexem == "+" || m_lookAheadToken->lexem == "-" || m_lookAheadToken->lexem == "or" || m_lookAheadToken->lexem == "and" || m_lookAheadToken->lexem == ".")
+	{
+		*m_derivationFile << "factor2 -> EPSILON\n";
+		return true;
+	}
+	else return false;
 }
 
 bool Parser::rightRecTerm()
@@ -727,17 +882,80 @@ bool Parser::rightRecTerm()
 
 bool Parser::reptVariableOrFunctionCall()
 {
-	return true;
+	std::vector<std::string> _first = { ".", "ESPILON"};
+	std::vector<std::string> _follow = { ")", "," "<", "<=", "<>", "==", ">", ">=", "]", "+", "-", "or", "*", "/" , "and"};
+
+	if (m_lookAheadToken->lexem == ".")
+	{
+		if (idnest() && reptVariableOrFunctionCall())
+		{
+			*m_derivationFile << "reptVariableOrFunctionCall -> idnest reptVariableOrFunctionCall\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == ")" || m_lookAheadToken->lexem == "," || m_lookAheadToken->lexem == "<" || m_lookAheadToken->lexem == "<=" || m_lookAheadToken->lexem == "<>" || m_lookAheadToken->lexem == "==" || m_lookAheadToken->lexem == ">" || m_lookAheadToken->lexem == ">=" || m_lookAheadToken->lexem == "]" || m_lookAheadToken->lexem == "+" || m_lookAheadToken->lexem == "-" || m_lookAheadToken->lexem == "or"
+		|| m_lookAheadToken->lexem == "*" || m_lookAheadToken->lexem == "/" || m_lookAheadToken->lexem == "and")
+	{
+		*m_derivationFile << "reptVariableOrFunctionCall -> EPSILON\n";
+		return true;
+	}
+	else return false;
+
 }
 
 bool Parser::relExpr()
 {
-	return true;
+	std::vector<std::string> _first = { "(", "floatLit", "id", "intLit", "not", "+", "-" };
+	std::vector<std::string> _follow = {};
+
+	if (m_lookAheadToken->lexem == "(" || m_lookAheadToken->type == TokenType::floatnum
+		|| m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::intnum
+		|| m_lookAheadToken->lexem == "not" || m_lookAheadToken->lexem == "+"
+		|| m_lookAheadToken->lexem == "-")
+	{
+		if (arithExpr() && relOp() && arithExpr())
+		{
+			*m_derivationFile << "relExpr -> arithExpr relOp arithExpr\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+
 }
 
 bool Parser::statBlock()
 {
-	return true;
+	std::vector<std::string> _first = { "if", "read", "while", "return", "write", "{", "EPSILON"};
+	std::vector<std::string> _follow = {"else", ";"};
+
+	if (m_lookAheadToken->lexem == "if" || m_lookAheadToken->lexem == "read" || m_lookAheadToken->lexem == "while" ||
+		m_lookAheadToken->lexem == "return" || m_lookAheadToken->lexem == "write")
+	{
+		if (statement())
+		{
+			*m_derivationFile << "statement -> statement\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == "{")
+	{
+		if (match(TokenType::OPENCUBR) && statement() && match(TokenType::CLOSECUBR))
+		{
+			*m_derivationFile << "statement -> '{' statement '}' \n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == "else" || m_lookAheadToken->lexem == ";")
+	{
+		*m_derivationFile << "statement -> EPSILON \n";
+		return true;
+	}
+	else return false;
+
 }
 
 bool Parser::attributeDec1()
@@ -817,6 +1035,80 @@ bool Parser::indice()
 			return true;
 		}
 		else return false;
+	}
+	else return false;
+}
+
+bool Parser::idnest()
+{
+	std::vector<std::string> _first = { "." };
+
+	if (m_lookAheadToken->lexem == ".")
+	{
+		if (match(TokenType::DOT) && match(TokenType::id) && idnest2())
+		{
+			*m_derivationFile << "idnest -> '.' 'id' idnest2\n";
+			return true;
+		}
+		else return false;
+	}
+	return false;
+}
+
+bool Parser::idnest2()
+{
+	std::vector<std::string> _first = { "[", "(", "EPSILON" };
+	std::vector<std::string> _follow = { ")", "," "<", "<=", "<>", "==", ">", ">=", "]", "+", "-", "or", "*", "/" , "and", ".", ":=" };
+
+	if (m_lookAheadToken->lexem == "[")
+	{
+		if (repIdnest1())
+		{
+			*m_derivationFile << "idnest2 -> repIdnest1\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == "(")
+	{
+		if (match(TokenType::OPENPAR) && aParams() && match(TokenType::CLOSEPAR))
+		{
+			*m_derivationFile << "idnest2 -> '(' aParams ')'\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == ")" || m_lookAheadToken->lexem == "," || m_lookAheadToken->lexem == "<" || m_lookAheadToken->lexem == "<=" || m_lookAheadToken->lexem == "<>" || m_lookAheadToken->lexem == "==" || m_lookAheadToken->lexem == ">" || m_lookAheadToken->lexem == ">=" || m_lookAheadToken->lexem == "]" || m_lookAheadToken->lexem == "+" || m_lookAheadToken->lexem == "-" || m_lookAheadToken->lexem == "or"
+		|| m_lookAheadToken->lexem == "*" || m_lookAheadToken->lexem == "/" || m_lookAheadToken->lexem == "and"
+		|| m_lookAheadToken->lexem == "." || m_lookAheadToken->lexem == ":=")
+	{
+		*m_derivationFile << "idnest2 -> EPSILON\n";
+		return true;
+	}
+	else return false;
+	
+}
+
+bool Parser::repIdnest1()
+{
+	std::vector<std::string> _first = { "[", "EPSILON"};
+	std::vector<std::string> _follow = { ")", "," "<", "<=", "<>", "==", ">", ">=", "]", "+", "-", "or", "*", "/" , "and", ".", ":="};
+
+	if (m_lookAheadToken->lexem == "[")
+	{
+		if (indice() && repIdnest1())
+		{
+			*m_derivationFile << "repIdnest1 -> indice repIdnest1\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->lexem == ")" || m_lookAheadToken->lexem == "," || m_lookAheadToken->lexem == "<" || m_lookAheadToken->lexem == "<=" || m_lookAheadToken->lexem == "<>" || m_lookAheadToken->lexem == "==" || m_lookAheadToken->lexem == ">" || m_lookAheadToken->lexem == ">=" || m_lookAheadToken->lexem == "]" || m_lookAheadToken->lexem == "+" || m_lookAheadToken->lexem == "-" || m_lookAheadToken->lexem == "or"
+		|| m_lookAheadToken->lexem == "*" || m_lookAheadToken->lexem == "/" || m_lookAheadToken->lexem == "and"
+		|| m_lookAheadToken->lexem == "." || m_lookAheadToken->lexem == ":=")
+	{
+		*m_derivationFile << "idnest2 -> EPSILON\n";
+		return true;
 	}
 	else return false;
 }
@@ -1001,7 +1293,7 @@ bool Parser::sign()
 	{
 		if (match(TokenType::PLUS))
 		{
-			*m_derivationFile << "sign -> +\n";
+			*m_derivationFile << "sign -> '+'\n";
 
 			return true;
 		}
@@ -1012,7 +1304,7 @@ bool Parser::sign()
 	{
 		if (match(TokenType::MINUS))
 		{
-			*m_derivationFile << "sign -> -\n";
+			*m_derivationFile << "sign -> '-'\n";
 
 			return true;
 		}
@@ -1034,7 +1326,7 @@ bool Parser::multOp()
 	{
 		if (match(TokenType::AND))
 		{
-			*m_derivationFile << "sign -> and\n";
+			*m_derivationFile << "sign -> 'and'\n";
 
 			return true;
 		}
@@ -1045,7 +1337,7 @@ bool Parser::multOp()
 	{
 		if (match(TokenType::DIV))
 		{
-			*m_derivationFile << "sign -> /\n";
+			*m_derivationFile << "sign -> '/'\n";
 
 			return true;
 		}
@@ -1055,7 +1347,7 @@ bool Parser::multOp()
 	{
 		if (match(TokenType::MULTI))
 		{
-			*m_derivationFile << "sign -> *\n";
+			*m_derivationFile << "sign -> '*'\n";
 			return true;
 		}
 		else return false;

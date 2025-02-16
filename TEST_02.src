@@ -2,7 +2,12 @@ function coolFunc(arr: int[], size: int) => void
 {
 	local d : int[10];
 	local g : int[10];
-	write(2);
+	write(2+2);
+
+	while(1<3)
+	{
+		write(2+2);
+	};
 }
 
 function badFunc() => void 
@@ -11,7 +16,7 @@ function badFunc() => void
 	
 }
 
-class a { 
+class a isa LINEAR, TRANFORM { 
 
 	private function a (a : int[10], b : float[], c : float) => poop;
 
@@ -28,4 +33,18 @@ class wia {
 
 
 };
+
+implementation QUADRATIC { 
+  function evaluate(x: float) => float
+  {
+    local result: float;
+
+  }
+  function build(A: float, B: float, C: float) => QUADRATIC 
+  {
+    local new_function: QUADRATIC ;
+    return (new_function);
+  }
+}
+
 
