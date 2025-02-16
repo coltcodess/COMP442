@@ -47,6 +47,8 @@ implementation QUADRATIC {
 	new_function.a := A;
 	new_function.a := A;
 
+	counter := 1;
+
     return (new_function);
   }
 }

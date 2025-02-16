@@ -656,7 +656,7 @@ bool Parser::variable()
 
 	if (m_lookAheadToken->type == TokenType::id)
 	{
-		if (match(id) && idnest())
+		if (match(id) && idnest2())
 		{
 			*m_derivationFile << "variable -> 'id' idnest\n";
 			return true;

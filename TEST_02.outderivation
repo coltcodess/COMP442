@@ -166,7 +166,6 @@ varDec1 -> 'id' ':' type arraySize ';'
 localVarDecl -> 'local' varDecl ';'
 localVarDeclOrStat -> localVarDecl
 idnest2 -> EPSILON
-idnest -> '.' 'id' idnest2
 variable -> 'id' idnest
 assignOp -> :=reptVariableOrFunctionCall -> EPSILON
 factor -> 'id' reptVariableOrFunctionCall
@@ -180,24 +179,8 @@ assignStat -> variable assignOp expr
 statement -> assignStat ';'
 localVarDeclOrStat -> statement
 idnest2 -> EPSILON
-idnest -> '.' 'id' idnest2
 variable -> 'id' idnest
-assignOp -> :=reptVariableOrFunctionCall -> EPSILON
-factor -> 'id' reptVariableOrFunctionCall
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-arithExpr2 -> EPSILON
-arithExpr -> term arithExpr2
-expr2 -> EPSILON
-expr -> arithExpr exp2
-assignStat -> variable assignOp expr
-statement -> assignStat ';'
-localVarDeclOrStat -> statement
-idnest2 -> EPSILON
-idnest -> '.' 'id' idnest2
-variable -> 'id' idnest
-assignOp -> :=reptVariableOrFunctionCall -> EPSILON
-factor -> 'id' reptVariableOrFunctionCall
+assignOp -> :=factor -> 'intLit'
 rightRecTerm -> EPSILON
 term -> factor rightRecTerm
 arithExpr2 -> EPSILON
@@ -218,7 +201,6 @@ expr -> arithExpr exp2
 statement -> 'return' '(' expr ')' ';'
 localVarDeclOrStat -> statement
 localVarDeclOrStatRep -> EPSILON
-localVarDeclOrStatRep -> localVarDeclOrStat
 localVarDeclOrStatRep -> localVarDeclOrStat
 localVarDeclOrStatRep -> localVarDeclOrStat
 localVarDeclOrStatRep -> localVarDeclOrStat
