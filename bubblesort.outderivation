@@ -1,0 +1,139 @@
+type -> 'int'
+arraySize1 -> ']'
+arraySize -> '[' arraySize1
+type -> 'int'
+arraySize -> EPSILON
+fParamsTail -> EPSILON
+fParasTail -> ',' 'id' ':' type arraySize
+fParams -> 'id' ':' type arraySize fParamsTail
+returnType -> 'void'
+'function' 'id' '(' fParams ')' '=>' returnType
+type -> 'int'
+arraySize -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+localVarDeclOrStat -> localVarDecl
+type -> 'int'
+arraySize -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+localVarDeclOrStat -> localVarDecl
+type -> 'int'
+arraySize -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+localVarDeclOrStat -> localVarDecl
+type -> 'int'
+arraySize -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+localVarDeclOrStat -> localVarDecl
+repIdnest1 -> EPSILON
+idnest -> 'id' repIdnest1
+variable -> idnest indice
+assignOp -> :=repIdnest1 -> EPSILON
+idnest -> 'id' repIdnest1
+variable -> idnest indice
+factor -> variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+localVarDeclOrStat -> statement
+repIdnest1 -> EPSILON
+idnest -> 'id' repIdnest1
+variable -> idnest indice
+assignOp -> :=factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+localVarDeclOrStat -> statement
+repIdnest1 -> EPSILON
+idnest -> 'id' repIdnest1
+variable -> idnest indice
+assignOp -> :=factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+localVarDeclOrStat -> statement
+repIdnest1 -> EPSILON
+idnest -> 'id' repIdnest1
+variable -> idnest indice
+assignOp -> :=factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+localVarDeclOrStat -> statement
+repIdnest1 -> EPSILON
+idnest -> 'id' repIdnest1
+variable -> idnest indice
+factor -> variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+relOp -> '<'
+repIdnest1 -> EPSILON
+idnest -> 'id' repIdnest1
+variable -> idnest indice
+factor -> variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+addOp -> '-'
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr2 -> addOp term arithExpr2
+arithExpr -> term arithExpr2
+relExpr -> arithExpr relOp arithExpr
+repIdnest1 -> EPSILON
+idnest -> 'id' repIdnest1
+variable -> idnest indice
+factor -> variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+relOp -> '<'
+repIdnest1 -> EPSILON
+idnest -> 'id' repIdnest1
+variable -> idnest indice
+factor -> variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+addOp -> '-'
+repIdnest1 -> EPSILON
+idnest -> 'id' repIdnest1
+variable -> idnest indice
+factor -> variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+addOp -> '-'
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr2 -> addOp term arithExpr2
+arithExpr2 -> addOp term arithExpr2
+arithExpr -> term arithExpr2
+relExpr -> arithExpr relOp arithExpr

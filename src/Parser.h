@@ -74,7 +74,9 @@ private:
 	bool arithExpr2();
 	bool term();
 	bool factor();
-	bool factor2();
+	bool idOrFunction();
+	bool repIdNest1();
+
 	bool rightRecTerm();
 
 	bool relExpr();
@@ -87,8 +89,8 @@ private:
 
 	bool idnest();
 	bool idnest2();
-	bool repIdnest1();
-
+	
+	bool functionCall();
 
 	bool fParams();
 	bool fParamsTail();
@@ -107,7 +109,8 @@ private:
 	bool relOp();
 	bool type();
 
-
+	// Helper 
+	bool lexemInFollowSet(std::vector<std::string> _follow);
 
 
 

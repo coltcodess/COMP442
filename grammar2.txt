@@ -47,14 +47,20 @@ statement          -> 'while' '(' relExpr ')' statBlock ';'
 statement          -> 'read' '(' reptVariableORFunctionCall ')' ';' 
 statement          -> 'write' '(' expr ')' ';' 
 statement          -> 'return' '(' expr ')' ';' 
+statement          ->  reptVariableORFunctionCall ';'
 statement          ->  assignStat ';'
+
+reptVariableORFunctionCall           -> idnest reptVariableORFunctionCall
+reptVariableORFunctionCall           -> EPSILON
+
+idOrFunction           -> '(' aParams ')'
+idOrFunction           -> repIdNest1
+repIdNest1           -> indice repIdNest1
+repIdNest1           -> EPSILON
 
 statBlock          -> '{' statement '}' | statement | EPSILON  
 
-assignStat         -> variable assignOp expr
-
-variable           -> idnest 
-
+assignStat         -> vara assignOp expr
 
 expr               -> arithExpr exp2
 exp2               -> relOp arithExpr | EPSILON  
@@ -70,15 +76,15 @@ factor             -> 'floatLit'
 factor             -> '(' arithExpr ')'
 factor             -> 'not' factor
 factor             -> sign factor
-factor             -> variable
+factor             -> 'id' idOrFunction reptVariableORFunctionCall
 
 term               -> factor rightRecTerm
 rightRecTerm       -> multOp factor rightRecTerm 
 rightRecTerm       -> EPSILON
 
-idnest             -> 'id' repIdnest 
-repIdnest          -> EPSILON
-repIdnest          -> '.' 'id' repIdnest
+idnest             -> '.' 'id' idnest2 
+idnest2          -> '(' aParams ')'
+idnest2          -> repIdNest1
 
 
 idOrSelf           -> 'id' | 'self'

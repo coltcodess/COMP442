@@ -64,20 +64,18 @@ implementation LINEAR {
 } 
 
 // ====== main ====== //
-func main() => void
+function main() => void
 {
   local f1: LINEAR;
   local f2: QUADRATIC;
   local counter: int;
-  f1 := f1.build(2, 3.5);
-  f2 := f2.build(-2.0, 1.0, 0.0);
+  
   counter := 1;
 	
   while(counter <= 10)
   {
     write(counter);
-    write(f1.evaluate(counter));
-    write(f2.evaluate(counter));
+
   };
 }
 /*
