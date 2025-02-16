@@ -164,9 +164,27 @@ arraySize -> EPSILON
 varDec1 -> 'id' ':' type arraySize ';'
 localVarDecl -> 'local' varDecl ';'
 localVarDeclOrStat -> localVarDecl
-factor2 -> EPSILON
-reptVariableOrFunctionCall -> EPSILON
-factor -> 'id' factor2 reptVariableOrFunctionCall
+repIdnest1 -> EPSILON
+repIdnest1 -> . id repIdnest1
+idnest -> 'id' repIdnest1
+variable -> idnest indice
+assignOp -> :=repIdnest1 -> EPSILON
+idnest -> 'id' repIdnest1
+variable -> idnest indice
+factor -> variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+localVarDeclOrStat -> statement
+repIdnest1 -> EPSILON
+idnest -> 'id' repIdnest1
+variable -> idnest indice
+factor -> variable
 rightRecTerm -> EPSILON
 term -> factor rightRecTerm
 arithExpr2 -> EPSILON
@@ -176,6 +194,7 @@ expr -> arithExpr exp2
 statement -> 'return' '(' expr ')' ';'
 localVarDeclOrStat -> statement
 localVarDeclOrStatRep -> EPSILON
+localVarDeclOrStatRep -> localVarDeclOrStat
 localVarDeclOrStatRep -> localVarDeclOrStat
 localVarDeclOrStatRep -> localVarDeclOrStat
 funcBody -> '{' localVarDeclOrStatRep '}'

@@ -53,7 +53,8 @@ statBlock          -> '{' statement '}' | statement | EPSILON
 
 assignStat         -> variable assignOp expr
 
-variable           -> 'id' indice
+variable           -> idnest 
+
 
 expr               -> arithExpr exp2
 exp2               -> relOp arithExpr | EPSILON  
@@ -64,30 +65,25 @@ arithExpr2         -> EPSILON
 
 relExpr            -> arithExpr relOp arithExpr 
 
-factor             -> 'id' factor2 reptVariableORFunctionCall
 factor             -> 'intLit'
 factor             -> 'floatLit'
 factor             -> '(' arithExpr ')'
 factor             -> 'not' factor
 factor             -> sign factor
-factor2            -> '(' aParams ')'
-factor2            -> reptIdnest1
+factor             -> variable
 
 term               -> factor rightRecTerm
 rightRecTerm       -> multOp factor rightRecTerm 
 rightRecTerm       -> EPSILON
 
-reptVariableORFunctionCall -> idnest reptVariableORFunctionCall
-reptVariableORFunctionCall -> EPSILON
+idnest             -> 'id' repIdnest 
+repIdnest          -> EPSILON
+repIdnest          -> '.' 'id' repIdnest
 
-idnest             -> '.' 'id' idnest2
-idnest2             -> '(' aParams ')'
-idnest2             -> reptIdnest1
-reptIdnest1         -> indice reptIdnest1
 
 idOrSelf           -> 'id' | 'self'
 
-indice             -> '[' arithExpr ']' | EPSILON
+indice             -> '[' arithExpr ']'
 
 arraySize          -> '[' arraySize1
 arraySize          -> EPSILON
