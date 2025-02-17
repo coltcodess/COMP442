@@ -1284,12 +1284,8 @@ bool Parser::aParamsTail()
 	}
 	else if (m_lookAheadToken->lexem == ")")
 	{
-		if (match(TokenType::CLOSEPAR))
-		{
-			*m_derivationFile << "aParamsTail -> EPSILON\n";
-			return true;
-		}
-		else return false;
+		*m_derivationFile << "aParamsTail -> EPSILON\n";
+		return true;
 	}
 	else return false;
 }
