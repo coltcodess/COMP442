@@ -70,7 +70,6 @@ private:
 	bool reptVariable();
 	bool varIdNest();
 	bool varIdNest2();
-	bool reptVariableOrFunctionCall();
 
 	bool expr();
 	bool expr2();
@@ -78,7 +77,6 @@ private:
 	bool arithExpr2();
 	bool term();
 	bool factor();
-	bool idOrFunction();
 	bool repIdNest1();
 
 	bool rightRecTerm();

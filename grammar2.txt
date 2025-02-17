@@ -86,7 +86,10 @@ term               -> factor rightRecTerm
 rightRecTerm       -> multOp factor rightRecTerm 
 rightRecTerm       -> EPSILON
 
-idnest             ->'.' 'id' n 
+idnest             ->'.' 'id' idnest2 
+idnest              -> EPSILON
+idnest2             -> '(' aParams ')'
+idnest2             -> repIdNest1
 
 repIdNest1         ->  indice repIdNest1
 repIdNest1         ->  EPSILON

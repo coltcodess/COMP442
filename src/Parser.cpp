@@ -597,7 +597,7 @@ bool Parser::statement()
 	}
 	else if (m_lookAheadToken->lexem == "read")
 	{
-		if (match(TokenType::READ) && match(TokenType::OPENPAR) && reptVariableOrFunctionCall() && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
+		if (match(TokenType::READ) && match(TokenType::OPENPAR) && variable() && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
 		{
 			*m_derivationFile << "statement -> 'read' '(' reptVariableOrFunctionCall ')' ';'\n";
 			return true;
@@ -929,37 +929,6 @@ bool Parser::factor()
 	return true;
 }
 
-bool Parser::idOrFunction()
-{
-	std::vector<std::string> _first = { "[", "(", "EPSILON"};
-	std::vector<std::string> _follow = { ")", ";", ",", "<", "<=" , "<>",  "==" , ">",  ">=" , "]", "+", "-", "or", "*", "/", "and", "."};
-
-	if (m_lookAheadToken->lexem == "(")
-	{
-		if (match(OPENPAR) && aParams() && match(CLOSEPAR))
-		{
-			*m_derivationFile << "idOrFunction -> '(' aParams ')'\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (m_lookAheadToken->lexem == "[")
-	{
-		if (repIdNest1())
-		{
-			*m_derivationFile << "idOrFunction -> repIdNest1\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (lexemInFollowSet(_follow))
-	{
-		*m_derivationFile << "idOrFunction -> EPSILON\n";
-		return true;
-	}
-	else return false;
-}
-
 bool Parser::repIdNest1()
 {
 	std::vector<std::string> _first = { "[", "EPSILON" };
@@ -1002,29 +971,6 @@ bool Parser::rightRecTerm()
 		return true;
 	}
 	else return false;
-}
-
-bool Parser::reptVariableOrFunctionCall()
-{
-	std::vector<std::string> _first = { ".", "ESPILON"};
-	std::vector<std::string> _follow = { ")", ";", ",", "<", "<=" , "<>",  "==" , ">",  ">=" , "]", "+", "-", "or", "*", "/", "and", ":="};
-
-	if (m_lookAheadToken->lexem == ".")
-	{
-		if (idnest() && reptVariableOrFunctionCall())
-		{
-			*m_derivationFile << "reptVariableOrFunctionCall -> idnest reptVariableOrFunctionCall\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (lexemInFollowSet(_follow))
-	{
-		*m_derivationFile << "reptVariableOrFunctionCall -> EPSILON\n";
-		return true;
-	}
-	else return false;
-
 }
 
 bool Parser::relExpr()
