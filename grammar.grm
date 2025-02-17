@@ -1,16 +1,14 @@
 START               -> prog
 prog                -> classOrImplOrFunc prog
-prog                -> EPSILON
 
 classOrImplOrFunc   -> classDecl 
 classOrImplOrFunc   -> implDef 
 classOrImplOrFunc   -> funcDef 
 
-classDecl           -> 'class' 'id' '{' rept-classDecl_1 '}' ';'
-classDecl_1          -> 'id' opt-classDecl_1  '{'  '}'
+classDecl           -> 'class' 'id' opt-classDecl  '{' rept-classDecl_1 '}' ';'
 
-opt-classDecl_1     -> 'isa' 'id' rept-opt-classDec_l
-opt-classDecl_1     -> EPSILON 
+opt-classDecl     -> 'isa' 'id' rept-opt-classDec_l
+opt-classDecl     -> EPSILON 
 
 rept-opt-classDec_l -> ',' 'id' rept-opt-classDec_l 
 rept-opt-classDec_l -> EPSILON 
@@ -18,9 +16,11 @@ rept-opt-classDec_l -> EPSILON
 rept-classDecl_1    -> visibility memberDecl rept-classDecl_1
 rept-classDecl_1    -> EPSILON
 
-implDef            -> 'implementation' 'id' '{' funcDef '}'
+implDef            -> 'implementation' 'id' '{' rep-funcDef '}'
 
-funcDef            -> funcHead funcBody 
+funcDef            -> funcHead funcBody
+rep-funcDef        -> funcHead funcBody rep-funcDef
+rep-funcDef        -> EPSILON
 
 visibility         -> 'public' | 'private' | EPSILON
 memberDecl         -> funcDecl | attributeDecl
@@ -44,15 +44,27 @@ varDecl            -> 'id' ':' type arraySize ';'
 
 statement          -> 'if' '(' relExpr ')' 'then' statBlock 'else' statBlock ';' 
 statement          -> 'while' '(' relExpr ')' statBlock ';' 
-statement          -> 'read' '(' reptVariableORFunctionCall ')' ';' 
+statement          -> 'read' '(' variable ')' ';' 
 statement          -> 'write' '(' expr ')' ';' 
 statement          -> 'return' '(' expr ')' ';' 
+statement          ->  assignStat ';'
 
-statBlock          -> '{' statement '}' | statement | EPSILON  
 
-assignStat         -> reptVariableORFunctionCall assignOp expr
+statBlock          -> '{' repStatBlock '}' 
+repStatBlock       -> statement repStatBlock | EPSILON  
 
-expr               -> arithExpr exp2
+assignStat         -> variable assignOp expr
+
+variable           -> 'id' variable2
+variable2          -> repIdNest1 reptVariable
+variable2          -> '(' aParams ')' varIDnest
+
+reptVariable          -> varIDnest reptVariable | EPSILON
+
+varIDnest          -> '.' 'id' varIdnest2
+varIdnest2          -> '(' aParams ')' varIDnest | repIdNest1
+
+expr               -> arithExpr exp2 
 exp2               -> relOp arithExpr | EPSILON  
 
 arithExpr          -> term arithExpr2
@@ -61,31 +73,27 @@ arithExpr2         -> EPSILON
 
 relExpr            -> arithExpr relOp arithExpr 
 
-factor             -> 'id' factor2 reptVariableORFunctionCall
 factor             -> 'intLit'
 factor             -> 'floatLit'
 factor             -> '(' arithExpr ')'
 factor             -> 'not' factor
 factor             -> sign factor
-factor2            -> '(' aParams ')'
-factor2            -> reptIdnest1
+factor             -> variable
 
 term               -> factor rightRecTerm
 rightRecTerm       -> multOp factor rightRecTerm 
 rightRecTerm       -> EPSILON
 
-reptVariableORFunctionCall -> idnest reptVariableORFunctionCall
-reptVariableORFunctionCall -> EPSILON
-
-idnest             -> '.' 'id' idnest2
+idnest             ->'.' 'id' idnest2 
+idnest              -> EPSILON
 idnest2             -> '(' aParams ')'
-idnest2             -> reptIdnest1
-reptIdnest1         -> indice reptIdnest1
-reptIdnest1         -> EPSILON
+idnest2             -> repIdNest1
+
+repIdNest1         ->  indice repIdNest1
+repIdNest1         ->  EPSILON
+indice             -> '[' arithExpr ']' 
 
 idOrSelf           -> 'id' | 'self'
-
-indice             -> '[' arithExpr ']'
 
 arraySize          -> '[' arraySize1
 arraySize          -> EPSILON
