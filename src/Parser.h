@@ -66,6 +66,10 @@ private:
 	bool statement();
 	bool assignStat();
 	bool variable();
+	bool variable2();
+	bool reptVariable();
+	bool varIdNest();
+	bool varIdNest2();
 	bool reptVariableOrFunctionCall();
 
 	bool expr();
@@ -113,7 +117,7 @@ private:
 	// Helper 
 	bool lexemInFollowSet(std::vector<std::string> _follow);
 
-
-
+	bool tokenInFollowSet(std::vector<TokenType> _follow);
+	bool tokenInFirstSet(std::vector<TokenType> _first);
 };
 

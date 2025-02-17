@@ -44,27 +44,29 @@ varDecl            -> 'id' ':' type arraySize ';'
 
 statement          -> 'if' '(' relExpr ')' 'then' statBlock 'else' statBlock ';' 
 statement          -> 'while' '(' relExpr ')' statBlock ';' 
-statement          -> 'read' '(' reptVariableORFunctionCall ')' ';' 
+statement          -> 'read' '(' variable ')' ';' 
 statement          -> 'write' '(' expr ')' ';' 
 statement          -> 'return' '(' expr ')' ';' 
 statement          ->  assignStat ';'
 
-reptVariableORFunctionCall           -> idnest reptVariableORFunctionCall
-reptVariableORFunctionCall           -> EPSILON
 
-idOrFunction           -> '(' aParams ')'
-idOrFunction           -> repIdNest1
 
-indice             -> '[' arithExpr ']' 
-repIdNest1         ->  repIdNest1 indice | EPSILON
 
 statBlock          -> '{' repStatBlock '}' 
 repStatBlock       -> statement repStatBlock | EPSILON  
 
-assignStat         -> variable repIdNest1 assignOp expr
-variable           -> 'id' idnest2
+assignStat         -> variable assignOp expr
 
-expr               -> arithExpr exp2
+variable           -> 'id' variable2
+variable2          -> repIdNest1 reptVariable
+variable2          -> '(' aParams ')' varIDnest
+
+reptVariable          -> varIDnest reptVariable | EPSILON
+
+varIDnest          -> '.' 'id' varIdnest2
+varIdnest2          -> '(' aParams ')' varIDnest | repIdNest1
+
+expr               -> arithExpr exp2 
 exp2               -> relOp arithExpr | EPSILON  
 
 arithExpr          -> term arithExpr2
@@ -78,15 +80,18 @@ factor             -> 'floatLit'
 factor             -> '(' arithExpr ')'
 factor             -> 'not' factor
 factor             -> sign factor
-factor             -> 'id' idOrFunction reptVariableORFunctionCall
+factor             -> variable
 
 term               -> factor rightRecTerm
 rightRecTerm       -> multOp factor rightRecTerm 
 rightRecTerm       -> EPSILON
 
-idnest             -> '.' 'id' idnest2 
-idnest2          -> '(' aParams ')'
-idnest2          -> repIdNest1
+idnest             ->'.' 'id' n 
+
+repIdNest1         ->  indice repIdNest1
+repIdNest1         ->  EPSILON
+indice             -> '[' arithExpr ']' 
+
 
 
 idOrSelf           -> 'id' | 'self'
