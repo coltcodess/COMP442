@@ -50,7 +50,7 @@ statement          -> 'return' '(' expr ')' ';'
 statement          ->  assignStat ';'
 
 
-statBlock          -> '{' repStatBlock '}' 
+statBlock          -> '{' repStatBlock '}' | EPSILON
 repStatBlock       -> statement repStatBlock | EPSILON  
 
 assignStat         -> variable assignOp expr
