@@ -72,29 +72,31 @@ bool Parser::nextToken()
 	return true;
 }
 
-bool Parser::skipErrors(std::vector<std::string> first, std::vector<std::string> follow)
+bool Parser::skipErrors(bool containsESPILON, std::vector<TokenType> first, std::vector<TokenType> follow)
 {
 
-	if(std::find(first.begin(), first.end(), m_lookAheadToken->lexem) != first.end() || 
-		(std::find(first.begin(), first.end(), "EPSILON") != first.end() &&
-			std::find(follow.begin(), follow.end(), m_lookAheadToken->lexem) != follow.end()))
+	if(std::find(first.begin(), first.end(), m_lookAheadToken->type) != first.end() || 
+		(containsESPILON &&	std::find(follow.begin(), follow.end(), m_lookAheadToken->type) != follow.end()))
 	{
 		return true;
 	}
 	else
 	{
-		*m_syntaxErrorsFile << "Syntax error at line:  " + std::to_string(m_lookAheadToken->position) + m_lookAheadToken->lexem << std::endl;
 
-		while (!(std::find(first.begin(), first.end(), m_lookAheadToken->lexem) != first.end() ||
-			std::find(follow.begin(), follow.end(), m_lookAheadToken->lexem) != follow.end()))
+		do
 		{
-			if(!nextToken()) return false;
-			if (std::find(first.begin(), first.end(), "EPSILON") != first.end() &&
-				std::find(follow.begin(), follow.end(), m_lookAheadToken->lexem) != follow.end())
+			*m_syntaxErrorsFile << "Syntax error at line:  " + std::to_string(m_lookAheadToken->position) + " | " + m_lookAheadToken->lexem << std::endl;
+
+			if (!nextToken()) return false;
+
+			if (containsESPILON && std::find(follow.begin(), follow.end(), m_lookAheadToken->type) != follow.end())
 			{
 				return false;
 			}
-		}
+
+		} while (!(std::find(first.begin(), first.end(), m_lookAheadToken->type) != first.end() ||
+			std::find(follow.begin(), follow.end(), m_lookAheadToken->type) != follow.end()));
+
 
 		return true;
 	}
@@ -110,14 +112,14 @@ bool Parser::skipErrors(std::vector<std::string> first, std::vector<std::string>
 
 bool Parser::startsymbol()
 {
-	std::vector<std::string> _first = { "function", "constructor", "EPSILON", "class", "implementation"};
-	std::vector<std::string> _follow = {"$"};
+	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR, CLASS, IMPLEMENTATION };
+	std::vector<TokenType> follow = { END_OF_FILE };
 
-	if (!skipErrors(_first, _follow)) return false;
+	if (!skipErrors(true, first, follow)) return false;
 
 	// Check First 
-	if (m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor" || 
-		m_lookAheadToken->lexem == "class" || m_lookAheadToken->lexem == "implementation")
+	if (m_lookAheadToken->type == FUNCTION || m_lookAheadToken->type == CONSTRUCTOR ||
+		m_lookAheadToken->type == CLASS || m_lookAheadToken->type == IMPLEMENTATION)
 	{
 		if (prog())
 		{
@@ -141,14 +143,15 @@ bool Parser::startsymbol()
 
 bool Parser::prog()
 {
-	std::vector<std::string> _first = { "function", "constructor", "EPSILON", "class", "implementation" };
-	std::vector<std::string> _follow = { "$" };
 
-	if (!skipErrors(_first, _follow)) return false;
+	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR, CLASS, IMPLEMENTATION };
+	std::vector<TokenType> follow = { END_OF_FILE };
+
+	if (!skipErrors(true, first, follow)) return false;
 
 	// Check First 
-	if (m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor" ||
-		m_lookAheadToken->lexem == "class" || m_lookAheadToken->lexem == "implementation")
+	if (m_lookAheadToken->type == FUNCTION || m_lookAheadToken->type == CONSTRUCTOR ||
+		m_lookAheadToken->type == CLASS || m_lookAheadToken->type == IMPLEMENTATION)
 	{
 		if (classOrImplOrFunc() && prog())
 		{
@@ -172,12 +175,12 @@ bool Parser::prog()
 
 bool Parser::classOrImplOrFunc()
 {
-	std::vector<std::string> _first = { "function", "constructor", "class", "implementation" };
-	std::vector<std::string> _follow = {  };
+	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR, CLASS, IMPLEMENTATION };
+	std::vector<TokenType> follow = { };
 
-	if (!skipErrors(_first, _follow)) return false;
+	if (!skipErrors(false, first, follow)) return false;
 
-	if (m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor")
+	if (m_lookAheadToken->type == FUNCTION || m_lookAheadToken->type == CONSTRUCTOR)
 	{
 		if (funcDef())
 		{
@@ -186,7 +189,7 @@ bool Parser::classOrImplOrFunc()
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->lexem == "class")
+	else if (m_lookAheadToken->type == CLASS)
 	{
 		if (classDecl())
 		{
@@ -195,7 +198,7 @@ bool Parser::classOrImplOrFunc()
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->lexem == "implementation")
+	else if (m_lookAheadToken->type == IMPLEMENTATION)
 	{
 		if (implDef())
 		{
@@ -269,12 +272,12 @@ bool Parser::implDef()
 
 bool Parser::classDecl()
 {
-	std::vector<std::string> _first = {"class"};
-	std::vector<std::string> _follow = {};
+	std::vector<TokenType> first = {CLASS};
+	std::vector<TokenType> follow = { };
 
-	if (!skipErrors(_first, _follow)) return false;
+	if (!skipErrors(false, first, follow)) return false;
 
-	if (m_lookAheadToken->lexem == "class")
+	if (m_lookAheadToken->type == CLASS)
 	{
 		if (match(TokenType::CLASS) && match(TokenType::id) && optClassDecl() && match(TokenType::OPENCUBR) &&
 			reptClassDecl_1() && match(TokenType::CLOSECUBR) && match(TokenType::SEMI))
@@ -292,7 +295,7 @@ bool Parser::reptClassDecl_1()
 	std::vector<std::string> _first = { "private", "public", "function", "constructor", "attribute", "EPSILON"};
 	std::vector<std::string> _follow = {"}"};
 
-	if (!skipErrors(_first, _follow));
+	//if (!skipErrors(_first, _follow));
 
 	if (m_lookAheadToken->lexem == "private" || m_lookAheadToken->lexem == "public" || 
 		m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor" || 
@@ -363,7 +366,7 @@ bool Parser::visibility()
 	std::vector<std::string> _first = {"private", "public", "EPSILON"};
 	std::vector<std::string> _follow = { "function", "constructor", "attribute"};
 
-	if (!skipErrors(_first, _follow));
+	//if (!skipErrors(_first, _follow));
 
 	if (m_lookAheadToken->lexem == "private")
 	{
@@ -398,7 +401,7 @@ bool Parser::memberDecl()
 	std::vector<std::string> _first = { "function", "constructor", "attribute", "EPSILON" };
 	std::vector<std::string> _follow = { "}" };
 
-	if (!skipErrors(_first, _follow));
+	//if (!skipErrors(_first, _follow));
 
 	if (m_lookAheadToken->lexem == "constructor" || m_lookAheadToken->lexem == "function")
 	{
@@ -432,7 +435,7 @@ bool Parser::funcDec1()
 	std::vector<std::string> _first = {"function", "constructor"};
 	std::vector<std::string> _follow = {};
 	
-	if (!skipErrors(_first, _follow));
+	//if (!skipErrors(_first, _follow));
 
 	if (m_lookAheadToken->lexem == "constructor" || m_lookAheadToken->lexem == "function")
 	{
@@ -452,7 +455,7 @@ bool Parser::funcHead()
 	std::vector<std::string> _first = { "function", "constructor" };
 	std::vector<std::string> _follow = {};
 
-	if (!skipErrors(_first, _follow));
+	//if (!skipErrors(_first, _follow));
 
 	if (m_lookAheadToken->lexem == "constructor")
 	{
@@ -1315,7 +1318,7 @@ bool Parser::assignOp()
 	std::vector<std::string> _first = {":="};
 	std::vector<std::string> _follow = {};
 
-	if (!skipErrors(_first, _follow)) return false;
+	//if (!skipErrors(_first, _follow)) return false;
 
 	// Check First 
 	if (_first[0] == m_lookAheadToken->lexem)
@@ -1335,7 +1338,7 @@ bool Parser::sign()
 	std::vector<std::string> _first = { "+", "-"};
 	std::vector<std::string> _follow = {};
 
-	if (!skipErrors(_first, _follow)) return false;
+	//if (!skipErrors(_first, _follow)) return false;
 
 	// Check First 
 	if (_first[0] == m_lookAheadToken->lexem)
@@ -1368,7 +1371,7 @@ bool Parser::multOp()
 	std::vector<std::string> _first = { "and", "/", "*"};
 	std::vector<std::string> _follow = {};
 
-	if (!skipErrors(_first, _follow)) return false;
+	//if (!skipErrors(_first, _follow)) return false;
 
 	// Check First 
 	if (_first[0] == m_lookAheadToken->lexem)
@@ -1411,7 +1414,7 @@ bool Parser::addOp()
 	std::vector<std::string> _first = { "or", "+", "-" };
 	std::vector<std::string> _follow = {};
 
-	if (!skipErrors(_first, _follow)) return false;
+	//if (!skipErrors(_first, _follow)) return false;
 
 	if (m_lookAheadToken->lexem == "or")
 	{
@@ -1448,7 +1451,7 @@ bool Parser::relOp()
 	std::vector<std::string> _first = { ">=", ">", "==", "<=", "<", "<>", };
 	std::vector<std::string> _follow = {};
 
-	if (!skipErrors(_first, _follow)) return false;
+	//if (!skipErrors(_first, _follow)) return false;
 
 	if (m_lookAheadToken->lexem == ">=")
 	{

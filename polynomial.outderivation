@@ -626,7 +626,7 @@ repStatBlock -> ESPILON
 repStatBlock -> statement
 repStatBlock -> statement
 repStatBlock -> statement
-statement -> '{' repStatBlock '}'
+statBlock -> '{' repStatBlock '}'
 statement -> 'while' '(' relExpr ')' statBlock ';'
 localVarDeclOrStat -> statement
 localVarDeclOrStatRep -> EPSILON
