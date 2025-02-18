@@ -615,9 +615,11 @@ bool Parser::statement()
 	}
 	else if (m_lookAheadToken->lexem == "if")
 	{
-		if (match(TokenType::IF) && match(TokenType::OPENPAR) && relExpr() && match(TokenType::THEN) && statBlock() && 
+		if (match(TokenType::IF) && match(TokenType::OPENPAR) && relExpr() && match(CLOSEPAR) && match(TokenType::THEN) && statBlock() &&
 			match(TokenType::ELSE) && statBlock() && match(TokenType::SEMI))
 		{
+			/// tomorrow - the issue is when statblock() is empty and ends with ;
+
 			*m_derivationFile << "statement -> 'if' '(' relExpr ')' 'then' statBlock 'else' statBlock ';'\n";
 			return true;
 		}
@@ -670,7 +672,7 @@ bool Parser::variable2()
 {
 	std::vector<std::string> _follow = { ")", ":=", ";", ",", "<", "<=" , "<>",  "==" , ">",  ">=" , "]", "+", "-", "or", "*", "/", "and" };
 
-	if (m_lookAheadToken->type == OPENCUBR || m_lookAheadToken->type == DOT)
+	if (m_lookAheadToken->type == OPENSQBR || m_lookAheadToken->type == DOT)
 	{
 		if (repIdNest1() && reptVariable())
 		{
@@ -698,7 +700,7 @@ bool Parser::variable2()
 
 bool Parser::reptVariable()
 {
-	std::vector<std::string> _follow = { ")", ";", ",", "<", "<=" , "<>",  "==" , ">",  ">=" , "]", "+", "-", "or", "*", "/", "and" };
+	std::vector<std::string> _follow = { ")",":=", ";", ",", "<", "<=" , "<>",  "==" , ">",  ">=" , "]", "+", "-", "or", "*", "/", "and" };
 
 	if (m_lookAheadToken->type == DOT)
 	{
@@ -1002,10 +1004,15 @@ bool Parser::statBlock()
 	{
 		if (match(OPENCUBR) && repStatBlock() && match(CLOSECUBR))
 		{
-			*m_derivationFile << "statement -> '{' repStatBlock '}'\n";
+			*m_derivationFile << "statBlock -> '{' repStatBlock '}'\n";
 			return true;
 		}
 		else return false;
+	}
+	else if (m_lookAheadToken->type == TokenType::ELSE || m_lookAheadToken->type == TokenType::SEMI)
+	{
+		*m_derivationFile << "statBlock -> EPSILON\n";
+		return true;
 	}
 	else return false;
 

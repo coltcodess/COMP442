@@ -4,18 +4,6 @@
 #include <fstream>
 #include "Token.h"
 #include "Lexer.h"
-#include "Grammar.h"
-
-struct DerivationData
-{
-	std::string LHS;
-	std::string RHS;
-
-	std::string toString()
-	{
-		return LHS + "\t" + "->" + "\t" + RHS;
-	}
-};
 
 class Parser
 {

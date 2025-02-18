@@ -3,7 +3,7 @@ prog                -> classOrImplOrFunc prog
 
 classOrImplOrFunc   -> classDecl 
 classOrImplOrFunc   -> implDef 
-classOrImplOrFunc   -> funcDecl 
+classOrImplOrFunc   -> funcDef 
 
 classDecl           -> 'class' 'id' opt-classDecl  '{' rept-classDecl_1 '}' ';'
 
@@ -50,9 +50,7 @@ statement          -> 'return' '(' expr ')' ';'
 statement          ->  assignStat ';'
 
 
-
-
-statBlock          -> '{' repStatBlock '}' 
+statBlock          -> '{' repStatBlock '}' | EPSILON
 repStatBlock       -> statement repStatBlock | EPSILON  
 
 assignStat         -> variable assignOp expr
@@ -95,11 +93,7 @@ repIdNest1         ->  indice repIdNest1
 repIdNest1         ->  EPSILON
 indice             -> '[' arithExpr ']' 
 
-
-
 idOrSelf           -> 'id' | 'self'
-
-
 
 arraySize          -> '[' arraySize1
 arraySize          -> EPSILON

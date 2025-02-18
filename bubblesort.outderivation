@@ -127,3 +127,495 @@ arithExpr2 -> addOp term arithExpr2
 arithExpr2 -> addOp term arithExpr2
 arithExpr -> term arithExpr2
 relExpr -> arithExpr relOp arithExpr
+variable -> EPSILON
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+indice -> '[' arithExpr ']'
+repIdNest1 -> EPSILON
+repIdNest1 -> repIdNest1
+reptVariable -> EPSILON
+variable -> repIdNest1 reptVariable
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+relOp -> '>'
+variable -> EPSILON
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+addOp -> '+'
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr2 -> addOp term arithExpr2
+arithExpr -> term arithExpr2
+indice -> '[' arithExpr ']'
+repIdNest1 -> EPSILON
+repIdNest1 -> repIdNest1
+reptVariable -> EPSILON
+variable -> repIdNest1 reptVariable
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+relExpr -> arithExpr relOp arithExpr
+variable -> EPSILON
+variable -> variable2
+assignOp -> :=variable -> EPSILON
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+indice -> '[' arithExpr ']'
+repIdNest1 -> EPSILON
+repIdNest1 -> repIdNest1
+reptVariable -> EPSILON
+variable -> repIdNest1 reptVariable
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+variable -> EPSILON
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+indice -> '[' arithExpr ']'
+repIdNest1 -> EPSILON
+repIdNest1 -> repIdNest1
+reptVariable -> EPSILON
+variable -> repIdNest1 reptVariable
+variable -> variable2
+assignOp -> :=variable -> EPSILON
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+addOp -> '+'
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr2 -> addOp term arithExpr2
+arithExpr -> term arithExpr2
+indice -> '[' arithExpr ']'
+repIdNest1 -> EPSILON
+repIdNest1 -> repIdNest1
+reptVariable -> EPSILON
+variable -> repIdNest1 reptVariable
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+variable -> EPSILON
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+addOp -> '+'
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr2 -> addOp term arithExpr2
+arithExpr -> term arithExpr2
+indice -> '[' arithExpr ']'
+repIdNest1 -> EPSILON
+repIdNest1 -> repIdNest1
+reptVariable -> EPSILON
+variable -> repIdNest1 reptVariable
+variable -> variable2
+assignOp -> :=variable -> EPSILON
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+repStatBlock -> ESPILON
+repStatBlock -> statement
+repStatBlock -> statement
+repStatBlock -> statement
+statBlock -> '{' repStatBlock '}'
+statBlock -> EPSILON
+statement -> 'if' '(' relExpr ')' 'then' statBlock 'else' statBlock ';'
+variable -> EPSILON
+variable -> variable2
+assignOp -> :=variable -> EPSILON
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+addOp -> '+'
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr2 -> addOp term arithExpr2
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+repStatBlock -> ESPILON
+repStatBlock -> statement
+repStatBlock -> statement
+statBlock -> '{' repStatBlock '}'
+statement -> 'while' '(' relExpr ')' statBlock ';'
+variable -> EPSILON
+variable -> variable2
+assignOp -> :=variable -> EPSILON
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+addOp -> '+'
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr2 -> addOp term arithExpr2
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+repStatBlock -> ESPILON
+repStatBlock -> statement
+repStatBlock -> statement
+statBlock -> '{' repStatBlock '}'
+statement -> 'while' '(' relExpr ')' statBlock ';'
+localVarDeclOrStat -> statement
+localVarDeclOrStatRep -> EPSILON
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+funcBody -> '{' localVarDeclOrStatRep '}'
+funcDef -> funcHead funcBody
+classOrImplOrFunc -> funcDef
+type -> 'int'
+arraySize1 -> ']'
+arraySize -> '[' arraySize1
+type -> 'int'
+arraySize -> EPSILON
+fParamsTail -> EPSILON
+fParasTail -> ',' 'id' ':' type arraySize
+fParams -> 'id' ':' type arraySize fParamsTail
+returnType -> 'void'
+'function' 'id' '(' fParams ')' '=>' returnType
+type -> 'int'
+arraySize -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+localVarDeclOrStat -> localVarDecl
+type -> 'int'
+arraySize -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+localVarDeclOrStat -> localVarDecl
+variable -> EPSILON
+variable -> variable2
+assignOp -> :=variable -> EPSILON
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+localVarDeclOrStat -> statement
+variable -> EPSILON
+variable -> variable2
+assignOp -> :=factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+localVarDeclOrStat -> statement
+variable -> EPSILON
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+relOp -> '<'
+variable -> EPSILON
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+relExpr -> arithExpr relOp arithExpr
+variable -> EPSILON
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+indice -> '[' arithExpr ']'
+repIdNest1 -> EPSILON
+repIdNest1 -> repIdNest1
+reptVariable -> EPSILON
+variable -> repIdNest1 reptVariable
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+statement -> 'write' '(' expr ')' ';'
+variable -> EPSILON
+variable -> variable2
+assignOp -> :=variable -> EPSILON
+variable -> variable2
+factor -> 'id' variable
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+addOp -> '+'
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr2 -> addOp term arithExpr2
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+repStatBlock -> ESPILON
+repStatBlock -> statement
+repStatBlock -> statement
+statBlock -> '{' repStatBlock '}'
+statement -> 'while' '(' relExpr ')' statBlock ';'
+localVarDeclOrStat -> statement
+localVarDeclOrStatRep -> EPSILON
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+funcBody -> '{' localVarDeclOrStatRep '}'
+funcDef -> funcHead funcBody
+classOrImplOrFunc -> funcDef
+fParams -> EPSILON
+returnType -> 'void'
+'function' 'id' '(' fParams ')' '=>' returnType
+type -> 'int'
+arraySize1 -> 'intnum' ']'
+arraySize -> '[' arraySize1
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+localVarDeclOrStat -> localVarDecl
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+indice -> '[' arithExpr ']'
+repIdNest1 -> EPSILON
+repIdNest1 -> repIdNest1
+reptVariable -> EPSILON
+variable -> repIdNest1 reptVariable
+variable -> variable2
+assignOp -> :=factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+localVarDeclOrStat -> statement
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+indice -> '[' arithExpr ']'
+repIdNest1 -> EPSILON
+repIdNest1 -> repIdNest1
+reptVariable -> EPSILON
+variable -> repIdNest1 reptVariable
+variable -> variable2
+assignOp -> :=factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+localVarDeclOrStat -> statement
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+indice -> '[' arithExpr ']'
+repIdNest1 -> EPSILON
+repIdNest1 -> repIdNest1
+reptVariable -> EPSILON
+variable -> repIdNest1 reptVariable
+variable -> variable2
+assignOp -> :=factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+localVarDeclOrStat -> statement
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+indice -> '[' arithExpr ']'
+repIdNest1 -> EPSILON
+repIdNest1 -> repIdNest1
+reptVariable -> EPSILON
+variable -> repIdNest1 reptVariable
+variable -> variable2
+assignOp -> :=factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+localVarDeclOrStat -> statement
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+indice -> '[' arithExpr ']'
+repIdNest1 -> EPSILON
+repIdNest1 -> repIdNest1
+reptVariable -> EPSILON
+variable -> repIdNest1 reptVariable
+variable -> variable2
+assignOp -> :=factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+localVarDeclOrStat -> statement
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+indice -> '[' arithExpr ']'
+repIdNest1 -> EPSILON
+repIdNest1 -> repIdNest1
+reptVariable -> EPSILON
+variable -> repIdNest1 reptVariable
+variable -> variable2
+assignOp -> :=factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+localVarDeclOrStat -> statement
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+indice -> '[' arithExpr ']'
+repIdNest1 -> EPSILON
+repIdNest1 -> repIdNest1
+reptVariable -> EPSILON
+variable -> repIdNest1 reptVariable
+variable -> variable2
+assignOp -> :=factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+arithExpr2 -> EPSILON
+arithExpr -> term arithExpr2
+expr2 -> EPSILON
+expr -> arithExpr exp2
+assignStat -> variable assignOp expr
+statement -> assignStat ';'
+localVarDeclOrStat -> statement
+localVarDeclOrStatRep -> EPSILON
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+localVarDeclOrStatRep -> localVarDeclOrStat
+funcBody -> '{' localVarDeclOrStatRep '}'
+funcDef -> funcHead funcBody
+classOrImplOrFunc -> funcDef
+prog -> $
+prog -> classOrImplOrFunc prog
+prog -> classOrImplOrFunc prog
+prog -> classOrImplOrFunc prog
+startsymbol -> prog
