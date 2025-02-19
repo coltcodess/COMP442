@@ -1,4 +1,4 @@
-optClassDecl -> 'isa' 'id' reptOptClassDecl
+optClassDecl -> EPSILON
 visibility -> 'public'
 type -> 'float'
 arraySize -> EPSILON
@@ -640,7 +640,7 @@ localVarDeclOrStatRep -> localVarDeclOrStat
 funcBody -> '{' localVarDeclOrStatRep '}'
 funcDef -> funcHead funcBody
 classOrImplOrFunc -> funcDef
-prog -> $
+prog -> EPSILON
 prog -> classOrImplOrFunc prog
 prog -> classOrImplOrFunc prog
 prog -> classOrImplOrFunc prog

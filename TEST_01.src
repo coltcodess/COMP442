@@ -1,9 +1,1 @@
-int g
-10
 
-class LINEAR isa POLYNOMIAL {
-	private attribute a: float;
-	private attribute b: float;
-	public  function build(A: float, B: float) => LINEAR;
-	public  function evaluate(x: float) => float;
-};

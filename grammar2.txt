@@ -23,7 +23,7 @@ rep-funcDef        -> funcHead funcBody rep-funcDef
 rep-funcDef        -> EPSILON
 
 visibility         -> 'public' | 'private' | EPSILON
-memberDecl         -> funcDecl | attributeDecl
+memberDecl         -> funcDecl | attributeDecl | EPSILON
 
 funcDecl           -> funcHead 
 

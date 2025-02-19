@@ -51,7 +51,7 @@ bool Parser::match(TokenType type)
 bool Parser::parse()
 {
 	if(!nextToken()) return false;
-	if (startsymbol()) return true;
+	if (startsymbol() && match(END_OF_FILE)) return true;
 	else return false;
 
 }
@@ -130,12 +130,8 @@ bool Parser::startsymbol()
 	}
 	else if (m_lookAheadToken->type == TokenType::END_OF_FILE)
 	{
-		if (match(TokenType::END_OF_FILE))
-		{
-			*m_derivationFile << "startsymbol -> $\n";
-			return true;
-		}
-		else return false;
+		*m_derivationFile << "startsymbol -> EPSILON\n";
+		return true;
 	}
 	else return false;
 
@@ -162,12 +158,8 @@ bool Parser::prog()
 	}
 	else if (m_lookAheadToken->type == TokenType::END_OF_FILE)
 	{
-		if (match(TokenType::END_OF_FILE))
-		{
-			*m_derivationFile << "prog -> $\n";
-			return true;
-		}
-		else return false;
+		*m_derivationFile << "prog -> EPSILON\n";
+		return true;
 	}
 	else return false;
 
@@ -212,10 +204,12 @@ bool Parser::classOrImplOrFunc()
 
 bool Parser::funcDef()
 {
-	std::vector<std::string> _first = { "function", "constructor", "ESPILON" };
-	std::vector<std::string> _follow = { "}" };
+	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR };
+	std::vector<TokenType> follow = {  };
 
-	if (m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor")
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == FUNCTION || m_lookAheadToken->type == CONSTRUCTOR)
 	{
 		if (funcHead() && funcBody())
 		{
@@ -224,20 +218,17 @@ bool Parser::funcDef()
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->lexem == "}")
-	{
-		*m_derivationFile << "funcDef -> ESPILON\n";
-		return true;
-	}
 	else return false;
 }
 
 bool Parser::reptFuncDef()
 {
-	std::vector<std::string> _first = { "function", "constructor", "ESPILON" };
-	std::vector<std::string> _follow = { "}" };
+	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR };
+	std::vector<TokenType> follow = { CLOSECUBR };
 
-	if (m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor")
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == FUNCTION || m_lookAheadToken->type == CONSTRUCTOR)
 	{
 		if (funcHead() && funcBody() && reptFuncDef())
 		{
@@ -246,7 +237,7 @@ bool Parser::reptFuncDef()
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->lexem == "}")
+	else if (tokenInFollowSet(follow))
 	{
 		*m_derivationFile << "funcDef -> ESPILON\n";
 		return true;
@@ -256,9 +247,12 @@ bool Parser::reptFuncDef()
 
 bool Parser::implDef()
 {
-	std::vector<std::string> _first = { "implementation" };
+	std::vector<TokenType> first = { IMPLEMENTATION };
+	std::vector<TokenType> follow = { };
 
-	if (m_lookAheadToken->lexem == "implementation")
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == IMPLEMENTATION)
 	{
 		if (match(TokenType::IMPLEMENTATION) && match(TokenType::id) && match(TokenType::OPENCUBR) && reptFuncDef() && match(TokenType::CLOSECUBR))
 		{
@@ -292,14 +286,14 @@ bool Parser::classDecl()
 
 bool Parser::reptClassDecl_1()
 {
-	std::vector<std::string> _first = { "private", "public", "function", "constructor", "attribute", "EPSILON"};
-	std::vector<TokenType> follow = { OPENCUBR };
+	std::vector<TokenType> first = { PRIVATE, PUBLIC, FUNCTION, CONSTRUCTOR, ATTRIBUTE };
+	std::vector<TokenType> follow = { CLOSECUBR };
 
-	//if (!skipErrors(_first, _follow));
+	if (!skipErrors(true, first, follow)) return false; 
 
-	if (m_lookAheadToken->lexem == "private" || m_lookAheadToken->lexem == "public" || 
-		m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor" || 
-		m_lookAheadToken->lexem == "attribute")
+	if (m_lookAheadToken->type == PRIVATE || m_lookAheadToken->type == PUBLIC || 
+		m_lookAheadToken->type == FUNCTION || m_lookAheadToken->type == CONSTRUCTOR || 
+		m_lookAheadToken->type == ATTRIBUTE)
 	{
 		if (visibility() && memberDecl() && reptClassDecl_1())
 		{
@@ -309,7 +303,7 @@ bool Parser::reptClassDecl_1()
 		else return false;
 	}
 	// Contains EPILSON
-	else if (m_lookAheadToken->lexem == "}")
+	else if (m_lookAheadToken->type == CLOSECUBR)
 	{
 		*m_derivationFile << "reptclassDecl_1 -> EPSILON\n";
 		return true;
@@ -320,10 +314,12 @@ bool Parser::reptClassDecl_1()
 
 bool Parser::optClassDecl()
 {
-	std::vector<std::string> _first = { "isa", "EPSILON"};
-	std::vector<std::string> _follow = { "{" };
+	std::vector<TokenType> first = { ISA };
+	std::vector<TokenType> follow = { OPENCUBR };
 
-	if (m_lookAheadToken->lexem == "isa")
+	if (!skipErrors(true, first, follow)) return false; 
+
+	if (m_lookAheadToken->type == ISA)
 	{
 		if (match(TokenType::ISA) && match(TokenType::id) && reptOptClassDecl())
 		{
@@ -332,9 +328,9 @@ bool Parser::optClassDecl()
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->lexem == "{")
+	else if (tokenInFollowSet(follow))
 	{
-		*m_derivationFile << "optClassDecl -> 'isa' 'id' reptOptClassDecl\n";
+		*m_derivationFile << "optClassDecl -> EPSILON\n";
 		return true;
 	}
 	else return false;
@@ -342,10 +338,12 @@ bool Parser::optClassDecl()
 
 bool Parser::reptOptClassDecl()
 {
-	std::vector<std::string> _first = { "isa", "EPSILON" };
-	std::vector<std::string> _follow = { "{" };
+	std::vector<TokenType> first = { COMMA };
+	std::vector<TokenType> follow = { OPENCUBR };
 
-	if (m_lookAheadToken->lexem == ",")
+	if (!skipErrors(true, first, follow)) return false; 
+
+	if (m_lookAheadToken->type == COMMA)
 	{
 		if (match(TokenType::COMMA) && match(TokenType::id) && reptOptClassDecl())
 		{
@@ -353,7 +351,7 @@ bool Parser::reptOptClassDecl()
 			return true;
 		}
 	}
-	else if (m_lookAheadToken->lexem == "{")
+	else if (tokenInFollowSet(follow))
 	{
 		*m_derivationFile << "reptOptClassDecl -> EPSILON\n";
 		return true;
@@ -363,12 +361,12 @@ bool Parser::reptOptClassDecl()
 
 bool Parser::visibility()
 {
-	std::vector<std::string> _first = {"private", "public", "EPSILON"};
-	std::vector<std::string> _follow = { "function", "constructor", "attribute"};
+	std::vector<TokenType> first = { PRIVATE, PUBLIC };
+	std::vector<TokenType> follow = { FUNCTION, CONSTRUCTOR, ATTRIBUTE };
 
-	//if (!skipErrors(_first, _follow));
+	if (!skipErrors(true, first, follow)) return false; 
 
-	if (m_lookAheadToken->lexem == "private")
+	if (m_lookAheadToken->type == PRIVATE)
 	{
 		if (match(TokenType::PRIVATE))
 		{
@@ -377,7 +375,7 @@ bool Parser::visibility()
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->lexem == "public")
+	else if (m_lookAheadToken->type == PUBLIC)
 	{
 		if (match(TokenType::PUBLIC))
 		{
@@ -386,8 +384,7 @@ bool Parser::visibility()
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->lexem == "function" || m_lookAheadToken->lexem == "constructor" ||
-		m_lookAheadToken->lexem == "attribute")
+	else if (tokenInFollowSet(follow))
 	{
 		*m_derivationFile << "visibility -> 'EPSILON'\n";
 		return true;
@@ -398,12 +395,12 @@ bool Parser::visibility()
 
 bool Parser::memberDecl()
 {
-	std::vector<std::string> _first = { "function", "constructor", "attribute", "EPSILON" };
-	std::vector<std::string> _follow = { "}" };
+	std::vector<TokenType> first = { CONSTRUCTOR, ATTRIBUTE, FUNCTION };
+	std::vector<TokenType> follow = { };
 
-	//if (!skipErrors(_first, _follow));
+	if (!skipErrors(false, first, follow)) return false;
 
-	if (m_lookAheadToken->lexem == "constructor" || m_lookAheadToken->lexem == "function")
+	if (m_lookAheadToken->type == CONSTRUCTOR || m_lookAheadToken->type == FUNCTION)
 	{
 		if (funcDec1())
 		{
@@ -412,7 +409,7 @@ bool Parser::memberDecl()
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->lexem == "attribute")
+	else if (m_lookAheadToken->type == ATTRIBUTE)
 	{
 		if (attributeDec1())
 		{
@@ -420,24 +417,18 @@ bool Parser::memberDecl()
 			return true;
 		}
 		else return false;
-	}
-	else if (m_lookAheadToken->lexem == "}")
-	{
-		*m_derivationFile << "memberDecl -> 'EPSILON'\n";
-		return true;
-	}
-	
+	}	
 	else return false;
 }
 
 bool Parser::funcDec1()
 {
-	std::vector<std::string> _first = {"function", "constructor"};
-	std::vector<std::string> _follow = {};
+	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR};
+	std::vector<TokenType> follow = {};
 	
-	//if (!skipErrors(_first, _follow));
+	if (!skipErrors(false, first, follow)) return false;
 
-	if (m_lookAheadToken->lexem == "constructor" || m_lookAheadToken->lexem == "function")
+	if (m_lookAheadToken->type == CONSTRUCTOR || m_lookAheadToken->type == FUNCTION)
 	{
 		if (funcHead() && match(TokenType::SEMI))
 		{
@@ -452,12 +443,12 @@ bool Parser::funcDec1()
 
 bool Parser::funcHead()
 {
-	std::vector<std::string> _first = { "function", "constructor" };
-	std::vector<std::string> _follow = {};
+	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR };
+	std::vector<TokenType> follow = {};
 
-	//if (!skipErrors(_first, _follow));
+	if (!skipErrors(false, first, follow)) return false;
 
-	if (m_lookAheadToken->lexem == "constructor")
+	if (m_lookAheadToken->type == CONSTRUCTOR)
 	{
 		if (match(TokenType::CONSTRUCTOR) && match(TokenType::OPENPAR) && fParams() && match(TokenType::CLOSEPAR))
 		{
@@ -466,7 +457,7 @@ bool Parser::funcHead()
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->lexem == "function")
+	else if (m_lookAheadToken->type == FUNCTION)
 	{
 		if (match(TokenType::FUNCTION) && match(TokenType::id) && match(TokenType::OPENPAR) && fParams() && 
 			match(TokenType::CLOSEPAR) && match(TokenType::ARROW) && returnType())
@@ -482,10 +473,12 @@ bool Parser::funcHead()
 
 bool Parser::funcBody()
 {
-	std::vector<std::string> _first = { "{" };
-	std::vector<std::string> _follow = {};
+	std::vector<TokenType> first = { OPENCUBR };
+	std::vector<TokenType> follow = {};
 
-	if (m_lookAheadToken->lexem == "{")
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == OPENCUBR)
 	{
  		if (match(TokenType::OPENCUBR) && localVarDeclOrStatRep() && match(TokenType::CLOSECUBR))
 		{
@@ -500,12 +493,14 @@ bool Parser::funcBody()
 
 bool Parser::localVarDeclOrStatRep()
 {
-	std::vector<std::string> _first = { "local", "if", "read", "return", "while", "write", "id", "EPSILON"};
-	std::vector<std::string> _follow = { "}" };
+	std::vector<TokenType> first = { LOCAL, IF, READ, RETURN, WHILE, WRITE, id};
+	std::vector<TokenType> follow = { CLOSECUBR };
 
-	if (m_lookAheadToken->lexem == "if" || m_lookAheadToken->lexem == "read"
-		|| m_lookAheadToken->lexem == "while" || m_lookAheadToken->lexem == "write"
-		|| m_lookAheadToken->lexem == "return" || m_lookAheadToken->lexem == "local" || m_lookAheadToken->type == TokenType::id)
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == IF || m_lookAheadToken->type == READ
+		|| m_lookAheadToken->type == WHILE || m_lookAheadToken->type == WRITE
+		|| m_lookAheadToken->type == RETURN || m_lookAheadToken->type == LOCAL || m_lookAheadToken->type == TokenType::id)
 	{
 		if (localVarDeclOrStat() && localVarDeclOrStatRep())
 		{
@@ -514,7 +509,7 @@ bool Parser::localVarDeclOrStatRep()
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->lexem == "}")
+	else if (m_lookAheadToken->type == CLOSECUBR)
 	{
 		*m_derivationFile << "localVarDeclOrStatRep -> EPSILON\n";
 		return true;
