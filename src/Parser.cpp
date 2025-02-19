@@ -293,7 +293,7 @@ bool Parser::classDecl()
 bool Parser::reptClassDecl_1()
 {
 	std::vector<std::string> _first = { "private", "public", "function", "constructor", "attribute", "EPSILON"};
-	std::vector<std::string> _follow = {"}"};
+	std::vector<TokenType> follow = { OPENCUBR };
 
 	//if (!skipErrors(_first, _follow));
 
