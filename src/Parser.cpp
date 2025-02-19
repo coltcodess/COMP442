@@ -82,21 +82,18 @@ bool Parser::skipErrors(bool containsESPILON, std::vector<TokenType> first, std:
 	}
 	else
 	{
+		*m_syntaxErrorsFile << "Syntax error at line:  " + std::to_string(m_lookAheadToken->position) << std::endl;
 
-		do
+		while (!(std::find(first.begin(), first.end(), m_lookAheadToken->type) != first.end() ||
+			std::find(follow.begin(), follow.end(), m_lookAheadToken->type) != follow.end()))
 		{
-			*m_syntaxErrorsFile << "Syntax error at line:  " + std::to_string(m_lookAheadToken->position) + " | " + m_lookAheadToken->lexem << std::endl;
-
 			if (!nextToken()) return false;
 
 			if (containsESPILON && std::find(follow.begin(), follow.end(), m_lookAheadToken->type) != follow.end())
 			{
 				return false;
 			}
-
-		} while (!(std::find(first.begin(), first.end(), m_lookAheadToken->type) != first.end() ||
-			std::find(follow.begin(), follow.end(), m_lookAheadToken->type) != follow.end()));
-
+		}
 
 		return true;
 	}
@@ -207,7 +204,7 @@ bool Parser::funcDef()
 	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR };
 	std::vector<TokenType> follow = {  };
 
-	if (!skipErrors(true, first, follow)) return false;
+	if (!skipErrors(false, first, follow)) return false;
 
 	if (m_lookAheadToken->type == FUNCTION || m_lookAheadToken->type == CONSTRUCTOR)
 	{
@@ -519,10 +516,12 @@ bool Parser::localVarDeclOrStatRep()
 
 bool Parser::localVarDeclOrStat()
 {
-	std::vector<std::string> _first = { "local", "if", "read", "return", "while", "write", "id"};
-	std::vector<std::string> _follow = { "}" };
+	std::vector<TokenType> first = { LOCAL, IF, READ, RETURN, WHILE, WRITE, id };
+	std::vector<TokenType> follow = { CLOSECUBR };
 
-	if (m_lookAheadToken->lexem == "local")
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == LOCAL)
 	{
 		if (localVarDecl())
 		{
@@ -531,8 +530,8 @@ bool Parser::localVarDeclOrStat()
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->lexem == "if" || m_lookAheadToken->lexem == "read"
-		|| m_lookAheadToken->lexem == "while" || m_lookAheadToken->lexem == "write" || m_lookAheadToken->lexem == "return" || m_lookAheadToken->type == TokenType::id)
+	else if (m_lookAheadToken->type == IF || m_lookAheadToken->type == READ
+		|| m_lookAheadToken->type == WHILE || m_lookAheadToken->type == WRITE || m_lookAheadToken->type == RETURN || m_lookAheadToken->type == TokenType::id)
 	{
 		if (statement())
 		{
@@ -541,15 +540,22 @@ bool Parser::localVarDeclOrStat()
 		}
 		else return false;
 	}
+	else if (m_lookAheadToken->type == CLOSECUBR)
+	{
+		*m_derivationFile << "localVarDeclOrStat -> EPSILON\n";
+		return true;
+	}
 	else return false;
 }
 
 bool Parser::localVarDecl()
 {
-	std::vector<std::string> _first = { "local"};
-	std::vector<std::string> _follow = {};
+	std::vector<TokenType> first = { LOCAL };
+	std::vector<TokenType> follow = {};
 
-	if (m_lookAheadToken->lexem == "local")
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == LOCAL)
 	{
 		if (match(TokenType::LOCAL) && varDec1())
 		{
@@ -563,10 +569,12 @@ bool Parser::localVarDecl()
 
 bool Parser::statement()
 {
-	std::vector<std::string> _first = {"id", "write", "while", "return", "read", "if", ".", ":="};
-	std::vector<std::string> _follow = {};
+	std::vector<TokenType> first = {id, WRITE, WHILE, RETURN, READ, IF};
+	std::vector<TokenType> follow = {};
 
-	if (m_lookAheadToken->lexem == "write")
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == WRITE)
 	{
 		if (match(TokenType::WRITE) && match(TokenType::OPENPAR) && expr() && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
 		{
@@ -584,7 +592,7 @@ bool Parser::statement()
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->lexem == "return")
+	else if (m_lookAheadToken->type == RETURN)
 	{
 		if (match(TokenType::RETURN) && match(TokenType::OPENPAR) && expr() && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
 		{
@@ -593,7 +601,7 @@ bool Parser::statement()
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->lexem == "read")
+	else if (m_lookAheadToken->type == READ)
 	{
 		if (match(TokenType::READ) && match(TokenType::OPENPAR) && variable() && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
 		{
@@ -602,7 +610,7 @@ bool Parser::statement()
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->lexem == "while")
+	else if (m_lookAheadToken->type == WHILE)
 	{
 		if (match(TokenType::WHILE) && match(TokenType::OPENPAR) && relExpr() && match(TokenType::CLOSEPAR) && statBlock() && match(TokenType::SEMI))
 		{
@@ -611,25 +619,16 @@ bool Parser::statement()
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->lexem == "if")
+	else if (m_lookAheadToken->type == IF)
 	{
 		if (match(TokenType::IF) && match(TokenType::OPENPAR) && relExpr() && match(CLOSEPAR) && match(TokenType::THEN) && statBlock() &&
 			match(TokenType::ELSE) && statBlock() && match(TokenType::SEMI))
 		{
-			/// tomorrow - the issue is when statblock() is empty and ends with ;
 
 			*m_derivationFile << "statement -> 'if' '(' relExpr ')' 'then' statBlock 'else' statBlock ';'\n";
 			return true;
 		}
 		else return false;
-	}
-	else if (m_lookAheadToken->lexem == "(" || m_lookAheadToken->lexem == "." || m_lookAheadToken->lexem == ":=")
-	{
-		if (assignStat() && match(SEMI))
-		{
-			*m_derivationFile << "statement -> assignStat ';'\n";
-			return true;
-		}
 	}
 	else return false;
 }

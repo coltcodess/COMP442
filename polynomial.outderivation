@@ -2,22 +2,6 @@ optClassDecl -> EPSILON
 visibility -> 'public'
 type -> 'float'
 arraySize -> EPSILON
-fParamsTail -> EPSILON
-fParams -> 'id' ':' type arraySize fParamsTail
-type -> 'float'
-returnType -> type
-'function' 'id' '(' fParams ')' '=>' returnType
-funcDec1 -> funcHead
-memberDecl -> funcDec1
-reptclassDecl_1 -> EPSILON
-reptclassDecl_1 -> visibility memberDec1 reptClassDecl_1
-classDecl -> 'class' 'id' optClassDecl() '{' reptClassDecl_1 '}' ';'
-classOrImplOrFunc -> classDecl
-reptOptClassDecl -> EPSILON
-optClassDecl -> 'isa' 'id' reptOptClassDecl
-visibility -> 'private'
-type -> 'float'
-arraySize -> EPSILON
 varDec1 -> 'id' ':' type arraySize ';'
 attributeDec1 -> 'attribute' varDec1
 memberDecl -> attributeDec1
@@ -641,7 +625,6 @@ funcBody -> '{' localVarDeclOrStatRep '}'
 funcDef -> funcHead funcBody
 classOrImplOrFunc -> funcDef
 prog -> EPSILON
-prog -> classOrImplOrFunc prog
 prog -> classOrImplOrFunc prog
 prog -> classOrImplOrFunc prog
 prog -> classOrImplOrFunc prog
