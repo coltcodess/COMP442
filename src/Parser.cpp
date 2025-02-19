@@ -635,7 +635,10 @@ bool Parser::statement()
 
 bool Parser::assignStat()
 {
-	std::vector<std::string> _first = { "id"};
+	std::vector<TokenType> first = { id };
+	std::vector<TokenType> follow = { };
+
+	if (!skipErrors(false, first, follow)) return false;
 
 	if (m_lookAheadToken->type == TokenType::id)
 	{
@@ -651,7 +654,10 @@ bool Parser::assignStat()
 
 bool Parser::variable()
 {
-	std::vector<std::string> _first = { "id" };
+	std::vector<TokenType> first = { id };
+	std::vector<TokenType> follow = { };
+
+	if (!skipErrors(false, first, follow)) return false;
 
 	if (m_lookAheadToken->type == TokenType::id)
 	{
@@ -667,7 +673,11 @@ bool Parser::variable()
 
 bool Parser::variable2()
 {
-	std::vector<std::string> _follow = { ")", ":=", ";", ",", "<", "<=" , "<>",  "==" , ">",  ">=" , "]", "+", "-", "or", "*", "/", "and" };
+	std::vector<TokenType> first = { OPENSQBR, DOT };
+	std::vector<TokenType> follow = 
+	{ CLOSEPAR, EQ, SEMI, COMMA, LT, LEQ , NOTEQ,  ASSIGN, GT, GEQ , CLOSESQBR, PLUS, MINUS, OR, MULTI, DIV, AND };
+
+	if (!skipErrors(true, first, follow)) return false;
 
 	if (m_lookAheadToken->type == OPENSQBR || m_lookAheadToken->type == DOT)
 	{
@@ -687,7 +697,7 @@ bool Parser::variable2()
 		}
 		else return false;
 	}
-	else if (lexemInFollowSet(_follow))
+	else if (tokenInFollowSet(follow))
 	{
 		*m_derivationFile << "variable -> EPSILON\n";
 		return true;
@@ -697,7 +707,11 @@ bool Parser::variable2()
 
 bool Parser::reptVariable()
 {
-	std::vector<std::string> _follow = { ")",":=", ";", ",", "<", "<=" , "<>",  "==" , ">",  ">=" , "]", "+", "-", "or", "*", "/", "and" };
+	std::vector<TokenType> first = { DOT };
+
+	std::vector<TokenType> follow = { CLOSEPAR, ASSIGN, SEMI, COMMA, LT, LEQ , NOTEQ,  EQ , GT,  GEQ , CLOSESQBR, PLUS, MINUS, OR, MULTI, DIV, AND };
+
+	if (!skipErrors(true, first, follow)) return false;
 
 	if (m_lookAheadToken->type == DOT)
 	{
@@ -708,7 +722,7 @@ bool Parser::reptVariable()
 		}
 		else false;
 	}
-	else if (lexemInFollowSet(_follow))
+	else if (tokenInFollowSet(follow))
 	{
 		*m_derivationFile << "reptVariable -> EPSILON\n";
 		return true;
