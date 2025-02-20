@@ -5,6 +5,9 @@
 #include "Token.h"
 #include "Lexer.h"
 
+/// Assignment 3
+#include "NodeFactory.h"
+
 class Parser
 {
 
@@ -28,6 +31,9 @@ private:
 
 	std::ofstream* m_derivationFile;
 	std::ofstream* m_syntaxErrorsFile;
+
+	// Create AST outfile 
+	std::ofstream* astFile;
 
 	bool skipErrors(std::vector<std::string> first, std::vector<std::string> follow);
 
