@@ -55,13 +55,13 @@ repStatBlock       -> statement repStatBlock | EPSILON
 
 assignStat         -> variable assignOp expr
 
-variable           -> 'id' variable2
+variable           -> 'id' variable2 
 variable2          -> repIdNest1 reptVariable
 variable2          -> '(' aParams ')' varIDnest
 
-reptVariable          -> varIDnest reptVariable | EPSILON
+reptVariable          -> varIDnest reptVariable
 
-varIDnest          -> '.' 'id' varIdnest2
+varIDnest          -> '.' 'id' varIdnest2 | EPSILON
 varIdnest2          -> '(' aParams ')' varIDnest | repIdNest1
 
 expr               -> arithExpr exp2 

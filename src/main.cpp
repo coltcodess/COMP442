@@ -3,6 +3,7 @@
 #include <sstream>
 #include "Lexer.h"
 #include "Parser.h"
+#include "NodeFactory.h"
 
 const std::string SOURCE_FILE_TYPE = ".src";
 const std::string OUTPUT_TOKEN_FILE_TYPE = ".outlextokens";
@@ -50,11 +51,16 @@ int main()
     srcFile = NULL;
 
     // Create Lexer with source file  
-    Lexer* lexer = new Lexer(buffer->str(), fileInput);
-    Parser* parser = new Parser(fileInput, *lexer);
+    //Lexer* lexer = new Lexer(buffer->str(), fileInput);
+    //Parser* parser = new Parser(fileInput, *lexer);
 
+    NodeFactory nodeFactory; 
 
-      
+    Node* n1 = nodeFactory.makeNode(floatLit);
+    Node* n2 = nodeFactory.makeNode(floatLit);
+    Node* n3 = nodeFactory.makeNode(intLit);
+     
+    nodeFactory.makeSubtree(n3, 2, n1, n2);
 
     return 0;
 }
