@@ -1,0 +1,11 @@
+Syntax error at line:  3 | while
+Syntax error at line:  3 | (
+Syntax error at line:  3 | x
+Syntax error at line:  3 | >
+Syntax error at line:  3 | y
+Syntax error at line:  3 | )
+Syntax error at line:  3 | {
+Syntax error at line:  4 | x
+Syntax error at line:  4 | +
+Syntax error at line:  4 | 1
+Syntax error at line:  6 | }

@@ -32,10 +32,8 @@ private:
 	std::ofstream* m_derivationFile;
 	std::ofstream* m_syntaxErrorsFile;
 
-	// Create AST outfile 
 	std::ofstream* astFile;
-
-	bool skipErrors(std::vector<std::string> first, std::vector<std::string> follow);
+	bool skipErrors(bool containsESPILON, std::vector<TokenType> first, std::vector<TokenType> follow);
 
 	// Non Terminals
 	bool startsymbol();

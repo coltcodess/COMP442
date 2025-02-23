@@ -1,0 +1,6 @@
+
+[while, while, 3] 
+[openpar, (, 3] [id, x, 3] [gt, >, 3] [id, y, 3] [closepar, ), 3] [opencubr, {, 3] 
+[id, x, 4] [plus, +, 4] [intnum, 1, 4] 
+[closecubr, }, 6] 
+[end_of_file, $, 6] 
