@@ -11,6 +11,8 @@ private:
 	std::string type;
 public:
 	std::vector<Node*> children;
+	std::vector<Node*> siblings;
+
 	Token* token = nullptr;
 	virtual std::string getType() = 0;
 
@@ -26,9 +28,9 @@ public:
 		}
 		else
 		{
-			for (int i = 0; i < children.size(); i++)
+			for (auto i : children)
 			{
-				std::cout << children[i]->getType() << std::endl;
+				std::cout << i->getType() << std::endl;
 			}
 		}
 
@@ -44,6 +46,8 @@ public:
 			std::cout << "Node Token Lexem: " + this->token->lexem << std::endl;
 		}
 	}; 
+
+
 
 };
 
@@ -157,6 +161,8 @@ enum Type {
 
 };
 
+/////////////////////////////////////////////////////////////////////
+
 class NodeFactory
 {
 public:
@@ -165,10 +171,14 @@ public:
 		std::cout << "Node Factory created....." << std::endl;
 	}
 
+	/////////////////////////////////////////////////////////////////////
+
 	Node* makeNode()
 	{
 		return new null_Node();
 	}
+
+	/////////////////////////////////////////////////////////////////////
 
 	Node* makeNode(Type t)
 	{
@@ -193,6 +203,8 @@ public:
 			return nullptr;
 		}
 	}
+
+	/////////////////////////////////////////////////////////////////////
 	
 	Node* makeSubtree(Node* op, int count, ... )
 	{
@@ -207,11 +219,15 @@ public:
 			op->children.push_back(temp);
 		}
 		va_end(args);
-
-		op->printChildren();
 		
 		return op;
 	}
 
+	/////////////////////////////////////////////////////////////////////
+
+	void makeSiblings(int count, Node*...)
+	{
+
+	}
 
 };
