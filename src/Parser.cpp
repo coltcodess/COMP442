@@ -6,9 +6,14 @@ Parser::Parser(const std::string fileName, Lexer& lexer) : m_sourceFileName(file
 
 	std::ofstream outDev(m_sourceFileName + ".outderivation", std::ofstream::out);
 	std::ofstream outErrors(m_sourceFileName + ".outsyntaxerrors", std::ofstream::out);
+	std::ofstream outAST(m_sourceFileName + ".outAST", std::ofstream::out);
 
 	m_derivationFile = &outDev;
 	m_syntaxErrorsFile = &outErrors;
+	m_ASTFile = &outAST;
+
+	// Assignment 3
+	m_nodeFactory = new NodeFactory();
 
 	if (this->parse())
 	{
@@ -19,12 +24,16 @@ Parser::Parser(const std::string fileName, Lexer& lexer) : m_sourceFileName(file
 		std::cout << "-------------- Failed to Parse" << std::endl; 
 	}
 
+	writeAST(m_astRoot, 0);
+
 	// Close Files 
 	m_derivationFile->close();
 	m_syntaxErrorsFile->close();
+	m_ASTFile->close();
 
 	m_derivationFile = nullptr;
 	m_syntaxErrorsFile = nullptr;
+	m_ASTFile = nullptr;
 	
 }
 
@@ -136,6 +145,7 @@ bool Parser::startsymbol()
 
 bool Parser::prog()
 {
+	m_astRoot = m_nodeFactory->makeNode(Type::prog);
 
 	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR, CLASS, IMPLEMENTATION };
 	std::vector<TokenType> follow = { END_OF_FILE };
@@ -146,7 +156,7 @@ bool Parser::prog()
 	if (m_lookAheadToken->type == FUNCTION || m_lookAheadToken->type == CONSTRUCTOR ||
 		m_lookAheadToken->type == CLASS || m_lookAheadToken->type == IMPLEMENTATION)
 	{
-		if (classOrImplOrFunc() && prog())
+		if (classOrImplOrFunc(m_astRoot) && prog())
 		{
 			*m_derivationFile << "prog -> classOrImplOrFunc prog\n";
 			return true;
@@ -162,10 +172,13 @@ bool Parser::prog()
 
 }
 
-bool Parser::classOrImplOrFunc()
+bool Parser::classOrImplOrFunc(Node* root)
 {
 	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR, CLASS, IMPLEMENTATION };
 	std::vector<TokenType> follow = { };
+
+	Node* classDeclList_Node = m_nodeFactory->makeNode(Type::classDeclList);
+	root->children.push_back(classDeclList_Node);
 
 	if (!skipErrors(false, first, follow)) return false;
 
@@ -174,6 +187,7 @@ bool Parser::classOrImplOrFunc()
 		if (funcDef())
 		{
 			*m_derivationFile << "classOrImplOrFunc -> funcDef\n";
+			root = classDeclList_Node;
 			return true;
 		}
 		else return false;
@@ -1581,6 +1595,24 @@ bool Parser::tokenInFirstSet(std::vector<TokenType> _first)
 		return true;
 	}
 	return false;
+}
+
+void Parser::writeAST(Node* root, int level)
+{
+	if (root == nullptr) {
+		return;
+	}
+
+	// Print the current node's data
+	// Indent according to the level of the node
+	*m_ASTFile << std::string(level, ' ') << "| " << root->getType() << std::endl;
+
+	// Print each child node, with a '|' prefix
+	for (Node* child : root->children) {
+		// Recursively print each child's children
+		writeAST(child, level + 2);
+	}
+
 }
 
 

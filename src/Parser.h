@@ -22,6 +22,8 @@ private:
 
 
 	Lexer& m_lexer;
+	NodeFactory* m_nodeFactory;
+	Node* m_astRoot = nullptr;
 
 	// Reference to tokens 
 	Token* m_lookAheadToken = nullptr;
@@ -31,6 +33,7 @@ private:
 
 	std::ofstream* m_derivationFile;
 	std::ofstream* m_syntaxErrorsFile;
+	std::ofstream* m_ASTFile;
 
 	std::ofstream* astFile;
 	bool skipErrors(bool containsESPILON, std::vector<TokenType> first, std::vector<TokenType> follow);
@@ -38,7 +41,7 @@ private:
 	// Non Terminals
 	bool startsymbol();
 	bool prog();
-	bool classOrImplOrFunc();
+	bool classOrImplOrFunc(Node* root);
 	bool funcDef();
 	bool reptFuncDef();
 	bool implDef();
@@ -103,11 +106,15 @@ private:
 	bool addOp();
 	bool relOp();
 	bool type();
+	
+	// Write AST to file
+	void writeAST(Node* root, int level);
 
 	// Helper 
 	bool lexemInFollowSet(std::vector<std::string> _follow);
 
 	bool tokenInFollowSet(std::vector<TokenType> _follow);
 	bool tokenInFirstSet(std::vector<TokenType> _first);
+
 };
 

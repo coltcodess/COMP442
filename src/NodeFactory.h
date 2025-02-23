@@ -62,6 +62,24 @@ public:
 
 /////////////////////////////////////////////////////////////////////
 
+class prog_Node : public Node
+{
+public:
+	std::string getType() { return "prog"; }
+
+};
+
+/////////////////////////////////////////////////////////////////////
+
+class classDeclList_Node : public Node
+{
+public:
+	std::string getType() { return "classDeclList"; }
+
+};
+
+/////////////////////////////////////////////////////////////////////
+
 class idLit_Node : public Node
 {
 public:
@@ -140,7 +158,7 @@ enum Type {
 	idLit, intLit, floatLit, type, relOp, multiOp, assignOp, addOp,
 
 	prog,
-	classList, funcDefList, implDefList,
+	classDeclList, funcDefList, implDefList,
 	classDecl, funcDef, ImpleDef,
 	inheritList, memberList,
 	memberDecl, FuncDecl, varDecl,
@@ -198,6 +216,12 @@ public:
 			return new multiOp_Node();
 		case assignOp:
 			return new assignOp_Node();
+
+		case prog:
+			return new prog_Node();
+		case classDeclList:
+			return new classDeclList_Node();
+
 		default: 
 			std::cout << "Error: Invalid Type past to makeNode()....." << std::endl;
 			return nullptr;

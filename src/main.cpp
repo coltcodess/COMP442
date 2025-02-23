@@ -9,23 +9,7 @@ const std::string SOURCE_FILE_TYPE = ".src";
 const std::string OUTPUT_TOKEN_FILE_TYPE = ".outlextokens";
 
 
-void printNodes(Node* root, int level  = 0)
-{
-    if (root == nullptr) {
-        return;
-    }
 
-    // Print the current node's data
-    // Indent according to the level of the node
-    std::cout << std::string(level, ' ') << "| " << root->getType() << std::endl;
-
-    // Print each child node, with a '|' prefix
-    for (Node* child : root->children) {
-        // Recursively print each child's children
-        printNodes(child, level + 2);
-    }
-
-}
 
 int main()
 {
@@ -73,22 +57,6 @@ int main()
     Lexer* lexer = new Lexer(buffer->str(), fileInput);
     Parser* parser = new Parser(fileInput, *lexer);
 
-    NodeFactory nodeFactory; 
- 
-    Node* n2 = nodeFactory.makeNode(Type::idLit);
-    Node* n3 = nodeFactory.makeNode(Type::intLit);
-
-    Node* n4 = nodeFactory.makeNode(Type::idLit);
-    Node* n5 = nodeFactory.makeNode(Type::intLit);
-
-    Node* root = nodeFactory.makeSubtree(nodeFactory.makeNode(Type::floatLit), 2, n2, n3);
-    nodeFactory.makeSubtree(n3, 1, n4);
-    nodeFactory.makeSubtree(n2, 1, n5);
-
-   
-  
-
-    printNodes(root);
 
     return 0;
 }

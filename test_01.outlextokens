@@ -1,6 +1,4 @@
-
-[while, while, 3] 
-[openpar, (, 3] [id, x, 3] [gt, >, 3] [id, y, 3] [closepar, ), 3] [opencubr, {, 3] 
-[id, x, 4] [plus, +, 4] [intnum, 1, 4] 
-[closecubr, }, 6] 
-[end_of_file, $, 6] 
+[class, class, 1] [id, POLYNOMIAL, 1] [opencubr, {, 1] 
+[public, public, 2] [id, evaluate, 2] [openpar, (, 2] [id, x, 2] [colon, :, 2] [float, float, 2] [closepar, ), 2] [arrow, =>, 2] [float, float, 2] [semi, ;, 2] 
+[closecubr, }, 3] [semi, ;, 3] 
+[end_of_file, $, 5] 
