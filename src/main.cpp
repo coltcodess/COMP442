@@ -70,8 +70,8 @@ int main()
     srcFile = NULL;
 
     // Create Lexer with source file  
-    //Lexer* lexer = new Lexer(buffer->str(), fileInput);
-    //Parser* parser = new Parser(fileInput, *lexer);
+    Lexer* lexer = new Lexer(buffer->str(), fileInput);
+    Parser* parser = new Parser(fileInput, *lexer);
 
     NodeFactory nodeFactory; 
  
