@@ -5,6 +5,9 @@
 #include "Token.h"
 #include "Lexer.h"
 
+/// Assignment 3
+#include "NodeFactory.h"
+
 class Parser
 {
 
@@ -29,6 +32,7 @@ private:
 	std::ofstream* m_derivationFile;
 	std::ofstream* m_syntaxErrorsFile;
 
+	std::ofstream* astFile;
 	bool skipErrors(bool containsESPILON, std::vector<TokenType> first, std::vector<TokenType> follow);
 
 	// Non Terminals
