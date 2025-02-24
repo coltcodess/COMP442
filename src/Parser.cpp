@@ -213,6 +213,143 @@ bool Parser::classOrImplOrFunc(Node* root)
 	else return false;
 }
 
+bool Parser::classDecl()
+{
+	std::vector<TokenType> first = { CLASS };
+	std::vector<TokenType> follow = { };
+
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == CLASS)
+	{
+		if (match(TokenType::CLASS) && match(TokenType::id) && ISA1() && match(TokenType::OPENCUBR) &&
+			VISMEMBERDECL() && match(TokenType::CLOSECUBR) && match(TokenType::SEMI))
+		{
+			*m_derivationFile << "classDecl -> 'class' 'id' ISA1 '{' VISMEMBERDECL '}' ';'\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::VISMEMBERDECL()
+{
+	std::vector<TokenType> first = { PRIVATE, PUBLIC };
+	std::vector<TokenType> follow = { CLOSECUBR };
+
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == PRIVATE || m_lookAheadToken->type == PUBLIC)
+	{
+		if (visibility() && memberDecl() && VISMEMBERDECL())
+		{
+			*m_derivationFile << "VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL\n";
+			return true;
+		}
+		else return false;
+	}
+	
+	else if (m_lookAheadToken->type == CLOSECUBR)
+	{
+		*m_derivationFile << "VISMEMBERDECL -> EPSILON\n";
+		return true;
+	}
+	else return false;
+
+}
+
+bool Parser::ISA1()
+{
+	std::vector<TokenType> first = { ISA };
+	std::vector<TokenType> follow = { OPENCUBR };
+
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == ISA)
+	{
+		if (match(TokenType::ISA) && match(TokenType::id) && ISA2())
+		{
+			*m_derivationFile << "ISA1 -> 'isa' 'id' ISA2\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (tokenInFollowSet(follow))
+	{
+		*m_derivationFile << "ISA1 -> EPSILON\n";
+		return true;
+	}
+	else return false;
+}
+
+bool Parser::ISA2()
+{
+	std::vector<TokenType> first = { COMMA };
+	std::vector<TokenType> follow = { OPENCUBR };
+
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == ISA)
+	{
+		if (match(TokenType::COMMA) && match(TokenType::id) && ISA2())
+		{
+			*m_derivationFile << "ISA2 -> ',' 'id' ISA2\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (tokenInFollowSet(follow))
+	{
+		*m_derivationFile << "ISA2 -> EPSILON\n";
+		return true;
+	}
+	else return false;
+}
+
+bool Parser::implDef()
+{
+	std::vector<TokenType> first = { IMPLEMENTATION };
+	std::vector<TokenType> follow = { };
+
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == IMPLEMENTATION)
+	{
+		if (match(TokenType::IMPLEMENTATION) && match(TokenType::id) && match(TokenType::OPENCUBR) && impleBody() && match(TokenType::CLOSECUBR))
+		{
+			*m_derivationFile << "implDef -> 'implementation' 'id' '{' funcDef '}'\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::impleBody()
+{
+	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR };
+	std::vector<TokenType> follow = { CLOSECUBR };
+
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == IMPLEMENTATION)
+	{
+		if (funcDef() && impleBody())
+		{
+			*m_derivationFile << "impleBody -> funcDef impleBody\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (tokenInFollowSet(follow))
+	{
+		*m_derivationFile << "impleBody -> ESPILON\n";
+		return true;
+	}
+	else return false;
+}
+
 bool Parser::funcDef()
 {
 	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR };
@@ -232,150 +369,12 @@ bool Parser::funcDef()
 	else return false;
 }
 
-bool Parser::reptFuncDef()
-{
-	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR };
-	std::vector<TokenType> follow = { CLOSECUBR };
-
-	if (!skipErrors(true, first, follow)) return false;
-
-	if (m_lookAheadToken->type == FUNCTION || m_lookAheadToken->type == CONSTRUCTOR)
-	{
-		if (funcHead() && funcBody() && reptFuncDef())
-		{
-			*m_derivationFile << "funcDef -> funcHead funcBody\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (tokenInFollowSet(follow))
-	{
-		*m_derivationFile << "funcDef -> ESPILON\n";
-		return true;
-	}
-	else return false;
-}
-
-bool Parser::implDef()
-{
-	std::vector<TokenType> first = { IMPLEMENTATION };
-	std::vector<TokenType> follow = { };
-
-	if (!skipErrors(false, first, follow)) return false;
-
-	if (m_lookAheadToken->type == IMPLEMENTATION)
-	{
-		if (match(TokenType::IMPLEMENTATION) && match(TokenType::id) && match(TokenType::OPENCUBR) && reptFuncDef() && match(TokenType::CLOSECUBR))
-		{
-			*m_derivationFile << "implDef -> 'implementation' 'id' '{' funcDef '}'\n";
-			return true;
-		}
-		else return false;
-	}
-	else return false;
-}
-
-bool Parser::classDecl()
-{
-	std::vector<TokenType> first = {CLASS};
-	std::vector<TokenType> follow = { };
-
-	if (!skipErrors(false, first, follow)) return false;
-
-	if (m_lookAheadToken->type == CLASS)
-	{
-		if (match(TokenType::CLASS) && match(TokenType::id) && optClassDecl() && match(TokenType::OPENCUBR) &&
-			reptClassDecl_1() && match(TokenType::CLOSECUBR) && match(TokenType::SEMI))
-		{
-			*m_derivationFile << "classDecl -> 'class' 'id' optClassDecl() '{' reptClassDecl_1 '}' ';'\n";
-			return true;
-		}
-		else return false;
-	}
-	else return false;
-}
-
-bool Parser::reptClassDecl_1()
-{
-	std::vector<TokenType> first = { PRIVATE, PUBLIC, FUNCTION, CONSTRUCTOR, ATTRIBUTE };
-	std::vector<TokenType> follow = { CLOSECUBR };
-
-	if (!skipErrors(true, first, follow)) return false; 
-
-	if (m_lookAheadToken->type == PRIVATE || m_lookAheadToken->type == PUBLIC || 
-		m_lookAheadToken->type == FUNCTION || m_lookAheadToken->type == CONSTRUCTOR || 
-		m_lookAheadToken->type == ATTRIBUTE)
-	{
-		if (visibility() && memberDecl() && reptClassDecl_1())
-		{
-			*m_derivationFile << "reptclassDecl_1 -> visibility memberDec1 reptClassDecl_1\n";
-			return true;
-		}
-		else return false;
-	}
-	// Contains EPILSON
-	else if (m_lookAheadToken->type == CLOSECUBR)
-	{
-		*m_derivationFile << "reptclassDecl_1 -> EPSILON\n";
-		return true;
-	}
-	else return false;
-	
-}
-
-bool Parser::optClassDecl()
-{
-	std::vector<TokenType> first = { ISA };
-	std::vector<TokenType> follow = { OPENCUBR };
-
-	if (!skipErrors(true, first, follow)) return false; 
-
-	if (m_lookAheadToken->type == ISA)
-	{
-		if (match(TokenType::ISA) && match(TokenType::id) && reptOptClassDecl())
-		{
-			*m_derivationFile << "optClassDecl -> 'isa' 'id' reptOptClassDecl\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (tokenInFollowSet(follow))
-	{
-		*m_derivationFile << "optClassDecl -> EPSILON\n";
-		return true;
-	}
-	else return false;
-}
-
-bool Parser::reptOptClassDecl()
-{
-	std::vector<TokenType> first = { COMMA };
-	std::vector<TokenType> follow = { OPENCUBR };
-
-	if (!skipErrors(true, first, follow)) return false; 
-
-	if (m_lookAheadToken->type == COMMA)
-	{
-		if (match(TokenType::COMMA) && match(TokenType::id) && reptOptClassDecl())
-		{
-			*m_derivationFile << "reptOptClassDecl -> ',' 'id' reptOptClassDecl\n";
-			return true;
-		}
-	}
-	else if (tokenInFollowSet(follow))
-	{
-		*m_derivationFile << "reptOptClassDecl -> EPSILON\n";
-		return true;
-	}
-	else return false;
-}
-
 bool Parser::visibility()
 {
 	std::vector<TokenType> first = { PRIVATE, PUBLIC };
-	std::vector<TokenType> follow = { FUNCTION, CONSTRUCTOR, ATTRIBUTE };
+	std::vector<TokenType> follow = { };
 
-	if (!skipErrors(true, first, follow)) return false; 
+	if (!skipErrors(false, first, follow)) return false;
 
 	if (m_lookAheadToken->type == PRIVATE)
 	{
@@ -395,13 +394,8 @@ bool Parser::visibility()
 		}
 		else return false;
 	}
-	else if (tokenInFollowSet(follow))
-	{
-		*m_derivationFile << "visibility -> 'EPSILON'\n";
-		return true;
-	}
 	else return false;
-	
+
 }
 
 bool Parser::memberDecl()
@@ -422,21 +416,21 @@ bool Parser::memberDecl()
 	}
 	else if (m_lookAheadToken->type == ATTRIBUTE)
 	{
-		if (attributeDec1())
+		if (attributeDecl())
 		{
 			*m_derivationFile << "memberDecl -> attributeDec1\n";
 			return true;
 		}
 		else return false;
-	}	
+	}
 	else return false;
 }
 
 bool Parser::funcDec1()
 {
-	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR};
+	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR };
 	std::vector<TokenType> follow = {};
-	
+
 	if (!skipErrors(false, first, follow)) return false;
 
 	if (m_lookAheadToken->type == CONSTRUCTOR || m_lookAheadToken->type == FUNCTION)
@@ -470,8 +464,7 @@ bool Parser::funcHead()
 	}
 	else if (m_lookAheadToken->type == FUNCTION)
 	{
-		if (match(TokenType::FUNCTION) && match(TokenType::id) && match(TokenType::OPENPAR) && fParams() && 
-			match(TokenType::CLOSEPAR) && match(TokenType::ARROW) && returnType())
+		if (match(TokenType::FUNCTION) && match(TokenType::id) && match(TokenType::OPENPAR) && fParams() && match(TokenType::CLOSEPAR) && match(TokenType::ARROW) && returnType())
 		{
 			*m_derivationFile << "'function' 'id' '(' fParams ')' '=>' returnType\n";
 			return true;
@@ -491,7 +484,7 @@ bool Parser::funcBody()
 
 	if (m_lookAheadToken->type == OPENCUBR)
 	{
- 		if (match(TokenType::OPENCUBR) && localVarDeclOrStatRep() && match(TokenType::CLOSECUBR))
+		if (match(TokenType::OPENCUBR) && LOCALVARDECLORSTAT() && match(TokenType::CLOSECUBR))
 		{
 			*m_derivationFile << "funcBody -> '{' localVarDeclOrStatRep '}'\n";
 			return true;
@@ -502,31 +495,211 @@ bool Parser::funcBody()
 
 }
 
-bool Parser::localVarDeclOrStatRep()
+bool Parser::LOCALVARDECLORSTAT()
 {
-	std::vector<TokenType> first = { LOCAL, IF, READ, RETURN, WHILE, WRITE, id};
+	std::vector<TokenType> first = { LOCAL, IF, READ, RETURN, WHILE, WRITE, id, SELF };
+	std::vector<TokenType> follow = { };
+
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == IF || m_lookAheadToken->type == READ
+		|| m_lookAheadToken->type == WHILE || m_lookAheadToken->type == WRITE
+		|| m_lookAheadToken->type == RETURN || m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::SELF)
+	{
+		if (statement())
+		{
+			*m_derivationFile << "LOCALVARDECLORSTAT2 -> statement\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == LOCAL)
+	{
+		if (localVarDecl())
+		{
+			*m_derivationFile << "LOCALVARDECLORSTAT2 -> localVarDecl\n";
+			return true;
+		}
+		else return false;
+	}
+
+	else return false;
+}
+
+bool Parser::LOCALVARDECLORSTAT2()
+{
+	std::vector<TokenType> first = { LOCAL, IF, READ, RETURN, WHILE, WRITE, id, SELF };
 	std::vector<TokenType> follow = { CLOSECUBR };
 
 	if (!skipErrors(true, first, follow)) return false;
 
 	if (m_lookAheadToken->type == IF || m_lookAheadToken->type == READ
 		|| m_lookAheadToken->type == WHILE || m_lookAheadToken->type == WRITE
-		|| m_lookAheadToken->type == RETURN || m_lookAheadToken->type == LOCAL || m_lookAheadToken->type == TokenType::id)
+		|| m_lookAheadToken->type == RETURN || m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::SELF || m_lookAheadToken->type == TokenType::LOCAL)
 	{
-		if (localVarDeclOrStat() && localVarDeclOrStatRep())
+		if (LOCALVARDECLORSTAT() && LOCALVARDECLORSTAT2())
 		{
-			*m_derivationFile << "localVarDeclOrStatRep -> localVarDeclOrStat\n";
+			*m_derivationFile << "LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2\n";
 			return true;
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->type == CLOSECUBR)
+	else if (m_lookAheadToken->type == LOCAL)
 	{
-		*m_derivationFile << "localVarDeclOrStatRep -> EPSILON\n";
+		if (localVarDecl())
+		{
+			*m_derivationFile << "LOCALVARDECLORSTAT2 -> localVarDecl\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (tokenInFollowSet(follow))
+	{
+		*m_derivationFile << "LOCALVARDECLORSTAT2 -> EPSILON\n";
 		return true;
 	}
 	else return false;
 }
+
+bool Parser::attributeDecl()
+{
+	std::vector<TokenType> first = { ATTRIBUTE };
+	std::vector<TokenType> follow = {};
+
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == ATTRIBUTE)
+	{
+		if (match(TokenType::ATTRIBUTE) && varDecl())
+		{
+			*m_derivationFile << "attributeDecl -> 'attribute' varDecl\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::localVarDecl()
+{
+	std::vector<TokenType> first = { LOCAL };
+	std::vector<TokenType> follow = {};
+
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == LOCAL)
+	{
+		if (match(TokenType::LOCAL) && varDecl())
+		{
+			*m_derivationFile << "localVarDecl -> 'local' varDecl ';'\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::varDecl()
+{
+	std::vector<TokenType>  first = { id };
+	std::vector<TokenType>  follow = {};
+
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == TokenType::id)
+	{
+		if (match(TokenType::id) && match(TokenType::COLON) && type() && arraySize() && match(TokenType::SEMI))
+		{
+			*m_derivationFile << "varDec1 -> 'id' ':' type arraySize ';'\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////
+//////////////////////////////////////////////////////////////////////
+
+
+bool Parser::reptFuncDef()
+{
+	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR };
+	std::vector<TokenType> follow = { CLOSECUBR };
+
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == FUNCTION || m_lookAheadToken->type == CONSTRUCTOR)
+	{
+		if (funcHead() && funcBody() && reptFuncDef())
+		{
+			*m_derivationFile << "funcDef -> funcHead funcBody\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (tokenInFollowSet(follow))
+	{
+		*m_derivationFile << "funcDef -> ESPILON\n";
+		return true;
+	}
+	else return false;
+}
+
+
+bool Parser::reptOptClassDecl()
+{
+	std::vector<TokenType> first = { COMMA };
+	std::vector<TokenType> follow = { OPENCUBR };
+
+	if (!skipErrors(true, first, follow)) return false; 
+
+	if (m_lookAheadToken->type == COMMA)
+	{
+		if (match(TokenType::COMMA) && match(TokenType::id) && reptOptClassDecl())
+		{
+			*m_derivationFile << "reptOptClassDecl -> ',' 'id' reptOptClassDecl\n";
+			return true;
+		}
+	}
+	else if (tokenInFollowSet(follow))
+	{
+		*m_derivationFile << "reptOptClassDecl -> EPSILON\n";
+		return true;
+	}
+	else return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 bool Parser::localVarDeclOrStat()
 {
@@ -562,24 +735,7 @@ bool Parser::localVarDeclOrStat()
 	else return false;
 }
 
-bool Parser::localVarDecl()
-{
-	std::vector<TokenType> first = { LOCAL };
-	std::vector<TokenType> follow = {};
 
-	if (!skipErrors(false, first, follow)) return false;
-
-	if (m_lookAheadToken->type == LOCAL)
-	{
-		if (match(TokenType::LOCAL) && varDec1())
-		{
-			*m_derivationFile << "localVarDecl -> 'local' varDecl ';'\n";
-			return true;
-		}
-		else return false;
-	}
-	else return false;
-}
 
 bool Parser::statement()
 {
@@ -1064,39 +1220,9 @@ bool Parser::repStatBlock()
 	else return false;
 }
 
-bool Parser::attributeDec1()
-{
-	std::vector<std::string> _first = { "attribute"};
-	std::vector<std::string> _follow = {};
 
-	if (m_lookAheadToken->lexem == "attribute")
-	{
-		if (match(TokenType::ATTRIBUTE) && varDec1())
-		{
-			*m_derivationFile << "attributeDec1 -> 'attribute' varDec1\n";
-			return true;
-		}
-		else return false;
-	}
-	else return false;
-}
 
-bool Parser::varDec1()
-{
-	std::vector<std::string> _first = { "id" };
-	std::vector<std::string> _follow = {};
 
-	if (m_lookAheadToken->type == TokenType::id)
-	{
-		if (match(TokenType::id) && match(TokenType::COLON) && type() && arraySize() && match(TokenType::SEMI))
-		{
-			*m_derivationFile << "varDec1 -> 'id' ':' type arraySize ';'\n";
-			return true;
-		}
-		else return false;
-	}
-	else return false;
-}
 
 bool Parser::returnType()
 {

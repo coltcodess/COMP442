@@ -46,8 +46,9 @@ private:
 	bool reptFuncDef();
 	bool implDef();
 	bool classDecl();
-	bool reptClassDecl_1();
-	bool optClassDecl();
+	bool VISMEMBERDECL();
+	bool ISA1();
+	bool ISA2();
 	bool reptOptClassDecl();
 
 	bool visibility();
