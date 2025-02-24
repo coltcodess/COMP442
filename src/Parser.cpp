@@ -817,6 +817,77 @@ bool Parser::statBlock()
 
 }
 
+bool Parser::STATEMENTS()
+{
+	std::vector<TokenType> first = { IF, READ, RETURN, WHILE, WRITE, id, SELF };
+	std::vector<TokenType> follow = { CLOSECUBR };
+
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == IF || m_lookAheadToken->type == READ || m_lookAheadToken->type == WHILE || m_lookAheadToken->type == RETURN || m_lookAheadToken->type == WRITE || m_lookAheadToken->type == id || m_lookAheadToken->type == SELF)
+	{
+		if (statement() && STATEMENTS())
+		{
+			*m_derivationFile << "STATEMENTS -> statement STATEMENTS\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (tokenInFollowSet(follow))
+	{
+		*m_derivationFile << "STATEMENTS -> ESPILON\n";
+		return true;
+	}
+	else return false;
+}
+
+bool Parser::expr()
+{
+	std::vector<TokenType> first = { OPENPAR, floatnum, intnum, NOT, id, SELF, MINUS, PLUS };
+	std::vector<TokenType> follow = {};
+
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == OPENPAR || m_lookAheadToken->type == TokenType::floatnum
+		|| m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::intnum
+		|| m_lookAheadToken->type == NOT || m_lookAheadToken->type == PLUS
+		|| m_lookAheadToken->type == MINUS || m_lookAheadToken->type == SELF)
+	{
+		if (arithExpr() && expr2())
+		{
+			*m_derivationFile << "expr -> arithExpr exp2\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::expr2()
+{
+	std::vector<TokenType> first = { EQ, GT, GEQ, LT, LEQ, NOTEQ };
+	std::vector<TokenType> follow = { CLOSEPAR, SEMI, COMMA };
+
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == EQ || m_lookAheadToken->type == GT || m_lookAheadToken->type == GEQ ||
+		m_lookAheadToken->type == LT || m_lookAheadToken->type == LEQ || m_lookAheadToken->type == NOTEQ)
+	{
+		if (relOp() && arithExpr())
+		{
+			*m_derivationFile << "expr2 -> relOp arithExpr\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (tokenInFollowSet(follow))
+	{
+		*m_derivationFile << "expr2 -> EPSILON\n";
+		return true;
+	}
+	else return false;
+}
+
 //////////////////////////////////////////////////////////////////////
 //////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -1078,48 +1149,9 @@ bool Parser::varIdNest2()
 	else return false;
 }
 
-bool Parser::expr()
-{
-	std::vector<std::string> _first = { "(", "floatLit", "id", "intLit", "not", "+", "-", "id", "."};
-	std::vector<std::string> _follow = {};
 
-	if (m_lookAheadToken->lexem == "(" || m_lookAheadToken->type == TokenType::floatnum
-		|| m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::intnum
-		|| m_lookAheadToken->lexem == "not" || m_lookAheadToken->lexem == "+"
-		|| m_lookAheadToken->lexem == "-")
-	{
-		if (arithExpr() && expr2())
-		{
-			*m_derivationFile << "expr -> arithExpr exp2\n";
-			return true;
-		}
-		else return false;
-	}
-	else return false;
-}
 
-bool Parser::expr2()
-{
-	std::vector<std::string> _first = {"<","<=","<>","==",">",">=", "EPSILON"};
-	std::vector<std::string> _follow = {")",",",";"};
 
-	if (m_lookAheadToken->lexem == "<" || m_lookAheadToken->lexem == "<=" || m_lookAheadToken->lexem == "<>" ||
-		m_lookAheadToken->lexem == "==" || m_lookAheadToken->lexem == ">" || m_lookAheadToken->lexem == "<=")
-	{
-		if (relOp() && arithExpr())
-		{
-			*m_derivationFile << "expr2 -> relOp arithExpr\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (m_lookAheadToken->lexem == ";" || m_lookAheadToken->lexem == ")" || m_lookAheadToken->lexem == ",")
-	{
-		*m_derivationFile << "expr2 -> EPSILON\n";
-		return true;
-	}
-	else return false;
-}
 
 bool Parser::arithExpr()
 {
@@ -1314,26 +1346,7 @@ bool Parser::relExpr()
 
 
 
-bool Parser::STATEMENTS()
-{
-	std::vector<std::string> _first = { "if", "read", "while", "return", "write", "id", "EPSILON" };
 
-	if (m_lookAheadToken->type == IF || m_lookAheadToken->type == READ || m_lookAheadToken->type == WHILE || m_lookAheadToken->type == RETURN || m_lookAheadToken->type == WRITE || m_lookAheadToken->type == id)
-	{
-		if (statement() && STATEMENTS())
-		{
-			*m_derivationFile << "repStatBlock -> statement\n";
-			return true;
-		}
-		else return false;
-	}
-	else if ( m_lookAheadToken->type == CLOSECUBR || m_lookAheadToken->type == ELSE || m_lookAheadToken->type == SEMI)
-	{
-		*m_derivationFile << "repStatBlock -> ESPILON\n";
-		return true;
-	}
-	else return false;
-}
 
 
 
