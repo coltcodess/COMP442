@@ -45,6 +45,7 @@ private:
 	bool funcDef();
 	bool reptFuncDef();
 	bool implDef();
+	bool impleBody();
 	bool classDecl();
 	bool VISMEMBERDECL();
 	bool ISA1();
@@ -56,10 +57,15 @@ private:
 	bool funcDec1();
 	bool funcHead();
 	bool funcBody();
-	bool localVarDeclOrStatRep();
+	bool LOCALVARDECLORSTAT();
+	bool LOCALVARDECLORSTAT2();
 	bool localVarDeclOrStat();
 	bool localVarDecl();
 	bool statement();
+	bool FUNCALLORASSIGN();
+	bool FUNCALLORASSIGN2();
+	bool FUNCALLORASSIGN3();
+	bool FUNCALLORASSIGN4();
 	bool assignStat();
 	bool variable();
 	bool variable2();
@@ -81,8 +87,8 @@ private:
 	bool statBlock();
 	bool repStatBlock();
 
-	bool attributeDec1();
-	bool varDec1();
+	bool attributeDecl();
+	bool varDecl();
 	bool returnType();
 	bool indice();
 

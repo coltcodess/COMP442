@@ -618,6 +618,205 @@ bool Parser::varDecl()
 	else return false;
 }
 
+bool Parser::statement()
+{
+	std::vector<TokenType> first = { id, SELF, WRITE, WHILE, RETURN, READ, IF };
+	std::vector<TokenType> follow = {};
+
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::SELF)
+	{
+		if (FUNCALLORASSIGN() && match(SEMI))
+		{
+			*m_derivationFile << "statement -> FUNCALLORASSIGN ';'\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == WRITE)
+	{
+		if (match(TokenType::WRITE) && match(TokenType::OPENPAR) && expr() && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
+		{
+			*m_derivationFile << "statement -> 'write' '(' expr ')' ';'\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == WHILE)
+	{
+		if (match(TokenType::WHILE) && match(TokenType::OPENPAR) && relExpr() && match(TokenType::CLOSEPAR) && statBlock() && match(TokenType::SEMI))
+		{
+			*m_derivationFile << "statement -> 'while' '(' relExpr ')' statBlock ';'\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == RETURN)
+	{
+		if (match(TokenType::RETURN) && match(TokenType::OPENPAR) && expr() && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
+		{
+			*m_derivationFile << "statement -> 'return' '(' expr ')' ';'\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == READ)
+	{
+		if (match(TokenType::READ) && match(TokenType::OPENPAR) && variable() && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
+		{
+			*m_derivationFile << "statement -> 'read' '(' reptVariableOrFunctionCall ')' ';'\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == IF)
+	{
+		if (match(TokenType::IF) && match(TokenType::OPENPAR) && relExpr() && match(CLOSEPAR) && match(TokenType::THEN) && statBlock() &&
+			match(TokenType::ELSE) && statBlock() && match(TokenType::SEMI))
+		{
+			*m_derivationFile << "statement -> 'if' '(' relExpr ')' 'then' statBlock 'else' statBlock ';'\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::FUNCALLORASSIGN()
+{
+	std::vector<TokenType> first = { id, SELF};
+	std::vector<TokenType> follow = {};
+
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == id || m_lookAheadToken->type == SELF)
+	{
+		if (IDORSELF() && FUNCALLORASSIGN2())
+		{
+			*m_derivationFile << "FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::FUNCALLORASSIGN2()
+{
+	std::vector<TokenType> first = { OPENSQBR, DOT, ASSIGN, OPENPAR };
+	std::vector<TokenType> follow = {};
+
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == OPENSQBR || m_lookAheadToken->type == DOT || m_lookAheadToken->type == ASSIGN)
+	{
+		if (indice() && FUNCALLORASSIGN3())
+		{
+			*m_derivationFile << "FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == OPENPAR)
+	{
+		if (match(OPENPAR) && aParams() && match(CLOSEPAR) && FUNCALLORASSIGN4())
+		{
+			*m_derivationFile << "FUNCALLORASSIGN2 -> '(' aParams ')' FUNCALLORASSIGN4\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::FUNCALLORASSIGN3()
+{
+	std::vector<TokenType> first = { DOT, ASSIGN};
+	std::vector<TokenType> follow = {};
+
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == ASSIGN)
+	{
+		if (assignOp() && expr())
+		{
+			*m_derivationFile << "FUNCALLORASSIGN3 -> assignOp expr\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == DOT)
+	{
+		if (match(DOT) && match(id) && FUNCALLORASSIGN2())
+		{
+			*m_derivationFile << "FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+
+}
+
+bool Parser::FUNCALLORASSIGN4()
+{
+	std::vector<TokenType> first = { DOT };
+	std::vector<TokenType> follow = { SEMI };
+
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == DOT)
+	{
+		if (match(id) && match(id) && FUNCALLORASSIGN2())
+		{
+			*m_derivationFile << "FUNCALLORASSIGN4 -> '.' 'id' FUNCALLORASSIGN2\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (tokenInFollowSet(follow))
+	{
+		*m_derivationFile << "FUNCALLORASSIGN4 -> 'EPSILON\n";
+		return true;
+	}
+	else return false;
+}
+
+bool Parser::statBlock()
+{
+	std::vector<TokenType> first = { IF, READ, RETURN, WHILE, WRITE, id, SELF, OPENCUBR };
+	std::vector<TokenType> follow = {ELSE, SEMI};
+
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == OPENCUBR)
+	{
+		if (match(OPENCUBR) && STATEMENTS() && match(CLOSECUBR))
+		{
+			*m_derivationFile << "statBlock -> '{' STATEMENTS '}'\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == IF || m_lookAheadToken->type == READ || m_lookAheadToken->type == WHILE || m_lookAheadToken->type == RETURN || m_lookAheadToken->type == WRITE || m_lookAheadToken->type == id || m_lookAheadToken->type == SELF)
+	{
+		if (statement())
+		{
+			*m_derivationFile << "statBlock -> statement\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (tokenInFollowSet(follow))
+	{
+		*m_derivationFile << "statBlock -> EPSILON\n";
+		return true;
+	}
+	else return false;
+
+}
+
 //////////////////////////////////////////////////////////////////////
 //////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -737,71 +936,7 @@ bool Parser::localVarDeclOrStat()
 
 
 
-bool Parser::statement()
-{
-	std::vector<TokenType> first = {id, WRITE, WHILE, RETURN, READ, IF};
-	std::vector<TokenType> follow = {};
 
-	if (!skipErrors(false, first, follow)) return false;
-
-	if (m_lookAheadToken->type == WRITE)
-	{
-		if (match(TokenType::WRITE) && match(TokenType::OPENPAR) && expr() && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
-		{
-			*m_derivationFile << "statement -> 'write' '(' expr ')' ';'\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (m_lookAheadToken->type == TokenType::id)
-	{
-		if (assignStat() && match(SEMI))
-		{
-			*m_derivationFile << "statement -> assignStat ';'\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (m_lookAheadToken->type == RETURN)
-	{
-		if (match(TokenType::RETURN) && match(TokenType::OPENPAR) && expr() && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
-		{
-			*m_derivationFile << "statement -> 'return' '(' expr ')' ';'\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (m_lookAheadToken->type == READ)
-	{
-		if (match(TokenType::READ) && match(TokenType::OPENPAR) && variable() && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
-		{
-			*m_derivationFile << "statement -> 'read' '(' reptVariableOrFunctionCall ')' ';'\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (m_lookAheadToken->type == WHILE)
-	{
-		if (match(TokenType::WHILE) && match(TokenType::OPENPAR) && relExpr() && match(TokenType::CLOSEPAR) && statBlock() && match(TokenType::SEMI))
-		{
-			*m_derivationFile << "statement -> 'while' '(' relExpr ')' statBlock ';'\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (m_lookAheadToken->type == IF)
-	{
-		if (match(TokenType::IF) && match(TokenType::OPENPAR) && relExpr() && match(CLOSEPAR) && match(TokenType::THEN) && statBlock() &&
-			match(TokenType::ELSE) && statBlock() && match(TokenType::SEMI))
-		{
-
-			*m_derivationFile << "statement -> 'if' '(' relExpr ')' 'then' statBlock 'else' statBlock ';'\n";
-			return true;
-		}
-		else return false;
-	}
-	else return false;
-}
 
 bool Parser::assignStat()
 {
@@ -1177,35 +1312,15 @@ bool Parser::relExpr()
 
 }
 
-bool Parser::statBlock()
-{
-	std::vector<std::string> _first = { "{" };
 
-	if (m_lookAheadToken->type == OPENCUBR)
-	{
-		if (match(OPENCUBR) && repStatBlock() && match(CLOSECUBR))
-		{
-			*m_derivationFile << "statBlock -> '{' repStatBlock '}'\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (m_lookAheadToken->type == TokenType::ELSE || m_lookAheadToken->type == TokenType::SEMI)
-	{
-		*m_derivationFile << "statBlock -> EPSILON\n";
-		return true;
-	}
-	else return false;
 
-}
-
-bool Parser::repStatBlock()
+bool Parser::STATEMENTS()
 {
 	std::vector<std::string> _first = { "if", "read", "while", "return", "write", "id", "EPSILON" };
 
 	if (m_lookAheadToken->type == IF || m_lookAheadToken->type == READ || m_lookAheadToken->type == WHILE || m_lookAheadToken->type == RETURN || m_lookAheadToken->type == WRITE || m_lookAheadToken->type == id)
 	{
-		if (statement() && repStatBlock())
+		if (statement() && STATEMENTS())
 		{
 			*m_derivationFile << "repStatBlock -> statement\n";
 			return true;
