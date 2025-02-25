@@ -1,5 +1,5 @@
 [inlinecmt, // ====== struct declarations ====== //, 1] [class, class, 1] [id, POLYNOMIAL, 1] [opencubr, {, 1] 
-[public, public, 2] [id, evaluate, 2] [openpar, (, 2] [id, x, 2] [colon, :, 2] [float, float, 2] [closepar, ), 2] [arrow, =>, 2] [float, float, 2] [semi, ;, 2] 
+[public, public, 2] [function, function, 2] [id, evaluate, 2] [openpar, (, 2] [id, x, 2] [colon, :, 2] [float, float, 2] [closepar, ), 2] [arrow, =>, 2] [float, float, 2] [semi, ;, 2] 
 [closecubr, }, 3] [semi, ;, 3] 
 [class, class, 5] 
 [id, LINEAR, 5] [isa, isa, 5] [id, POLYNOMIAL, 5] [opencubr, {, 5] 

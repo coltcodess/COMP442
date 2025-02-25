@@ -43,14 +43,12 @@ private:
 	bool prog();
 	bool classOrImplOrFunc(Node* root);
 	bool funcDef();
-	bool reptFuncDef();
 	bool implDef();
 	bool impleBody();
 	bool classDecl();
 	bool VISMEMBERDECL();
 	bool ISA1();
 	bool ISA2();
-	bool reptOptClassDecl();
 
 	bool visibility();
 	bool memberDecl();
@@ -59,14 +57,12 @@ private:
 	bool funcBody();
 	bool LOCALVARDECLORSTAT();
 	bool LOCALVARDECLORSTAT2();
-	bool localVarDeclOrStat();
 	bool localVarDecl();
 	bool statement();
 	bool FUNCALLORASSIGN();
 	bool FUNCALLORASSIGN2();
 	bool FUNCALLORASSIGN3();
 	bool FUNCALLORASSIGN4();
-	bool assignStat();
 	bool variable();
 	bool variable2();
 	bool reptVariable();
@@ -80,7 +76,8 @@ private:
 	bool term();
 	bool factor();
 	bool factor2();
-	bool repIdNest1();
+
+	bool indice();
 
 	bool rightRecTerm();
 
@@ -93,24 +90,31 @@ private:
 	bool returnType();
 	bool indices();
 
+
+	bool REPTVARIABLEORFUNCTIONCALL();
+
 	bool idnest();
 	bool idnest2();
 	
-	bool functionCall();
 
 	bool fParams();
+	bool REPTFPARAMS1();
 	bool fParamsTail();
 
 	bool aParams();
+	bool REPTAPARAMS1();
 	bool aParamsTail();
 
 	bool arraySize();
-	bool arraySize1();
+	bool arraySize2();
+
+	bool arraySizes();
 
 	// Terminals
 	bool assignOp();
 	bool sign();
 	bool multOp();
+	bool IDORSELF();
 	bool addOp();
 	bool relOp();
 	bool type();
