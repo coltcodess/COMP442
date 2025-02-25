@@ -888,6 +888,299 @@ bool Parser::expr2()
 	else return false;
 }
 
+bool Parser::relExpr()
+{
+	std::vector<TokenType> first = { OPENPAR, floatnum, intnum, NOT, id, SELF, MINUS, PLUS };
+	std::vector<TokenType> follow = {};
+
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == OPENPAR || m_lookAheadToken->type == TokenType::floatnum
+		|| m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::intnum
+		|| m_lookAheadToken->type == NOT || m_lookAheadToken->type == PLUS
+		|| m_lookAheadToken->type == MINUS || m_lookAheadToken->type == SELF)
+	{
+		if (arithExpr() && relOp() && arithExpr())
+		{
+			*m_derivationFile << "relExpr -> arithExpr relOp arithExpr\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::arithExpr()
+{
+	std::vector<TokenType> first = { OPENPAR, floatnum, intnum, NOT, id, SELF, MINUS, PLUS };
+	std::vector<TokenType> follow = {};
+
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == OPENPAR || m_lookAheadToken->type == TokenType::floatnum
+		|| m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::intnum
+		|| m_lookAheadToken->type == NOT || m_lookAheadToken->type == PLUS
+		|| m_lookAheadToken->type == MINUS || m_lookAheadToken->type == SELF)
+	{
+		if (term() && RIGHTRECARITHEXPR())
+		{
+			*m_derivationFile << "arithExpr -> term RIGHTRECARITHEXPR\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::RIGHTRECARITHEXPR()
+{
+	std::vector<TokenType> first = { MINUS, OR, PLUS, };
+	std::vector<TokenType> follow = { CLOSEPAR, SEMI, COMMA, EQ, GT , GEQ,  LT , LEQ,  NOTEQ , CLOSESQBR };
+
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == PLUS || m_lookAheadToken->type == MINUS || m_lookAheadToken->type == OR)
+	{
+		if (addOp() && term() && RIGHTRECARITHEXPR())
+		{
+			*m_derivationFile << "RIGHTRECARITHEXPR -> addOp term arithExpr2\n";
+			return true;
+		}
+		else return false;
+
+	}
+	else if (tokenInFollowSet(follow))
+	{
+		*m_derivationFile << "RIGHTRECARITHEXPR -> EPSILON\n";
+		return true;
+	}
+	else return false;
+}
+
+bool Parser::sign()
+{
+	std::vector<TokenType> first = { PLUS, MINUS };
+	std::vector<TokenType> follow = {};
+
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == PLUS)
+	{
+		if (match(PLUS))
+		{
+			*m_derivationFile << "sign -> '+'\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == MINUS)
+	{
+		if (match(MINUS))
+		{
+			*m_derivationFile << "sign -> '-'\n";
+
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::term()
+{
+	std::vector<TokenType> first = { OPENPAR, floatnum, intnum, NOT, id, SELF, MINUS, PLUS };
+	std::vector<TokenType> follow = {};
+
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == OPENPAR 
+		|| m_lookAheadToken->type == TokenType::floatnum
+		|| m_lookAheadToken->type == TokenType::id 
+		|| m_lookAheadToken->type == TokenType::SELF 
+		|| m_lookAheadToken->type == TokenType::intnum
+		|| m_lookAheadToken->type == NOT 
+		|| m_lookAheadToken->type == PLUS
+		|| m_lookAheadToken->type == MINUS)
+	{
+		if (factor() && rightRecTerm())
+		{
+			*m_derivationFile << "term -> factor rightRecTerm\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::rightRecTerm()
+{
+	std::vector<TokenType> first = { MULTI, DIV, AND };
+	std::vector<TokenType> follow = { CLOSEPAR, SEMI, COMMA, EQ, GT, GEQ, LT, LEQ, NOTEQ, CLOSESQBR, MINUS, OR, PLUS };
+
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == MULTI || m_lookAheadToken->type == DIV || m_lookAheadToken->type == AND)
+	{
+		if (multOp() && factor() && rightRecTerm())
+		{
+			*m_derivationFile << "rightRecTerm -> multiOp factor rightRecTerm\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (tokenInFollowSet(follow))
+	{
+		*m_derivationFile << "rightRecTerm -> EPSILON\n";
+		return true;
+	}
+	else return false;
+}
+
+bool Parser::factor()
+{
+	std::vector<TokenType> first = { MINUS, PLUS, id, SELF, NOT, intnum, floatnum, OPENPAR };
+	std::vector<TokenType> follow = { };
+
+	if (!skipErrors(false, first, follow)) return false;
+
+	if (m_lookAheadToken->type == MINUS || m_lookAheadToken->type == PLUS)
+	{
+		if (sign() && factor())
+		{
+			*m_derivationFile << "factor -> sign factor\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::SELF)
+	{
+		if (IDORSELF() && factor2() && REPTVARIABLEORFUNCTIONCALL())
+		{
+			*m_derivationFile << "factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == NOT)
+	{
+		if (match(TokenType::NOT) && factor())
+		{
+			*m_derivationFile << "factor -> 'not' factor\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == TokenType::intnum)
+	{
+		if (match(TokenType::intnum))
+		{
+			*m_derivationFile << "factor -> 'intLit'\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == TokenType::floatnum)
+	{
+		if (match(TokenType::floatnum))
+		{
+			*m_derivationFile << "factor -> 'floatnum'\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == OPENPAR)
+	{
+		if (match(TokenType::OPENPAR) && arithExpr() && match(TokenType::CLOSEPAR))
+		{
+			*m_derivationFile << "factor -> '(' arithExpr ')'\n";
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
+bool Parser::factor2()
+{
+	std::vector<TokenType> first = { OPENSQBR, OPENPAR };
+	std::vector<TokenType> follow = { CLOSEPAR, SEMI, COMMA, EQ, GT, GEQ, LT, LEQ, NOTEQ, CLOSESQBR, MINUS, OR, PLUS, MULTI, DIV, AND, DOT };
+
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == OPENSQBR)
+	{
+		if (indices())
+		{
+			*m_derivationFile << "factor2 -> indice\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (m_lookAheadToken->type == OPENPAR)
+	{
+		if (match(OPENPAR) && aParams() && match(CLOSEPAR))
+		{
+			*m_derivationFile << "factor2 -> '(' aParams ')'\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (tokenInFollowSet(follow))
+	{
+		*m_derivationFile << "factor2 -> EPSILON\n";
+		return true;
+	}
+	else return false;
+}
+
+bool Parser::indices()
+{
+	std::vector<TokenType> first = { OPENSQBR };
+	std::vector<TokenType> follow = { DOT, ASSIGN, CLOSEPAR, SEMI, COMMA, EQ, GT, GEQ, LT, LEQ, NOTEQ, CLOSESQBR, MINUS, OR, PLUS, MULTI, DIV, AND };
+
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == OPENSQBR)
+	{
+		if (indice() && indices())
+		{
+			*m_derivationFile << "indices -> indice indices\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (tokenInFollowSet(follow))
+	{
+		*m_derivationFile << "indices -> EPSILON\n";
+		return true;
+	}
+	else return false;
+}
+
+bool Parser::REPTVARIABLEORFUNCTIONCALL()
+{
+	std::vector<TokenType> first = { DOT };
+	std::vector<TokenType> follow = { DOT, ASSIGN, CLOSEPAR, SEMI, COMMA, EQ, GT, GEQ, LT, LEQ, NOTEQ, CLOSESQBR, MINUS, OR, PLUS, MULTI, DIV, AND };
+
+	if (!skipErrors(true, first, follow)) return false;
+
+	if (m_lookAheadToken->type == DOT)
+	{
+		if (idnest() && REPTVARIABLEORFUNCTIONCALL())
+		{
+			*m_derivationFile << "REPTVARIABLEORFUNCTIONCALL -> idnest REPTVARIABLEORFUNCTIONCALL\n";
+			return true;
+		}
+		else return false;
+	}
+	else if (tokenInFollowSet(follow))
+	{
+		*m_derivationFile << "REPTVARIABLEORFUNCTIONCALL -> EPSILON\n";
+		return true;
+	}
+	else return false;
+}
+
 //////////////////////////////////////////////////////////////////////
 //////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -1153,131 +1446,13 @@ bool Parser::varIdNest2()
 
 
 
-bool Parser::arithExpr()
-{
-	std::vector<std::string> _first = { "(", "floatLit", "id", "intLit", "not", "+", "-" };
-	std::vector<std::string> _follow = {};
 
-	if (m_lookAheadToken->lexem == "(" || m_lookAheadToken->type == TokenType::floatnum
-		|| m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::intnum
-		|| m_lookAheadToken->lexem == "not" || m_lookAheadToken->lexem == "+"
-		|| m_lookAheadToken->lexem == "-")
-	{
-		if (term() && arithExpr2())
-		{
-			*m_derivationFile << "arithExpr -> term arithExpr2\n";
-			return true;
-		}
-		else return false;
-	}
-	else return false;
-}
 
-bool Parser::arithExpr2()
-{
-	std::vector<std::string> _first = { "+", "-", "or", "EPSILON"};
-	std::vector<std::string> _follow = { ")", ";", ",", "<", "<=" , "<>",  "==" , ">",  ">=" , "]"};
 
-	if(m_lookAheadToken->lexem == "+" || m_lookAheadToken->lexem == "-" || m_lookAheadToken->lexem == "or")
-	{ 
-		if (addOp() && term() && arithExpr2())
-		{
-			*m_derivationFile << "arithExpr2 -> addOp term arithExpr2\n";
-			return true;
-		}
-		else return false;
-	
-	}
-	else if (lexemInFollowSet(_follow))
-	{
-		*m_derivationFile << "arithExpr2 -> EPSILON\n";
-		return true;
-	}
-	else return false;
-}
 
-bool Parser::term()
-{
-	std::vector<std::string> _first = { "(", "floatLit", "id", "intLit", "not", "+", "-" };
-	std::vector<std::string> _follow = {};
 
-	if (m_lookAheadToken->lexem == "(" || m_lookAheadToken->type == TokenType::floatnum
-		|| m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::intnum
-		|| m_lookAheadToken->lexem == "not" || m_lookAheadToken->lexem == "+"
-		|| m_lookAheadToken->lexem == "-")
-	{
-		if (factor() && rightRecTerm())
-		{
-			*m_derivationFile << "term -> factor rightRecTerm\n";
-			return true;
-		}
-		else return false;
-	}
-	else return false;
-}
 
-bool Parser::factor()
-{
-	std::vector<std::string> _first = { "(", "floatLit", "id", "intLit", "not", "+", "-", "id", "."};
-	std::vector<std::string> _follow = {};
 
-	if (m_lookAheadToken->lexem == "+" || m_lookAheadToken->lexem == "-")
-	{
-		if (sign() && factor())
-		{
-			*m_derivationFile << "factor -> sign factor\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (m_lookAheadToken->lexem == "not")
-	{
-		if (match(TokenType::NOT) && factor())
-		{
-			*m_derivationFile << "factor -> 'not' factor\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (m_lookAheadToken->type == TokenType::intnum)
-	{
-		if (match(TokenType::intnum))
-		{
-			*m_derivationFile << "factor -> 'intLit'\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (m_lookAheadToken->type == TokenType::id)
-	{
-		if (variable())
-		{
-			*m_derivationFile << "factor -> 'id' variable\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (m_lookAheadToken->type == TokenType::floatnum)
-	{
-		if (match(TokenType::floatnum))
-		{
-			*m_derivationFile << "factor -> 'floatnum'\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (m_lookAheadToken->lexem == "(")
-	{
-		if (match(TokenType::OPENPAR) && arithExpr() && match(TokenType::CLOSEPAR))
-		{
-			*m_derivationFile << "factor -> '(' arithExpr ')'\n";
-			return true;
-		}
-		else return false;
-	}
-
-	return true;
-}
 
 bool Parser::repIdNest1()
 {
@@ -1301,48 +1476,9 @@ bool Parser::repIdNest1()
 	else return false;
 }
 
-bool Parser::rightRecTerm()
-{
-	std::vector<std::string> _first = { "*", "/", "and", "EPSILON" };
-	std::vector<std::string> _follow = { ")", ";", ",", "<", "<=", "<>", "==", ">", ">=", "]", "+", "-", "or" };
 
-	if (m_lookAheadToken->lexem == "*" || m_lookAheadToken->lexem == "/" || m_lookAheadToken->lexem == "and")
-	{
-		if (multOp() && factor() && rightRecTerm())
-		{
-			*m_derivationFile << "rightRecTerm -> multiOp factor rightRecTerm\n";
-			return true;
-		}
-		else return false;
-	}
-	else if (lexemInFollowSet(_follow))
-	{
-		*m_derivationFile << "rightRecTerm -> EPSILON\n";
-		return true;
-	}
-	else return false;
-}
 
-bool Parser::relExpr()
-{
-	std::vector<std::string> _first = { "(", "floatLit", "id", "intLit", "not", "+", "-" };
-	std::vector<std::string> _follow = {};
 
-	if (m_lookAheadToken->lexem == "(" || m_lookAheadToken->type == TokenType::floatnum
-		|| m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::intnum
-		|| m_lookAheadToken->lexem == "not" || m_lookAheadToken->lexem == "+"
-		|| m_lookAheadToken->lexem == "-")
-	{
-		if (arithExpr() && relOp() && arithExpr())
-		{
-			*m_derivationFile << "relExpr -> arithExpr relOp arithExpr\n";
-			return true;
-		}
-		else return false;
-	}
-	else return false;
-
-}
 
 
 
@@ -1383,21 +1519,7 @@ bool Parser::returnType()
 	else return false;
 }
 
-bool Parser::indice()
-{
-	std::vector<std::string> _first = { "[" };
 
-	if (m_lookAheadToken->lexem == "[")
-	{
-		if (match(TokenType::OPENSQBR) && arithExpr() && match(TokenType::CLOSESQBR))
-		{
-			*m_derivationFile << "indice -> '[' arithExpr ']'\n";
-			return true;
-		}
-		else return false;
-	}
-	else return false;
-}
 
 bool Parser::idnest()
 {
@@ -1609,38 +1731,7 @@ bool Parser::assignOp()
 	else return false;
 }
 
-bool Parser::sign()
-{
-	std::vector<std::string> _first = { "+", "-"};
-	std::vector<std::string> _follow = {};
 
-	//if (!skipErrors(_first, _follow)) return false;
-
-	// Check First 
-	if (_first[0] == m_lookAheadToken->lexem)
-	{
-		if (match(TokenType::PLUS))
-		{
-			*m_derivationFile << "sign -> '+'\n";
-
-			return true;
-		}
-		else return false;
-
-	}
-	else if (_first[1] == m_lookAheadToken->lexem)
-	{
-		if (match(TokenType::MINUS))
-		{
-			*m_derivationFile << "sign -> '-'\n";
-
-			return true;
-		}
-		else return false;
-	}
-	else return false;
-
-}
 
 bool Parser::multOp()
 {

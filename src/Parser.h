@@ -76,21 +76,22 @@ private:
 	bool expr();
 	bool expr2();
 	bool arithExpr();
-	bool arithExpr2();
+	bool RIGHTRECARITHEXPR();
 	bool term();
 	bool factor();
+	bool factor2();
 	bool repIdNest1();
 
 	bool rightRecTerm();
 
 	bool relExpr();
 	bool statBlock();
-	bool repStatBlock();
+	bool STATEMENTS();
 
 	bool attributeDecl();
 	bool varDecl();
 	bool returnType();
-	bool indice();
+	bool indices();
 
 	bool idnest();
 	bool idnest2();
