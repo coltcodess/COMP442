@@ -333,7 +333,7 @@ bool Parser::impleBody()
 
 	if (!skipErrors(true, first, follow)) return false;
 
-	if (m_lookAheadToken->type == IMPLEMENTATION)
+	if (m_lookAheadToken->type == FUNCTION || m_lookAheadToken->type == CONSTRUCTOR)
 	{
 		if (funcDef() && impleBody())
 		{
@@ -484,7 +484,7 @@ bool Parser::funcBody()
 
 	if (m_lookAheadToken->type == OPENCUBR)
 	{
-		if (match(TokenType::OPENCUBR) && LOCALVARDECLORSTAT() && match(TokenType::CLOSECUBR))
+		if (match(TokenType::OPENCUBR) && LOCALVARDECLORSTAT2() && match(TokenType::CLOSECUBR))
 		{
 			*m_derivationFile << "funcBody -> '{' localVarDeclOrStatRep '}'\n";
 			return true;
@@ -608,7 +608,7 @@ bool Parser::varDecl()
 
 	if (m_lookAheadToken->type == TokenType::id)
 	{
-		if (match(TokenType::id) && match(TokenType::COLON) && type() && arraySize() && match(TokenType::SEMI))
+		if (match(TokenType::id) && match(TokenType::COLON) && type() && arraySizes() && match(TokenType::SEMI))
 		{
 			*m_derivationFile << "varDec1 -> 'id' ':' type arraySize ';'\n";
 			return true;
@@ -711,7 +711,7 @@ bool Parser::FUNCALLORASSIGN2()
 
 	if (m_lookAheadToken->type == OPENSQBR || m_lookAheadToken->type == DOT || m_lookAheadToken->type == ASSIGN)
 	{
-		if (indice() && FUNCALLORASSIGN3())
+		if (indices() && FUNCALLORASSIGN3())
 		{
 			*m_derivationFile << "FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3\n";
 			return true;
@@ -1659,12 +1659,12 @@ bool Parser::fParamsTail()
 
 bool Parser::assignOp()
 {
-	std::vector<TokenType> first = { EQ };
+	std::vector<TokenType> first = { ASSIGN };
 	std::vector<TokenType> follow = {};
 
 	if (!skipErrors(false, first, follow)) return false;
 
-	if (m_lookAheadToken->type == EQ)
+	if (m_lookAheadToken->type == ASSIGN)
 	{
 		if (match(ASSIGN))
 		{

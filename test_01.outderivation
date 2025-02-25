@@ -2,18 +2,13 @@ ISA1 -> EPSILON
 visibility -> 'public'
 type -> 'float'
 arraySizes -> EPSILON
-REPTFPARAMS1 -> EPSILON
-fParams -> 'id' ':' type arraySizes REPTFPARAMS1
-type -> 'float'
-returnType -> type
-'function' 'id' '(' fParams ')' '=>' returnType
-funcDec1 -> funcHead
-memberDecl -> funcDec1
-VISMEMBERDECL -> EPSILON
-VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
-classDecl -> 'class' 'id' ISA1 '{' VISMEMBERDECL '}' ';'
-classOrImplOrFunc -> classDecl
-ISA2 -> EPSILON
-ISA1 -> 'isa' 'id' ISA2
+varDec1 -> 'id' ':' type arraySize ';'
+attributeDecl -> 'attribute' varDecl
+memberDecl -> attributeDec1
 visibility -> 'private'
 type -> 'float'
+arraySizes -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+attributeDecl -> 'attribute' varDecl
+memberDecl -> attributeDec1
+visibility -> 'public'
