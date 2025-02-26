@@ -145,7 +145,11 @@ bool Parser::startsymbol()
 
 bool Parser::prog()
 {
-	m_astRoot = m_nodeFactory->makeNode(Type::prog);
+	if (m_astRoot == nullptr)
+	{
+		m_astRoot = m_nodeFactory->makeNode(Type::prog);	
+
+	}
 
 	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR, CLASS, IMPLEMENTATION };
 	std::vector<TokenType> follow = { END_OF_FILE };
@@ -178,34 +182,40 @@ bool Parser::classOrImplOrFunc(Node* root)
 	std::vector<TokenType> follow = { };
 
 	Node* classDeclList_Node = m_nodeFactory->makeNode(Type::classDeclList);
-	root->children.push_back(classDeclList_Node);
-
+	Node* implDefList_Node = m_nodeFactory->makeNode(Type::implDefList);
+	Node* funcDefList_Node = m_nodeFactory->makeNode(Type::funcDefList);
+	
 	if (!skipErrors(false, first, follow)) return false;
 
 	if (m_lookAheadToken->type == FUNCTION || m_lookAheadToken->type == CONSTRUCTOR)
 	{
-		if (funcDef())
+		if (funcDef(funcDefList_Node))
 		{
 			*m_derivationFile << "classOrImplOrFunc -> funcDef\n";
-			root = classDeclList_Node;
+			root->children.push_back(funcDefList_Node);
+			root = implDefList_Node;
 			return true;
 		}
 		else return false;
 	}
 	else if (m_lookAheadToken->type == CLASS)
 	{
-		if (classDecl())
+		if (classDecl(classDeclList_Node))
 		{
 			*m_derivationFile << "classOrImplOrFunc -> classDecl\n";
+			root->children.push_back(classDeclList_Node);
+			root = classDeclList_Node;
 			return true;
 		}
 		else return false;
 	}
 	else if (m_lookAheadToken->type == IMPLEMENTATION)
 	{
-		if (implDef())
+		if (implDef(implDefList_Node))
 		{
 			*m_derivationFile << "classOrImplOrFunc -> implDef\n";
+			root->children.push_back(implDefList_Node);
+			root = implDefList_Node;
 			return true;
 		}
 		else return false;
@@ -213,17 +223,20 @@ bool Parser::classOrImplOrFunc(Node* root)
 	else return false;
 }
 
-bool Parser::classDecl()
+bool Parser::classDecl(Node* root)
 {
 	std::vector<TokenType> first = { CLASS };
 	std::vector<TokenType> follow = { };
+
+	Node* classDecl_Node = m_nodeFactory->makeNode(Type::classDecl);
+	root->children.push_back(classDecl_Node);
 
 	if (!skipErrors(false, first, follow)) return false;
 
 	if (m_lookAheadToken->type == CLASS)
 	{
 		if (match(TokenType::CLASS) && match(TokenType::id) && ISA1() && match(TokenType::OPENCUBR) &&
-			VISMEMBERDECL() && match(TokenType::CLOSECUBR) && match(TokenType::SEMI))
+			VISMEMBERDECL(root) && match(TokenType::CLOSECUBR) && match(TokenType::SEMI))
 		{
 			*m_derivationFile << "classDecl -> 'class' 'id' ISA1 '{' VISMEMBERDECL '}' ';'\n";
 			return true;
@@ -233,7 +246,7 @@ bool Parser::classDecl()
 	else return false;
 }
 
-bool Parser::VISMEMBERDECL()
+bool Parser::VISMEMBERDECL(Node* root)
 {
 	std::vector<TokenType> first = { PRIVATE, PUBLIC };
 	std::vector<TokenType> follow = { CLOSECUBR };
@@ -242,7 +255,7 @@ bool Parser::VISMEMBERDECL()
 
 	if (m_lookAheadToken->type == PRIVATE || m_lookAheadToken->type == PUBLIC)
 	{
-		if (visibility() && memberDecl() && VISMEMBERDECL())
+		if (visibility() && memberDecl(root) && VISMEMBERDECL(root))
 		{
 			*m_derivationFile << "VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL\n";
 			return true;
@@ -307,7 +320,7 @@ bool Parser::ISA2()
 	else return false;
 }
 
-bool Parser::implDef()
+bool Parser::implDef(Node* root)
 {
 	std::vector<TokenType> first = { IMPLEMENTATION };
 	std::vector<TokenType> follow = { };
@@ -316,7 +329,7 @@ bool Parser::implDef()
 
 	if (m_lookAheadToken->type == IMPLEMENTATION)
 	{
-		if (match(TokenType::IMPLEMENTATION) && match(TokenType::id) && match(TokenType::OPENCUBR) && impleBody() && match(TokenType::CLOSECUBR))
+		if (match(TokenType::IMPLEMENTATION) && match(TokenType::id) && match(TokenType::OPENCUBR) && impleBody(root) && match(TokenType::CLOSECUBR))
 		{
 			*m_derivationFile << "implDef -> 'implementation' 'id' '{' funcDef '}'\n";
 			return true;
@@ -326,18 +339,21 @@ bool Parser::implDef()
 	else return false;
 }
 
-bool Parser::impleBody()
+bool Parser::impleBody(Node* root)
 {
 	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR };
 	std::vector<TokenType> follow = { CLOSECUBR };
+
+	Node* funcDecl = m_nodeFactory->makeNode(Type::funcDecl);
 
 	if (!skipErrors(true, first, follow)) return false;
 
 	if (m_lookAheadToken->type == FUNCTION || m_lookAheadToken->type == CONSTRUCTOR)
 	{
-		if (funcDef() && impleBody())
+		if (funcDef(funcDecl) && impleBody(root))
 		{
 			*m_derivationFile << "impleBody -> funcDef impleBody\n";
+			m_nodeFactory->makeSubtree(root, 1, funcDecl);
 			return true;
 		}
 		else return false;
@@ -350,7 +366,7 @@ bool Parser::impleBody()
 	else return false;
 }
 
-bool Parser::funcDef()
+bool Parser::funcDef(Node* root)
 {
 	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR };
 	std::vector<TokenType> follow = {  };
@@ -359,7 +375,7 @@ bool Parser::funcDef()
 
 	if (m_lookAheadToken->type == FUNCTION || m_lookAheadToken->type == CONSTRUCTOR)
 	{
-		if (funcHead() && funcBody())
+		if (funcHead(root) && funcBody(root))
 		{
 			*m_derivationFile << "funcDef -> funcHead funcBody\n";
 			return true;
@@ -398,7 +414,7 @@ bool Parser::visibility()
 
 }
 
-bool Parser::memberDecl()
+bool Parser::memberDecl(Node* root)
 {
 	std::vector<TokenType> first = { CONSTRUCTOR, ATTRIBUTE, FUNCTION };
 	std::vector<TokenType> follow = { };
@@ -407,7 +423,7 @@ bool Parser::memberDecl()
 
 	if (m_lookAheadToken->type == CONSTRUCTOR || m_lookAheadToken->type == FUNCTION)
 	{
-		if (funcDec1())
+		if (funcDec1(root))
 		{
 			*m_derivationFile << "memberDecl -> funcDec1\n";
 			return true;
@@ -426,7 +442,7 @@ bool Parser::memberDecl()
 	else return false;
 }
 
-bool Parser::funcDec1()
+bool Parser::funcDec1(Node* root)
 {
 	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR };
 	std::vector<TokenType> follow = {};
@@ -435,7 +451,7 @@ bool Parser::funcDec1()
 
 	if (m_lookAheadToken->type == CONSTRUCTOR || m_lookAheadToken->type == FUNCTION)
 	{
-		if (funcHead() && match(TokenType::SEMI))
+		if (funcHead(root) && match(TokenType::SEMI))
 		{
 			*m_derivationFile << "funcDec1 -> funcHead\n";
 			return true;
@@ -446,12 +462,14 @@ bool Parser::funcDec1()
 
 }
 
-bool Parser::funcHead()
+bool Parser::funcHead(Node* root)
 {
 	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR };
 	std::vector<TokenType> follow = {};
 
 	if (!skipErrors(false, first, follow)) return false;
+
+	Node* id_Node = m_nodeFactory->makeNode(Type::idLit);
 
 	if (m_lookAheadToken->type == CONSTRUCTOR)
 	{
@@ -467,6 +485,9 @@ bool Parser::funcHead()
 		if (match(TokenType::FUNCTION) && match(TokenType::id) && match(TokenType::OPENPAR) && fParams() && match(TokenType::CLOSEPAR) && match(TokenType::ARROW) && returnType())
 		{
 			*m_derivationFile << "'function' 'id' '(' fParams ')' '=>' returnType\n";
+
+			// Make subtree from everything
+			root->children.push_back(id_Node);
 			return true;
 		}
 		else return false;
@@ -475,7 +496,7 @@ bool Parser::funcHead()
 
 }
 
-bool Parser::funcBody()
+bool Parser::funcBody(Node* root)
 {
 	std::vector<TokenType> first = { OPENCUBR };
 	std::vector<TokenType> follow = {};

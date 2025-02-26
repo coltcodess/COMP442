@@ -42,19 +42,19 @@ private:
 	bool startsymbol();
 	bool prog();
 	bool classOrImplOrFunc(Node* root);
-	bool funcDef();
-	bool implDef();
-	bool impleBody();
-	bool classDecl();
-	bool VISMEMBERDECL();
+	bool funcDef(Node* root);
+	bool implDef(Node* root);
+	bool impleBody(Node* root);
+	bool classDecl(Node* root);
+	bool VISMEMBERDECL(Node* root);
 	bool ISA1();
 	bool ISA2();
 
 	bool visibility();
-	bool memberDecl();
-	bool funcDec1();
-	bool funcHead();
-	bool funcBody();
+	bool memberDecl(Node* root);
+	bool funcDec1(Node* root);
+	bool funcHead(Node* root);
+	bool funcBody(Node* root);
 	bool LOCALVARDECLORSTAT();
 	bool LOCALVARDECLORSTAT2();
 	bool localVarDecl();

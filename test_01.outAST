@@ -1,2 +1,5 @@
 | prog
   | classDeclList
+    | classDecl
+  | classDeclList
+    | classDecl

@@ -1,1 +1,27 @@
 | prog
+  | classDeclList
+    | classDecl
+    | id
+  | classDeclList
+    | classDecl
+    | id
+    | id
+  | classDeclList
+    | classDecl
+    | id
+    | id
+  | implDefList
+    | funcDecl_Node
+      | id
+  | implDefList
+    | funcDecl_Node
+      | id
+    | funcDecl_Node
+      | id
+  | implDefList
+    | funcDecl_Node
+      | id
+    | funcDecl_Node
+      | id
+  | funcDefList
+    | id

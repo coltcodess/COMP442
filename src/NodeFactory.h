@@ -80,6 +80,45 @@ public:
 
 /////////////////////////////////////////////////////////////////////
 
+class classDecl_Node : public Node
+{
+public:
+	std::string getType() { return "classDecl"; }
+
+};
+
+/////////////////////////////////////////////////////////////////////
+
+class implDefList_Node : public Node
+{
+public:
+	std::string getType() { return "implDefList"; }
+
+};
+
+/////////////////////////////////////////////////////////////////////
+
+class funcDefList_Node : public Node
+{
+public:
+	std::string getType() { return "funcDefList"; }
+
+};
+
+/////////////////////////////////////////////////////////////////////
+
+class funcDecl_Node : public Node
+{
+public:
+	std::string getType() { return "funcDecl_Node"; }
+
+};
+
+/////////////////////////////////////////////////////////////////////
+
+
+
+
 class idLit_Node : public Node
 {
 public:
@@ -161,7 +200,7 @@ enum Type {
 	classDeclList, funcDefList, implDefList,
 	classDecl, funcDef, ImpleDef,
 	inheritList, memberList,
-	memberDecl, FuncDecl, varDecl,
+	memberDecl, funcDecl, varDecl,
 	dimList, fParamsList, 
 	fParam, aParams,
 
@@ -221,6 +260,14 @@ public:
 			return new prog_Node();
 		case classDeclList:
 			return new classDeclList_Node();
+		case classDecl:
+			return new classDecl_Node();
+		case implDefList:
+			return new implDefList_Node();
+		case funcDefList:
+			return new funcDefList_Node();
+		case funcDecl:
+			return new funcDecl_Node();
 
 		default: 
 			std::cout << "Error: Invalid Type past to makeNode()....." << std::endl;
