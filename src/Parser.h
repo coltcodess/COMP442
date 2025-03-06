@@ -47,18 +47,18 @@ private:
 	bool impleBody(Node* root);
 	bool classDecl(Node* root);
 	bool VISMEMBERDECL(Node* root);
-	bool ISA1();
-	bool ISA2();
+	bool ISA1(Node* root);
+	bool ISA2(Node* root);
 
 	bool visibility();
 	bool memberDecl(Node* root);
 	bool funcDec1(Node* root);
 	bool funcHead(Node* root);
 	bool funcBody(Node* root);
-	bool LOCALVARDECLORSTAT();
-	bool LOCALVARDECLORSTAT2();
-	bool localVarDecl();
-	bool statement();
+	bool LOCALVARDECLORSTAT(Node* root);
+	bool LOCALVARDECLORSTAT2(Node* root);
+	bool localVarDecl(Node* root);
+	bool statement(Node* root);
 	bool FUNCALLORASSIGN();
 	bool FUNCALLORASSIGN2();
 	bool FUNCALLORASSIGN3();
@@ -82,11 +82,11 @@ private:
 	bool rightRecTerm();
 
 	bool relExpr();
-	bool statBlock();
-	bool STATEMENTS();
+	bool statBlock(Node* root);
+	bool STATEMENTS(Node* root);
 
-	bool attributeDecl();
-	bool varDecl();
+	bool attributeDecl(Node* root);
+	bool varDecl(Node* node);
 	bool returnType();
 	bool indices();
 
@@ -97,18 +97,18 @@ private:
 	bool idnest2();
 	
 
-	bool fParams();
-	bool REPTFPARAMS1();
-	bool fParamsTail();
+	bool fParams(Node* root);
+	bool REPTFPARAMS1(Node* root);
+	bool fParamsTail(Node* root);
 
 	bool aParams();
 	bool REPTAPARAMS1();
 	bool aParamsTail();
 
-	bool arraySize();
-	bool arraySize2();
+	bool arraySize(Node* root);
+	bool arraySize2(Node* root);
 
-	bool arraySizes();
+	bool arraySizes(Node* root);
 
 	// Terminals
 	bool assignOp();

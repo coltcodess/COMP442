@@ -14,6 +14,7 @@ VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
 classDecl -> 'class' 'id' ISA1 '{' VISMEMBERDECL '}' ';'
 classOrImplOrFunc -> classDecl
 ISA2 -> EPSILON
+ISA2 -> ',' 'id' ISA2
 ISA1 -> 'isa' 'id' ISA2
 visibility -> 'private'
 type -> 'float'
@@ -62,7 +63,13 @@ ISA2 -> EPSILON
 ISA1 -> 'isa' 'id' ISA2
 visibility -> 'private'
 type -> 'float'
+arraySize1 -> 'intnum' ']'
+arraySize -> '[' arraySize2
+arraySize1 -> 'intnum' ']'
+arraySize -> '[' arraySize2
 arraySizes -> EPSILON
+arraySizes -> arraySize arraySizes
+arraySizes -> arraySize arraySizes
 varDec1 -> 'id' ':' type arraySize ';'
 attributeDecl -> 'attribute' varDecl
 memberDecl -> attributeDec1
