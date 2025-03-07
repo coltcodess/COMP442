@@ -68,6 +68,13 @@ public:
 			return new arraySizeList_Node(t);
 		case statBlock:
 			return new statBlock_Node(t);
+		case returnStat:
+			return new returnStat_Node(t);
+		case expr:
+			return new expr_Node(t);
+		case varDecl:
+			return new varDecl_Node(t);
+
 
 
 		default: 

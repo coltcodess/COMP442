@@ -230,6 +230,10 @@ public:
 			return "arraySizeList";
 		case Type::statBlock:
 			return "statBlock";
+		case Type::returnStat:
+			return "returnStat";
+		case Type::varDecl:
+			return "varDecl";
 
 
 
@@ -397,6 +401,35 @@ public:
 };
 
 /////////////////////////////////////////////////////////////////////
+
+class returnStat_Node : public Node
+{
+public:
+	returnStat_Node(Type t) : Node(t)
+	{ }
+};
+
+/////////////////////////////////////////////////////////////////////
+
+class expr_Node : public Node
+{
+public:
+	expr_Node(Type t) : Node(t)
+	{ }
+};
+
+/////////////////////////////////////////////////////////////////////
+
+class varDecl_Node : public Node
+{
+public:
+	varDecl_Node(Type t) : Node(t)
+	{ }
+};
+
+/////////////////////////////////////////////////////////////////////
+
+
 
 class idLit_Node : public Node
 {

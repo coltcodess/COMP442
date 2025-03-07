@@ -59,51 +59,51 @@ private:
 	bool LOCALVARDECLORSTAT2(Node* root);
 	bool localVarDecl(Node* root);
 	bool statement(Node* root);
-	bool FUNCALLORASSIGN();
-	bool FUNCALLORASSIGN2();
-	bool FUNCALLORASSIGN3();
-	bool FUNCALLORASSIGN4();
-	bool variable();
-	bool variable2();
-	bool reptVariable();
-	bool varIdNest();
-	bool varIdNest2();
+	bool FUNCALLORASSIGN(Node* root);
+	bool FUNCALLORASSIGN2(Node* root);
+	bool FUNCALLORASSIGN3(Node* root);
+	bool FUNCALLORASSIGN4(Node* root);
+	bool variable(Node* root);
+	bool variable2(Node* root);
+	bool reptVariable(Node* root);
+	bool varIdNest(Node* root);
+	bool varIdNest2(Node* root);
 
-	bool expr();
-	bool expr2();
-	bool arithExpr();
-	bool RIGHTRECARITHEXPR();
-	bool term();
-	bool factor();
-	bool factor2();
+	bool expr(Node* root);
+	bool expr2(Node* root);
+	bool arithExpr(Node* root);
+	bool RIGHTRECARITHEXPR(Node* root);
+	bool term(Node* root);
+	bool factor(Node* root);
+	bool factor2(Node* root);
 
-	bool indice();
+	bool indice(Node* root);
 
-	bool rightRecTerm();
+	bool rightRecTerm(Node* root);
 
-	bool relExpr();
+	bool relExpr(Node* root);
 	bool statBlock(Node* root);
 	bool STATEMENTS(Node* root);
 
 	bool attributeDecl(Node* root);
 	bool varDecl(Node* node);
-	bool returnType();
-	bool indices();
+	bool returnType(Node* root);
+	bool indices(Node* root);
 
 
-	bool REPTVARIABLEORFUNCTIONCALL();
+	bool REPTVARIABLEORFUNCTIONCALL(Node* root);
 
-	bool idnest();
-	bool idnest2();
+	bool idnest(Node* root);
+	bool idnest2(Node* root);
 	
 
 	bool fParams(Node* root);
 	bool REPTFPARAMS1(Node* root);
 	bool fParamsTail(Node* root);
 
-	bool aParams();
-	bool REPTAPARAMS1();
-	bool aParamsTail();
+	bool aParams(Node* root);
+	bool REPTAPARAMS1(Node* root);
+	bool aParamsTail(Node* root);
 
 	bool arraySize(Node* root);
 	bool arraySize2(Node* root);
