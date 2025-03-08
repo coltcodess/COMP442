@@ -1705,17 +1705,17 @@ bool Parser::fParams(Node* root)
 
 	if (!skipErrors(true, first, follow)) return false;
 
-	Node* fParam_Node = m_nodeFactory->makeNode(Type::fParam);
+	Node* varDecl_Node = m_nodeFactory->makeNode(Type::varDecl);
 	Node* arraySizeList_Node = m_nodeFactory->makeNode(Type::arraySizeList);
 
 	if (m_lookAheadToken->type == TokenType::id)
 	{
 		if (match(TokenType::id) && match(TokenType::COLON) && type() && arraySizes(root) && REPTFPARAMS1(root))
 		{
-			fParam_Node->addChild(m_nodeFactory->makeNode(Type::idLit));
-			fParam_Node->addChild(m_nodeFactory->makeNode(Type::type));
+			varDecl_Node->addChild(m_nodeFactory->makeNode(Type::idLit));
+			varDecl_Node->addChild(m_nodeFactory->makeNode(Type::type));
 			//fParam_Node->addChild(arraySizeList_Node);
-			root->addChild(fParam_Node);
+			root->addChild(varDecl_Node);
 			*m_derivationFile << "fParams -> 'id' ':' type arraySizes REPTFPARAMS1\n";
 			return true;
 		}
@@ -1760,15 +1760,15 @@ bool Parser::fParamsTail(Node* root)
 
 	if (!skipErrors(false, first, follow)) return false;
 
-	Node* fParam = m_nodeFactory->makeNode(Type::fParam);
+	Node* varDecl_Node = m_nodeFactory->makeNode(Type::varDecl);
 
 	if (m_lookAheadToken->type == COMMA)
 	{
 		if (match(TokenType::COMMA) && match(TokenType::id) && match(TokenType::COLON) && type() && arraySizes(root))
 		{
-			fParam->addChild(m_nodeFactory->makeNode(Type::idLit));
-			fParam->addChild(m_nodeFactory->makeNode(Type::type));
-			root->addChild(fParam);
+			varDecl_Node->addChild(m_nodeFactory->makeNode(Type::idLit));
+			varDecl_Node->addChild(m_nodeFactory->makeNode(Type::type));
+			root->addChild(varDecl_Node);
 			*m_derivationFile << "fParasTail -> ',' 'id' ':' type arraySizes\n";
 			return true;
 		}

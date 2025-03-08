@@ -126,7 +126,7 @@ public:
 
 	}
 
-	const std::vector<Node*> getChildren()
+	std::vector<Node*> getChildren()
 	{
 		return this->children;
 	}

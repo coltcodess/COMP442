@@ -6,7 +6,7 @@
         | memDecl
           | idLit
           | fParamsList
-            | fParam
+            | varDecl
               | idLit
               | type
           | type
@@ -29,17 +29,17 @@
         | memDecl
           | idLit
           | fParamsList
-            | fParam
+            | varDecl
               | idLit
               | type
-            | fParam
+            | varDecl
               | idLit
               | type
           | type
         | memDecl
           | idLit
           | fParamsList
-            | fParam
+            | varDecl
               | idLit
               | type
           | type
@@ -68,20 +68,20 @@
         | memDecl
           | idLit
           | fParamsList
-            | fParam
+            | varDecl
               | idLit
               | type
-            | fParam
+            | varDecl
               | idLit
               | type
-            | fParam
+            | varDecl
               | idLit
               | type
           | type
         | memDecl
           | idLit
           | fParamsList
-            | fParam
+            | varDecl
               | idLit
               | type
           | type
@@ -91,7 +91,7 @@
       | funcDef
         | idLit
         | fParamsList
-          | fParam
+          | varDecl
             | idLit
             | type
         | type
@@ -103,7 +103,7 @@
       | funcDef
         | idLit
         | fParamsList
-          | fParam
+          | varDecl
             | idLit
             | type
         | type
@@ -134,13 +134,13 @@
       | funcDef
         | idLit
         | fParamsList
-          | fParam
+          | varDecl
             | idLit
             | type
-          | fParam
+          | varDecl
             | idLit
             | type
-          | fParam
+          | varDecl
             | idLit
             | type
         | type
@@ -165,10 +165,10 @@
       | funcDef
         | idLit
         | fParamsList
-          | fParam
+          | varDecl
             | idLit
             | type
-          | fParam
+          | varDecl
             | idLit
             | type
         | type
@@ -188,7 +188,7 @@
       | funcDef
         | idLit
         | fParamsList
-          | fParam
+          | varDecl
             | idLit
             | type
         | type
