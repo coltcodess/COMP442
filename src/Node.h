@@ -218,6 +218,8 @@ public:
 			return "expr";
 		case Type::addOp:
 			return "addOp";
+		case Type::multiOp:
+			return "multiOp";
 		case Type::memDeclList:
 			return "memDeclList";
 		case Type::memDecl:
@@ -234,6 +236,17 @@ public:
 			return "returnStat";
 		case Type::varDecl:
 			return "varDecl";
+		case Type::assignStat:
+			return "assignStat";
+		case Type::whileStat:
+			return "whileStat";
+		case Type::writeStat:
+			return "writeStat";
+		case Type::relExpr:
+			return "relExpr";
+		case Type::relOp:
+			return "relOp";
+			
 
 
 
@@ -383,7 +396,6 @@ public:
 
 /////////////////////////////////////////////////////////////////////
 
-
 class arraySizeList_Node : public Node
 {
 public:
@@ -411,10 +423,38 @@ public:
 
 /////////////////////////////////////////////////////////////////////
 
+class whileStat_Node : public Node
+{
+public:
+	whileStat_Node(Type t) : Node(t)
+	{ }
+};
+
+/////////////////////////////////////////////////////////////////////
+
+class writeStat_Node : public Node
+{
+public:
+	writeStat_Node(Type t) : Node(t)
+	{ }
+};
+
+/////////////////////////////////////////////////////////////////////
+
+
 class expr_Node : public Node
 {
 public:
 	expr_Node(Type t) : Node(t)
+	{ }
+};
+
+/////////////////////////////////////////////////////////////////////
+
+class relExpr_Node : public Node
+{
+public:
+	relExpr_Node(Type t) : Node(t)
 	{ }
 };
 
@@ -428,6 +468,16 @@ public:
 };
 
 /////////////////////////////////////////////////////////////////////
+
+class assignStat_Node : public Node
+{
+public:
+	assignStat_Node(Type t) : Node(t)
+	{ }
+};
+
+/////////////////////////////////////////////////////////////////////
+
 
 
 

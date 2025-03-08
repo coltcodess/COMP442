@@ -701,7 +701,10 @@ bool Parser::statement(Node* root)
 	}
 	else if (m_lookAheadToken->type == WRITE)
 	{
-		if (match(TokenType::WRITE) && match(TokenType::OPENPAR) && expr(root) && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
+		Node* writeStat_Node = m_nodeFactory->makeNode(Type::writeStat);
+		root->addChild(writeStat_Node);
+
+		if (match(TokenType::WRITE) && match(TokenType::OPENPAR) && expr(writeStat_Node) && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
 		{
 			*m_derivationFile << "statement -> 'write' '(' expr ')' ';'\n";
 			return true;
@@ -710,7 +713,10 @@ bool Parser::statement(Node* root)
 	}
 	else if (m_lookAheadToken->type == WHILE)
 	{
-		if (match(TokenType::WHILE) && match(TokenType::OPENPAR) && relExpr(root) && match(TokenType::CLOSEPAR) && statBlock(root) && match(TokenType::SEMI))
+		Node* whileStat_Node = m_nodeFactory->makeNode(Type::whileStat);
+		root->addChild(whileStat_Node);
+
+		if (match(TokenType::WHILE) && match(TokenType::OPENPAR) && relExpr(whileStat_Node) && match(TokenType::CLOSEPAR) && statBlock(whileStat_Node) && match(TokenType::SEMI))
 		{
 			*m_derivationFile << "statement -> 'while' '(' relExpr ')' statBlock ';'\n";
 			return true;
@@ -721,6 +727,7 @@ bool Parser::statement(Node* root)
 	{
 		Node* returnStat_Node = m_nodeFactory->makeNode(Type::returnStat);
 		root->addChild(returnStat_Node);
+
 		if (match(TokenType::RETURN) && match(TokenType::OPENPAR) && expr(returnStat_Node) && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
 		{
 			*m_derivationFile << "statement -> 'return' '(' expr ')' ';'\n";
@@ -757,9 +764,12 @@ bool Parser::FUNCALLORASSIGN(Node* root)
 
 	if (!skipErrors(false, first, follow)) return false;
 
+	Node* assignStat_Node = m_nodeFactory->makeNode(Type::assignStat);
+	root->addChild(assignStat_Node);
+
 	if (m_lookAheadToken->type == id || m_lookAheadToken->type == SELF)
 	{
-		if (IDORSELF() && FUNCALLORASSIGN2(root))
+		if (IDORSELF(assignStat_Node) && FUNCALLORASSIGN2(assignStat_Node))
 		{
 			*m_derivationFile << "FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2\n";
 			return true;
@@ -808,6 +818,7 @@ bool Parser::FUNCALLORASSIGN3(Node* root)
 	{
 		if (assignOp() && expr(root))
 		{
+			
 			*m_derivationFile << "FUNCALLORASSIGN3 -> assignOp expr\n";
 			return true;
 		}
@@ -857,9 +868,12 @@ bool Parser::statBlock(Node* root)
 
 	if (!skipErrors(true, first, follow)) return false;
 
+	Node* statBlock_Node = m_nodeFactory->makeNode(Type::statBlock);
+	root->addChild(statBlock_Node);
+
 	if (m_lookAheadToken->type == OPENCUBR)
 	{
-		if (match(OPENCUBR) && STATEMENTS(root) && match(CLOSECUBR))
+		if (match(OPENCUBR) && STATEMENTS(statBlock_Node) && match(CLOSECUBR))
 		{
 			*m_derivationFile << "statBlock -> '{' STATEMENTS '}'\n";
 			return true;
@@ -868,7 +882,7 @@ bool Parser::statBlock(Node* root)
 	}
 	else if (m_lookAheadToken->type == IF || m_lookAheadToken->type == READ || m_lookAheadToken->type == WHILE || m_lookAheadToken->type == RETURN || m_lookAheadToken->type == WRITE || m_lookAheadToken->type == id || m_lookAheadToken->type == SELF)
 	{
-		if (statement(root))
+		if (statement(statBlock_Node))
 		{
 			*m_derivationFile << "statBlock -> statement\n";
 			return true;
@@ -914,7 +928,6 @@ bool Parser::expr(Node* root)
 	std::vector<TokenType> follow = {};
 
 	if (!skipErrors(false, first, follow)) return false;
-
 
 	if (m_lookAheadToken->type == OPENPAR || m_lookAheadToken->type == TokenType::floatnum
 		|| m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::intnum
@@ -963,12 +976,18 @@ bool Parser::relExpr(Node* root)
 
 	if (!skipErrors(false, first, follow)) return false;
 
+	Node* relExpr_Node = m_nodeFactory->makeNode(Type::relExpr);
+	root->addChild(relExpr_Node);
+
 	if (m_lookAheadToken->type == OPENPAR || m_lookAheadToken->type == TokenType::floatnum
 		|| m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::intnum
 		|| m_lookAheadToken->type == NOT || m_lookAheadToken->type == PLUS
 		|| m_lookAheadToken->type == MINUS || m_lookAheadToken->type == SELF)
 	{
-		if (arithExpr(root) && relOp() && arithExpr(root))
+		Node* relOp_Node = m_nodeFactory->makeNode(Type::relOp);
+		relExpr_Node->addChild(relOp_Node);
+
+		if (arithExpr(relOp_Node) && relOp() && arithExpr(relOp_Node))
 		{
 			*m_derivationFile << "relExpr -> arithExpr relOp arithExpr\n";
 			return true;
@@ -1007,10 +1026,14 @@ bool Parser::RIGHTRECARITHEXPR(Node* root)
 
 	if (!skipErrors(true, first, follow)) return false;
 
+	Node* addOp_Node = m_nodeFactory->makeNode();
+
+
 	if (m_lookAheadToken->type == PLUS || m_lookAheadToken->type == MINUS || m_lookAheadToken->type == OR)
 	{
-		if (addOp() && term(root) && RIGHTRECARITHEXPR(root))
+		if (addOp(addOp_Node) && term(addOp_Node) && RIGHTRECARITHEXPR(addOp_Node))
 		{
+			root->addChild(addOp_Node);
 			*m_derivationFile << "RIGHTRECARITHEXPR -> addOp term arithExpr2\n";
 			return true;
 		}
@@ -1061,6 +1084,8 @@ bool Parser::term(Node* root)
 
 	if (!skipErrors(false, first, follow)) return false;
 
+	//Node* null_node = m_nodeFactory->makeNode();
+
 	if (m_lookAheadToken->type == OPENPAR 
 		|| m_lookAheadToken->type == TokenType::floatnum
 		|| m_lookAheadToken->type == TokenType::id 
@@ -1069,7 +1094,7 @@ bool Parser::term(Node* root)
 		|| m_lookAheadToken->type == NOT 
 		|| m_lookAheadToken->type == PLUS
 		|| m_lookAheadToken->type == MINUS)
-	{
+	{			
 		if (factor(root) && rightRecTerm(root))
 		{
 			*m_derivationFile << "term -> factor rightRecTerm\n";
@@ -1089,7 +1114,7 @@ bool Parser::rightRecTerm(Node* root)
 
 	if (m_lookAheadToken->type == MULTI || m_lookAheadToken->type == DIV || m_lookAheadToken->type == AND)
 	{
-		if (multOp() && factor(root) && rightRecTerm(root))
+		if (multOp(root) && factor(root) && rightRecTerm(root))
 		{
 			*m_derivationFile << "rightRecTerm -> multiOp factor rightRecTerm\n";
 			return true;
@@ -1122,9 +1147,8 @@ bool Parser::factor(Node* root)
 	}
 	else if (m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::SELF)
 	{
-		if (IDORSELF() && factor2(root) && REPTVARIABLEORFUNCTIONCALL(root))
+		if (IDORSELF(root) && factor2(root) && REPTVARIABLEORFUNCTIONCALL(root))
 		{
-			root->addChild(m_nodeFactory->makeNode(Type::idLit));
 			*m_derivationFile << "factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL\n";
 			return true;
 		}
@@ -1153,6 +1177,7 @@ bool Parser::factor(Node* root)
 	{
 		if (match(TokenType::floatnum))
 		{
+			root->addChild(m_nodeFactory->makeNode(Type::floatLit));
 			*m_derivationFile << "factor -> 'floatnum'\n";
 			return true;
 		}
@@ -1279,7 +1304,7 @@ bool Parser::variable(Node* root)
 
 	if (m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::SELF)
 	{
-		if (IDORSELF() && variable2(root))
+		if (IDORSELF(root) && variable2(root))
 		{
 			*m_derivationFile << "variable -> IDORSELF variable2\n";
 			return true;
@@ -1824,7 +1849,7 @@ bool Parser::relOp()
 	else return false;
 }
 
-bool Parser::addOp()
+bool Parser::addOp(Node* root)
 {
 	std::vector<TokenType> first = { OR, PLUS, MINUS };
 	std::vector<TokenType> follow = { };
@@ -1844,6 +1869,7 @@ bool Parser::addOp()
 	{
 		if (match(TokenType::PLUS))
 		{
+			root->setType(Type::addOp);
 			*m_derivationFile << "addOp -> '+'\n";
 			return true;
 		}
@@ -1861,7 +1887,7 @@ bool Parser::addOp()
 	else return false;
 }
 
-bool Parser::multOp()
+bool Parser::multOp(Node* root)
 {
 	std::vector<TokenType> first = { AND, DIV, MULTI };
 	std::vector<TokenType>  follow = {};
@@ -1879,7 +1905,7 @@ bool Parser::multOp()
 		}
 		else return false;
 	}
-	else if (m_lookAheadToken->type = DIV)
+	else if (m_lookAheadToken->type == DIV)
 	{
 		if (match(TokenType::DIV))
 		{
@@ -1901,17 +1927,20 @@ bool Parser::multOp()
 	else return false;
 }
 
-bool Parser::IDORSELF()
+bool Parser::IDORSELF(Node* root)
 {
 	std::vector<TokenType> first = { id, SELF };
 	std::vector<TokenType>  follow = {};
 
 	if (!skipErrors(false, first, follow)) return false;
 
+	Node* idLit_Node = m_nodeFactory->makeNode(Type::idLit);
+
 	if (m_lookAheadToken->type == id)
 	{
 		if (match(id))
 		{
+			root->addChild(idLit_Node);
 			*m_derivationFile << "IDORSELF -> 'id'\n";
 			return true;
 		}

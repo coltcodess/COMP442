@@ -70,10 +70,18 @@ public:
 			return new statBlock_Node(t);
 		case returnStat:
 			return new returnStat_Node(t);
+		case whileStat:
+			return new whileStat_Node(t);
+		case writeStat:
+			return new writeStat_Node(t);
 		case expr:
 			return new expr_Node(t);
 		case varDecl:
 			return new varDecl_Node(t);
+		case assignStat:
+			return new varDecl_Node(t);
+		case relExpr:
+			return new relExpr_Node(t);
 
 
 

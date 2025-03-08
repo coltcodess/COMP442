@@ -108,13 +108,21 @@
           | idLit
           | type
           | arraySizeList
-        | idLit
-        | idLit
-        | idLit
-        | idLit
-        | idLit
-        | idLit
-        | idLit
+        | assignStat
+          | idLit
+          | idLit
+        | assignStat
+          | idLit
+          | idLit
+          | idLit
+          | addOp
+            | idLit
+        | assignStat
+          | idLit
+          | idLit
+          | idLit
+          | addOp
+            | idLit
         | returnStat
           | idLit
       | idLit
@@ -134,9 +142,15 @@
           | idLit
           | type
           | arraySizeList
-        | idLit
-        | idLit
-        | idLit
+        | assignStat
+          | idLit
+          | idLit
+        | assignStat
+          | idLit
+          | idLit
+        | assignStat
+          | idLit
+          | idLit
         | returnStat
           | idLit
     | funcDef
@@ -154,8 +168,12 @@
           | idLit
           | type
           | arraySizeList
-        | idLit
-        | idLit
+        | assignStat
+          | idLit
+          | idLit
+        | assignStat
+          | idLit
+          | idLit
         | returnStat
           | idLit
       | idLit
@@ -169,9 +187,15 @@
           | idLit
           | type
           | arraySizeList
-        | idLit
-        | idLit
-        | idLit
+        | assignStat
+          | idLit
+          | floatLit
+        | assignStat
+          | idLit
+          | idLit
+          | idLit
+          | addOp
+            | idLit
         | returnStat
           | idLit
   | funcDefList
@@ -191,14 +215,31 @@
         | idLit
         | type
         | arraySizeList
-      | intLit
-      | idLit
-      | idLit
-      | intLit
-      | idLit
-      | intLit
-      | idLit
-      | idLit
-      | idLit
-      | idLit
-      | idLit
+      | assignStat
+        | idLit
+        | idLit
+        | intLit
+        | floatLit
+      | assignStat
+        | idLit
+        | idLit
+        | floatLit
+        | floatLit
+        | floatLit
+      | assignStat
+        | idLit
+        | intLit
+      | whileStat
+        | relExpr
+          | relOp
+            | idLit
+            | intLit
+        | statBlock
+          | writeStat
+            | idLit
+          | writeStat
+            | idLit
+            | idLit
+          | writeStat
+            | idLit
+            | idLit
