@@ -48,6 +48,8 @@ public:
 			return new classDecl_Node(t);
 		case implDefList:
 			return new implDefList_Node(t);
+		case impleDef:
+			return new impleDef_Node(t);
 		case funcDefList:
 			return new funcDefList_Node(t);
 		case funcDecl:
@@ -74,6 +76,8 @@ public:
 			return new whileStat_Node(t);
 		case writeStat:
 			return new writeStat_Node(t);
+		case ifStat:
+			return new ifStat_Node(t);
 		case expr:
 			return new expr_Node(t);
 		case varDecl:

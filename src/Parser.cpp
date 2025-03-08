@@ -351,15 +351,18 @@ bool Parser::implDef(Node* root)
 	std::vector<TokenType> first = { IMPLEMENTATION };
 	std::vector<TokenType> follow = { };
 
-	Node* funcDef = m_nodeFactory->makeNode(Type::funcDef);
-	root->addChild(funcDef);
+	Node* impleDef_Node = m_nodeFactory->makeNode(Type::impleDef);
+
 
 	if (!skipErrors(false, first, follow)) return false;
 
 	if (m_lookAheadToken->type == IMPLEMENTATION)
 	{
-		if (match(TokenType::IMPLEMENTATION) && match(TokenType::id) && match(TokenType::OPENCUBR) && impleBody(funcDef) && match(TokenType::CLOSECUBR))
+		impleDef_Node->addChild(m_nodeFactory->makeNode(idLit));
+
+		if (match(TokenType::IMPLEMENTATION) && match(TokenType::id) && match(TokenType::OPENCUBR) && impleBody(impleDef_Node) && match(TokenType::CLOSECUBR))
 		{
+			root->addChild(impleDef_Node);
 			*m_derivationFile << "implDef -> 'implementation' 'id' '{' funcDef '}'\n";
 			return true;
 		}
@@ -372,8 +375,6 @@ bool Parser::impleBody(Node* root)
 {
 	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR };
 	std::vector<TokenType> follow = { CLOSECUBR };
-
-	Node* funcDecl = m_nodeFactory->makeNode(Type::funcDecl);
 
 	if (!skipErrors(true, first, follow)) return false;
 
@@ -401,9 +402,12 @@ bool Parser::funcDef(Node* root)
 
 	if (!skipErrors(false, first, follow)) return false;
 
+	Node* funcDef = m_nodeFactory->makeNode(Type::funcDef);
+	root->addChild(funcDef);
+
 	if (m_lookAheadToken->type == FUNCTION || m_lookAheadToken->type == CONSTRUCTOR)
 	{
-		if (funcHead(root) && funcBody(root))
+		if (funcHead(funcDef) && funcBody(funcDef))
 		{
 			*m_derivationFile << "funcDef -> funcHead funcBody\n";
 			return true;
@@ -746,8 +750,11 @@ bool Parser::statement(Node* root)
 	}
 	else if (m_lookAheadToken->type == IF)
 	{
-		if (match(TokenType::IF) && match(TokenType::OPENPAR) && relExpr(root) && match(CLOSEPAR) && match(TokenType::THEN) && statBlock(root) &&
-			match(TokenType::ELSE) && statBlock(root) && match(TokenType::SEMI))
+		Node* ifStat_Node = m_nodeFactory->makeNode(Type::ifStat);
+		root->addChild(ifStat_Node);
+
+		if (match(TokenType::IF) && match(TokenType::OPENPAR) && relExpr(ifStat_Node) && match(CLOSEPAR) && match(TokenType::THEN) && statBlock(ifStat_Node) &&
+			match(TokenType::ELSE) && statBlock(ifStat_Node) && match(TokenType::SEMI))
 		{
 			*m_derivationFile << "statement -> 'if' '(' relExpr ')' 'then' statBlock 'else' statBlock ';'\n";
 			return true;
@@ -1027,7 +1034,6 @@ bool Parser::RIGHTRECARITHEXPR(Node* root)
 	if (!skipErrors(true, first, follow)) return false;
 
 	Node* addOp_Node = m_nodeFactory->makeNode();
-
 
 	if (m_lookAheadToken->type == PLUS || m_lookAheadToken->type == MINUS || m_lookAheadToken->type == OR)
 	{
@@ -1860,6 +1866,7 @@ bool Parser::addOp(Node* root)
 	{
 		if (match(TokenType::OR))
 		{
+			root->setType(Type::addOp);
 			*m_derivationFile << "addOp -> 'or'\n";
 			return true;
 		}
@@ -1879,6 +1886,7 @@ bool Parser::addOp(Node* root)
 	{
 		if (match(TokenType::MINUS))
 		{
+			root->setType(Type::addOp);
 			*m_derivationFile << "addOp -> '-'\n";
 			return true;
 		}

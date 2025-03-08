@@ -196,6 +196,8 @@ public:
 			return  "classDecl";
 		case Type::implDefList:
 			return  "implDefList";
+		case Type::impleDef:
+			return  "impleDef";
 		case Type::funcDefList:
 			return  "funcDefList";
 		case Type::funcDecl:
@@ -246,7 +248,8 @@ public:
 			return "relExpr";
 		case Type::relOp:
 			return "relOp";
-			
+		case Type::ifStat:
+			return "ifStat";
 
 
 
@@ -319,6 +322,15 @@ class implDefList_Node : public Node
 {
 public:
 	implDefList_Node(Type t) : Node(t)
+	{ }
+};
+
+/////////////////////////////////////////////////////////////////////
+
+class impleDef_Node : public Node
+{
+public:
+	impleDef_Node(Type t) : Node(t)
 	{ }
 };
 
@@ -441,6 +453,14 @@ public:
 
 /////////////////////////////////////////////////////////////////////
 
+class ifStat_Node : public Node
+{
+public:
+	ifStat_Node(Type t) : Node(t)
+	{ }
+};
+
+/////////////////////////////////////////////////////////////////////
 
 class expr_Node : public Node
 {
