@@ -118,13 +118,15 @@
           | assignStat
             | idLit
             | idLit
-            | idLit
+            | multiOp
+              | idLit
             | addOp
               | idLit
           | assignStat
             | idLit
             | idLit
-            | idLit
+            | multiOp
+              | idLit
             | addOp
               | idLit
           | returnStat
@@ -201,7 +203,8 @@
           | assignStat
             | idLit
             | idLit
-            | idLit
+            | multiOp
+              | idLit
             | addOp
               | idLit
           | returnStat

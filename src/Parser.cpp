@@ -741,7 +741,10 @@ bool Parser::statement(Node* root)
 	}
 	else if (m_lookAheadToken->type == READ)
 	{
-		if (match(TokenType::READ) && match(TokenType::OPENPAR) && variable(root) && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
+		Node* readStat_Node = m_nodeFactory->makeNode(Type::readStat);
+		root->addChild(readStat_Node);
+
+		if (match(TokenType::READ) && match(TokenType::OPENPAR) && variable(readStat_Node) && match(TokenType::CLOSEPAR) && match(TokenType::SEMI))
 		{
 			*m_derivationFile << "statement -> 'read' '(' reptVariableOrFunctionCall ')' ';'\n";
 			return true;
@@ -823,9 +826,8 @@ bool Parser::FUNCALLORASSIGN3(Node* root)
 
 	if (m_lookAheadToken->type == ASSIGN)
 	{
-		if (assignOp() && expr(root))
+		if (assignOp(root) && expr(root))
 		{
-			
 			*m_derivationFile << "FUNCALLORASSIGN3 -> assignOp expr\n";
 			return true;
 		}
@@ -1118,10 +1120,13 @@ bool Parser::rightRecTerm(Node* root)
 
 	if (!skipErrors(true, first, follow)) return false;
 
+	Node* multOp_Node = m_nodeFactory->makeNode(Type::multiOp);
+
 	if (m_lookAheadToken->type == MULTI || m_lookAheadToken->type == DIV || m_lookAheadToken->type == AND)
 	{
-		if (multOp(root) && factor(root) && rightRecTerm(root))
+		if (multOp(multOp_Node) && factor(multOp_Node) && rightRecTerm(multOp_Node))
 		{
+			root->addChild(multOp_Node);
 			*m_derivationFile << "rightRecTerm -> multiOp factor rightRecTerm\n";
 			return true;
 		}
@@ -1772,7 +1777,7 @@ bool Parser::fParamsTail(Node* root)
 	else return false;
 }
 
-bool Parser::assignOp()
+bool Parser::assignOp(Node* root)
 {
 	std::vector<TokenType> first = { ASSIGN };
 	std::vector<TokenType> follow = {};
@@ -1927,6 +1932,7 @@ bool Parser::multOp(Node* root)
 	{
 		if (match(TokenType::MULTI))
 		{
+			root->setType(Type::multiOp);
 			*m_derivationFile << "sign -> '*'\n";
 			return true;
 		}

@@ -111,7 +111,7 @@ private:
 	bool arraySizes(Node* root);
 
 	// Terminals
-	bool assignOp();
+	bool assignOp(Node* root);
 	bool sign();
 	bool multOp(Node* root);
 	bool IDORSELF(Node* root);

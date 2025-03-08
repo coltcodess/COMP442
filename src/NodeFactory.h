@@ -76,6 +76,8 @@ public:
 			return new whileStat_Node(t);
 		case writeStat:
 			return new writeStat_Node(t);
+		case readStat:
+			return new readStat_Node(t);
 		case ifStat:
 			return new ifStat_Node(t);
 		case expr:

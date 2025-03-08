@@ -244,6 +244,8 @@ public:
 			return "whileStat";
 		case Type::writeStat:
 			return "writeStat";
+		case Type::readStat:
+			return "readStat";
 		case Type::relExpr:
 			return "relExpr";
 		case Type::relOp:
@@ -448,6 +450,15 @@ class writeStat_Node : public Node
 {
 public:
 	writeStat_Node(Type t) : Node(t)
+	{ }
+};
+
+/////////////////////////////////////////////////////////////////////
+
+class readStat_Node : public Node
+{
+public:
+	readStat_Node(Type t) : Node(t)
 	{ }
 };
 
