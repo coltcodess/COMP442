@@ -126,7 +126,7 @@ public:
 
 	}
 
-	std::vector<Node*> getChildren()
+	const std::vector<Node*> getChildren()
 	{
 		return this->children;
 	}
@@ -508,8 +508,6 @@ public:
 };
 
 /////////////////////////////////////////////////////////////////////
-
-
 
 
 class idLit_Node : public Node

@@ -72,14 +72,14 @@ private:
 	bool expr(Node* root);
 	bool expr2(Node* root);
 	bool arithExpr(Node* root);
-	bool RIGHTRECARITHEXPR(Node* root);
+	bool RIGHTRECARITHEXPR(Node& child, Node* root);
 	bool term(Node* root);
-	bool factor(Node* root);
+	bool factor( Node* root);
 	bool factor2(Node* root);
 
 	bool indice(Node* root);
 
-	bool rightRecTerm(Node* root);
+	bool rightRecTerm(Node& child, Node* root);
 
 	bool relExpr(Node* root);
 	bool statBlock(Node* root);
@@ -113,9 +113,9 @@ private:
 	// Terminals
 	bool assignOp(Node* root);
 	bool sign();
-	bool multOp(Node* root);
-	bool IDORSELF(Node* root);
-	bool addOp(Node* root);
+	bool multOp();
+	bool IDORSELF();
+	bool addOp();
 	bool relOp();
 	bool type();
 	

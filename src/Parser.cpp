@@ -779,7 +779,8 @@ bool Parser::FUNCALLORASSIGN(Node* root)
 
 	if (m_lookAheadToken->type == id || m_lookAheadToken->type == SELF)
 	{
-		if (IDORSELF(assignStat_Node) && FUNCALLORASSIGN2(assignStat_Node))
+		assignStat_Node->addChild(m_nodeFactory->makeNode(idLit));
+		if (IDORSELF() && FUNCALLORASSIGN2(assignStat_Node))
 		{
 			*m_derivationFile << "FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2\n";
 			return true;
@@ -1013,13 +1014,18 @@ bool Parser::arithExpr(Node* root)
 
 	if (!skipErrors(false, first, follow)) return false;
 
+	Node* term_Node = m_nodeFactory->makeNode();
+	Node* RIGHTRECARITHEXPR_Node = m_nodeFactory->makeNode();
+
 	if (m_lookAheadToken->type == OPENPAR || m_lookAheadToken->type == TokenType::floatnum
 		|| m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::intnum
 		|| m_lookAheadToken->type == NOT || m_lookAheadToken->type == PLUS
 		|| m_lookAheadToken->type == MINUS || m_lookAheadToken->type == SELF)
 	{
-		if (term(root) && RIGHTRECARITHEXPR(root))
+		if (term(term_Node) && 
+			RIGHTRECARITHEXPR(*term_Node, RIGHTRECARITHEXPR_Node))
 		{
+			root->addChild(RIGHTRECARITHEXPR_Node);
 			*m_derivationFile << "arithExpr -> term RIGHTRECARITHEXPR\n";
 			return true;
 		}
@@ -1028,20 +1034,19 @@ bool Parser::arithExpr(Node* root)
 	else return false;
 }
 
-bool Parser::RIGHTRECARITHEXPR(Node* root)
+bool Parser::RIGHTRECARITHEXPR(Node& child, Node* root)
 {
 	std::vector<TokenType> first = { MINUS, OR, PLUS, };
 	std::vector<TokenType> follow = { CLOSEPAR, SEMI, COMMA, EQ, GT , GEQ,  LT , LEQ,  NOTEQ , CLOSESQBR };
 
 	if (!skipErrors(true, first, follow)) return false;
 
-	Node* addOp_Node = m_nodeFactory->makeNode();
-
 	if (m_lookAheadToken->type == PLUS || m_lookAheadToken->type == MINUS || m_lookAheadToken->type == OR)
 	{
-		if (addOp(addOp_Node) && term(addOp_Node) && RIGHTRECARITHEXPR(addOp_Node))
+		if (addOp() && term(&child) && RIGHTRECARITHEXPR(child, root))
 		{
-			root->addChild(addOp_Node);
+			root->setType(Type::addOp);
+			root->addChild(&child);
 			*m_derivationFile << "RIGHTRECARITHEXPR -> addOp term arithExpr2\n";
 			return true;
 		}
@@ -1050,6 +1055,7 @@ bool Parser::RIGHTRECARITHEXPR(Node* root)
 	}
 	else if (tokenInFollowSet(follow))
 	{
+		*root = child;
 		*m_derivationFile << "RIGHTRECARITHEXPR -> EPSILON\n";
 		return true;
 	}
@@ -1092,7 +1098,8 @@ bool Parser::term(Node* root)
 
 	if (!skipErrors(false, first, follow)) return false;
 
-	//Node* null_node = m_nodeFactory->makeNode();
+	Node* factor_Node = m_nodeFactory->makeNode();
+	Node* rightRecTerm_Node = m_nodeFactory->makeNode();
 
 	if (m_lookAheadToken->type == OPENPAR 
 		|| m_lookAheadToken->type == TokenType::floatnum
@@ -1103,8 +1110,10 @@ bool Parser::term(Node* root)
 		|| m_lookAheadToken->type == PLUS
 		|| m_lookAheadToken->type == MINUS)
 	{			
-		if (factor(root) && rightRecTerm(root))
+		if (factor(factor_Node) && 
+			rightRecTerm(*factor_Node, rightRecTerm_Node))
 		{
+			root->addChild(rightRecTerm_Node);
 			*m_derivationFile << "term -> factor rightRecTerm\n";
 			return true;
 		}
@@ -1113,20 +1122,20 @@ bool Parser::term(Node* root)
 	else return false;
 }
 
-bool Parser::rightRecTerm(Node* root)
+bool Parser::rightRecTerm(Node& child, Node* root)
 {
 	std::vector<TokenType> first = { MULTI, DIV, AND };
 	std::vector<TokenType> follow = { CLOSEPAR, SEMI, COMMA, EQ, GT, GEQ, LT, LEQ, NOTEQ, CLOSESQBR, MINUS, OR, PLUS };
 
 	if (!skipErrors(true, first, follow)) return false;
 
-	Node* multOp_Node = m_nodeFactory->makeNode(Type::multiOp);
-
 	if (m_lookAheadToken->type == MULTI || m_lookAheadToken->type == DIV || m_lookAheadToken->type == AND)
 	{
-		if (multOp(multOp_Node) && factor(multOp_Node) && rightRecTerm(multOp_Node))
+
+		if (multOp() && factor(&child) && rightRecTerm(child, root))
 		{
-			root->addChild(multOp_Node);
+			root->setType(Type::multiOp);
+			root->addChild(&child);
 			*m_derivationFile << "rightRecTerm -> multiOp factor rightRecTerm\n";
 			return true;
 		}
@@ -1134,6 +1143,7 @@ bool Parser::rightRecTerm(Node* root)
 	}
 	else if (tokenInFollowSet(follow))
 	{
+		*root = child;
 		*m_derivationFile << "rightRecTerm -> EPSILON\n";
 		return true;
 	}
@@ -1158,7 +1168,9 @@ bool Parser::factor(Node* root)
 	}
 	else if (m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::SELF)
 	{
-		if (IDORSELF(root) && factor2(root) && REPTVARIABLEORFUNCTIONCALL(root))
+		
+		root->setType(Type::idLit);
+		if (IDORSELF() && factor2(root) && REPTVARIABLEORFUNCTIONCALL(root))
 		{
 			*m_derivationFile << "factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL\n";
 			return true;
@@ -1176,9 +1188,9 @@ bool Parser::factor(Node* root)
 	}
 	else if (m_lookAheadToken->type == TokenType::intnum)
 	{
+		root->setType(Type::intLit);
 		if (match(TokenType::intnum))
 		{
-			root->addChild(m_nodeFactory->makeNode(Type::intLit));
 			*m_derivationFile << "factor -> 'intLit'\n";
 			return true;
 		}
@@ -1188,7 +1200,7 @@ bool Parser::factor(Node* root)
 	{
 		if (match(TokenType::floatnum))
 		{
-			root->addChild(m_nodeFactory->makeNode(Type::floatLit));
+			root->setType(Type::floatLit);
 			*m_derivationFile << "factor -> 'floatnum'\n";
 			return true;
 		}
@@ -1315,7 +1327,9 @@ bool Parser::variable(Node* root)
 
 	if (m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::SELF)
 	{
-		if (IDORSELF(root) && variable2(root))
+		root->setType(Type::idLit);
+
+		if (IDORSELF() && variable2(root))
 		{
 			*m_derivationFile << "variable -> IDORSELF variable2\n";
 			return true;
@@ -1714,7 +1728,6 @@ bool Parser::fParams(Node* root)
 		{
 			varDecl_Node->addChild(m_nodeFactory->makeNode(Type::idLit));
 			varDecl_Node->addChild(m_nodeFactory->makeNode(Type::type));
-			//fParam_Node->addChild(arraySizeList_Node);
 			root->addChild(varDecl_Node);
 			*m_derivationFile << "fParams -> 'id' ':' type arraySizes REPTFPARAMS1\n";
 			return true;
@@ -1860,7 +1873,7 @@ bool Parser::relOp()
 	else return false;
 }
 
-bool Parser::addOp(Node* root)
+bool Parser::addOp()
 {
 	std::vector<TokenType> first = { OR, PLUS, MINUS };
 	std::vector<TokenType> follow = { };
@@ -1871,7 +1884,6 @@ bool Parser::addOp(Node* root)
 	{
 		if (match(TokenType::OR))
 		{
-			root->setType(Type::addOp);
 			*m_derivationFile << "addOp -> 'or'\n";
 			return true;
 		}
@@ -1881,7 +1893,6 @@ bool Parser::addOp(Node* root)
 	{
 		if (match(TokenType::PLUS))
 		{
-			root->setType(Type::addOp);
 			*m_derivationFile << "addOp -> '+'\n";
 			return true;
 		}
@@ -1891,7 +1902,6 @@ bool Parser::addOp(Node* root)
 	{
 		if (match(TokenType::MINUS))
 		{
-			root->setType(Type::addOp);
 			*m_derivationFile << "addOp -> '-'\n";
 			return true;
 		}
@@ -1900,7 +1910,7 @@ bool Parser::addOp(Node* root)
 	else return false;
 }
 
-bool Parser::multOp(Node* root)
+bool Parser::multOp()
 {
 	std::vector<TokenType> first = { AND, DIV, MULTI };
 	std::vector<TokenType>  follow = {};
@@ -1932,7 +1942,6 @@ bool Parser::multOp(Node* root)
 	{
 		if (match(TokenType::MULTI))
 		{
-			root->setType(Type::multiOp);
 			*m_derivationFile << "sign -> '*'\n";
 			return true;
 		}
@@ -1941,20 +1950,17 @@ bool Parser::multOp(Node* root)
 	else return false;
 }
 
-bool Parser::IDORSELF(Node* root)
+bool Parser::IDORSELF()
 {
 	std::vector<TokenType> first = { id, SELF };
 	std::vector<TokenType>  follow = {};
 
 	if (!skipErrors(false, first, follow)) return false;
 
-	Node* idLit_Node = m_nodeFactory->makeNode(Type::idLit);
-
 	if (m_lookAheadToken->type == id)
 	{
 		if (match(id))
 		{
-			root->addChild(idLit_Node);
 			*m_derivationFile << "IDORSELF -> 'id'\n";
 			return true;
 		}
