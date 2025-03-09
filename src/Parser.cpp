@@ -1137,11 +1137,15 @@ bool Parser::rightRecTerm(Node& child, Node* root)
 
 	if (m_lookAheadToken->type == MULTI || m_lookAheadToken->type == DIV || m_lookAheadToken->type == AND)
 	{
+		root->setType(Type::multiOp);
+		root->addChild(&child);
 
-		if (multOp() && factor(&child) && rightRecTerm(child, root))
+		Node* factor_Node = m_nodeFactory->makeNode();
+		Node* rightRecTerm_Node = m_nodeFactory->makeNode();
+
+		if (multOp() && factor(factor_Node) && rightRecTerm(*factor_Node, rightRecTerm_Node))
 		{
-			root->setType(Type::multiOp);
-			root->addChild(&child);
+			root->addChild(rightRecTerm_Node);
 			*m_derivationFile << "rightRecTerm -> multiOp factor rightRecTerm\n";
 			return true;
 		}
