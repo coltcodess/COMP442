@@ -944,7 +944,8 @@ bool Parser::expr(Node* root)
 		|| m_lookAheadToken->type == NOT || m_lookAheadToken->type == PLUS
 		|| m_lookAheadToken->type == MINUS || m_lookAheadToken->type == SELF)
 	{
-		if (arithExpr(root) && expr2(root))
+		if (arithExpr(root) && 
+			expr2(root))
 		{
 			*m_derivationFile << "expr -> arithExpr exp2\n";
 			return true;
@@ -1022,7 +1023,7 @@ bool Parser::arithExpr(Node* root)
 		|| m_lookAheadToken->type == NOT || m_lookAheadToken->type == PLUS
 		|| m_lookAheadToken->type == MINUS || m_lookAheadToken->type == SELF)
 	{
-		if (term(term_Node) && 
+		if (term(*term_Node) && 
 			RIGHTRECARITHEXPR(*term_Node, RIGHTRECARITHEXPR_Node))
 		{
 			root->addChild(RIGHTRECARITHEXPR_Node);
@@ -1043,10 +1044,15 @@ bool Parser::RIGHTRECARITHEXPR(Node& child, Node* root)
 
 	if (m_lookAheadToken->type == PLUS || m_lookAheadToken->type == MINUS || m_lookAheadToken->type == OR)
 	{
-		if (addOp() && term(&child) && RIGHTRECARITHEXPR(child, root))
+		root->setType(Type::addOp);
+		root->addChild(&child);
+		
+		Node* term_Node = m_nodeFactory->makeNode();
+		Node* RIGHTRECARITHEXPR_Node = m_nodeFactory->makeNode();
+
+		if (addOp() && term(*term_Node) && RIGHTRECARITHEXPR(*term_Node, RIGHTRECARITHEXPR_Node))
 		{
-			root->setType(Type::addOp);
-			root->addChild(&child);
+			root->addChild(RIGHTRECARITHEXPR_Node);
 			*m_derivationFile << "RIGHTRECARITHEXPR -> addOp term arithExpr2\n";
 			return true;
 		}
@@ -1091,7 +1097,7 @@ bool Parser::sign()
 	else return false;
 }
 
-bool Parser::term(Node* root)
+bool Parser::term(Node& node)
 {
 	std::vector<TokenType> first = { OPENPAR, floatnum, intnum, NOT, id, SELF, MINUS, PLUS };
 	std::vector<TokenType> follow = {};
@@ -1113,7 +1119,7 @@ bool Parser::term(Node* root)
 		if (factor(factor_Node) && 
 			rightRecTerm(*factor_Node, rightRecTerm_Node))
 		{
-			root->addChild(rightRecTerm_Node);
+			node = *rightRecTerm_Node;
 			*m_derivationFile << "term -> factor rightRecTerm\n";
 			return true;
 		}
