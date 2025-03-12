@@ -5,10 +5,10 @@
     | funcDef
       | idLit
       | fParamsList
-        | fParam
+        | varDecl
           | idLit
           | type
-        | fParam
+        | varDecl
           | idLit
           | type
       | type
@@ -45,65 +45,65 @@
           | relExpr
             | relOp
               | idLit
-              | idLit
               | addOp
+                | idLit
                 | intLit
           | statBlock
             | whileStat
               | relExpr
                 | relOp
                   | idLit
-                  | idLit
                   | addOp
                     | idLit
                     | addOp
+                      | idLit
                       | intLit
               | statBlock
                 | ifStat
                   | relExpr
                     | relOp
                       | idLit
+                        | idLit
                       | idLit
-                      | idLit
-                      | idLit
-                      | addOp
-                        | intLit
+                        | addOp
+                          | idLit
+                          | intLit
                   | statBlock
                     | assignStat
                       | idLit
                       | idLit
-                      | idLit
+                        | idLit
                     | assignStat
                       | idLit
                       | idLit
                       | idLit
-                      | idLit
-                      | addOp
-                        | intLit
+                        | addOp
+                          | idLit
+                          | intLit
                     | assignStat
                       | idLit
-                      | idLit
                       | addOp
+                        | idLit
                         | intLit
                       | idLit
                   | statBlock
                 | assignStat
                   | idLit
-                  | idLit
                   | addOp
+                    | idLit
                     | intLit
             | assignStat
               | idLit
-              | idLit
               | addOp
+                | idLit
                 | intLit
     | funcDef
       | idLit
       | fParamsList
-        | fParam
+        | varDecl
           | idLit
           | type
-        | fParam
+        | varDecl
           | idLit
           | type
       | type
@@ -130,11 +130,11 @@
           | statBlock
             | writeStat
               | idLit
-              | idLit
+                | idLit
             | assignStat
               | idLit
-              | idLit
               | addOp
+                | idLit
                 | intLit
     | funcDef
       | idLit

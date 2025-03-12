@@ -9,17 +9,17 @@
         | idLit
         | idLit
       | memDeclList
-        | memDecl
+        | memDeclAttrib
           | varDecl
             | idLit
             | type
             | arraySizeList
-        | memDecl
+        | memDeclAttrib
           | varDecl
             | idLit
             | type
             | arraySizeList
-        | memDecl
+        | memDeclFunc
           | idLit
           | fParamsList
             | varDecl
@@ -29,7 +29,7 @@
               | idLit
               | type
           | type
-        | memDecl
+        | memDeclFunc
           | idLit
           | fParamsList
             | varDecl
@@ -41,24 +41,24 @@
       | inheritList
         | idLit
       | memDeclList
-        | memDecl
+        | memDeclAttrib
           | varDecl
             | idLit
             | type
             | arraySizeList
               | intLit
               | intLit
-        | memDecl
+        | memDeclAttrib
           | varDecl
             | idLit
             | type
             | arraySizeList
-        | memDecl
+        | memDeclAttrib
           | varDecl
             | idLit
             | type
             | arraySizeList
-        | memDecl
+        | memDeclFunc
           | idLit
           | fParamsList
             | varDecl
@@ -71,7 +71,7 @@
               | idLit
               | type
           | type
-        | memDecl
+        | memDeclFunc
           | idLit
           | fParamsList
             | varDecl
@@ -144,13 +144,19 @@
             | arraySizeList
           | assignStat
             | idLit
-            | idLit
+            | dot
+              | assignStat
+                | idLit
           | assignStat
             | idLit
-            | idLit
+            | dot
+              | assignStat
+                | idLit
           | assignStat
             | idLit
-            | idLit
+            | dot
+              | assignStat
+                | idLit
           | returnStat
             | idLit
     | impleDef
@@ -172,10 +178,14 @@
             | arraySizeList
           | assignStat
             | idLit
-            | idLit
+            | dot
+              | assignStat
+                | idLit
           | assignStat
             | idLit
-            | idLit
+            | dot
+              | assignStat
+                | idLit
           | returnStat
             | idLit
       | funcDef
@@ -223,17 +233,26 @@
         | assignStat
           | idLit
           | idLit
-            | intLit
-            | floatLit
+            | dot
+              | fCall
+                | intLit
+                | floatLit
         | assignStat
           | idLit
           | idLit
-            | floatLit
-            | floatLit
-            | floatLit
+            | dot
+              | fCall
+                | floatLit
+                | floatLit
+                | floatLit
         | assignStat
           | idLit
           | intLit
+        | assignStat
+          | idLit
+          | dot
+            | idLit
+              | aParams
         | whileStat
           | relExpr
             | relOp
@@ -244,7 +263,11 @@
               | idLit
             | writeStat
               | idLit
-                | idLit
+                | dot
+                  | fCall
+                    | idLit
             | writeStat
               | idLit
-                | idLit
+                | dot
+                  | fCall
+                    | idLit

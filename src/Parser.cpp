@@ -453,12 +453,13 @@ bool Parser::memberDecl(Node* root)
 
 	if (!skipErrors(false, first, follow)) return false;
 
-	Node* memDecl_Node = m_nodeFactory->makeNode(Type::memDecl);
-	root->addChild(memDecl_Node);
-
 	if (m_lookAheadToken->type == CONSTRUCTOR || m_lookAheadToken->type == FUNCTION)
 	{
-		if (funcDec1(memDecl_Node))
+
+		Node* memDeclFunc_Node = m_nodeFactory->makeNode(Type::memDeclFunc);
+		root->addChild(memDeclFunc_Node);
+
+		if (funcDec1(memDeclFunc_Node))
 		{
 			*m_derivationFile << "memberDecl -> funcDec1\n";
 			return true;
@@ -467,7 +468,10 @@ bool Parser::memberDecl(Node* root)
 	}
 	else if (m_lookAheadToken->type == ATTRIBUTE)
 	{
-		if (attributeDecl(memDecl_Node))
+		Node* memDeclAttrib_Node = m_nodeFactory->makeNode(Type::memDeclAttrib);
+		root->addChild(memDeclAttrib_Node);
+
+		if (attributeDecl(memDeclAttrib_Node))
 		{
 			*m_derivationFile << "memberDecl -> attributeDec1\n";
 			return true;
@@ -774,14 +778,15 @@ bool Parser::FUNCALLORASSIGN(Node* root)
 
 	if (!skipErrors(false, first, follow)) return false;
 
-	Node* assignStat_Node = m_nodeFactory->makeNode(Type::assignStat);
-	root->addChild(assignStat_Node);
+	Node* FUNCALLORASSIGN2_Node = m_nodeFactory->makeNode();
 
 	if (m_lookAheadToken->type == id || m_lookAheadToken->type == SELF)
 	{
-		assignStat_Node->addChild(m_nodeFactory->makeNode(idLit));
-		if (IDORSELF() && FUNCALLORASSIGN2(assignStat_Node))
+		FUNCALLORASSIGN2_Node->addChild(m_nodeFactory->makeNode(idLit));
+
+		if (IDORSELF() && FUNCALLORASSIGN2(FUNCALLORASSIGN2_Node))
 		{
+			root->addChild(FUNCALLORASSIGN2_Node);
 			*m_derivationFile << "FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2\n";
 			return true;
 		}
@@ -801,6 +806,7 @@ bool Parser::FUNCALLORASSIGN2(Node* root)
 	{
 		if (indices(root) && FUNCALLORASSIGN3(root))
 		{
+			root->setType(Type::assignStat);
 			*m_derivationFile << "FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3\n";
 			return true;
 		}
@@ -808,8 +814,12 @@ bool Parser::FUNCALLORASSIGN2(Node* root)
 	}
 	else if (m_lookAheadToken->type == OPENPAR)
 	{
-		if (match(OPENPAR) && aParams(root) && match(CLOSEPAR) && FUNCALLORASSIGN4(root))
+		root->setType(Type::fCall);
+		Node* aParams_Node = m_nodeFactory->makeNode(Type::aParams);
+
+		if (match(OPENPAR) && aParams(aParams_Node) && match(CLOSEPAR) && FUNCALLORASSIGN4(root))
 		{
+			root->addChild(aParams_Node);
 			*m_derivationFile << "FUNCALLORASSIGN2 -> '(' aParams ')' FUNCALLORASSIGN4\n";
 			return true;
 		}
@@ -836,7 +846,12 @@ bool Parser::FUNCALLORASSIGN3(Node* root)
 	}
 	else if (m_lookAheadToken->type == DOT)
 	{
-		if (match(DOT) && match(id) && FUNCALLORASSIGN2(root))
+		Node* dot_Node = m_nodeFactory->makeNode(Type::dot);
+		Node* dataMem_Node = m_nodeFactory->makeNode(Type::dataMem);
+		root->addChild(dot_Node);
+		dot_Node->addChild(dataMem_Node);
+
+		if (match(DOT) && match(id) && FUNCALLORASSIGN2(dataMem_Node))
 		{
 			*m_derivationFile << "FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2\n";
 			return true;
@@ -856,7 +871,7 @@ bool Parser::FUNCALLORASSIGN4(Node* root)
 
 	if (m_lookAheadToken->type == DOT)
 	{
-		if (match(id) && match(id) && FUNCALLORASSIGN2(root))
+		if (match(DOT) && match(id) && FUNCALLORASSIGN2(root))
 		{
 			*m_derivationFile << "FUNCALLORASSIGN4 -> '.' 'id' FUNCALLORASSIGN2\n";
 			return true;
@@ -865,6 +880,7 @@ bool Parser::FUNCALLORASSIGN4(Node* root)
 	}
 	else if (tokenInFollowSet(follow))
 	{
+		root->setType(Type::idLit);
 		*m_derivationFile << "FUNCALLORASSIGN4 -> 'EPSILON\n";
 		return true;
 	}
@@ -1178,7 +1194,6 @@ bool Parser::factor(Node* root)
 	}
 	else if (m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::SELF)
 	{
-		
 		root->setType(Type::idLit);
 		if (IDORSELF() && factor2(root) && REPTVARIABLEORFUNCTIONCALL(root))
 		{
@@ -1313,7 +1328,10 @@ bool Parser::REPTVARIABLEORFUNCTIONCALL(Node* root)
 
 	if (m_lookAheadToken->type == DOT)
 	{
-		if (idnest(root) && REPTVARIABLEORFUNCTIONCALL(root))
+		Node* dot_Node = m_nodeFactory->makeNode(Type::dot);
+		root->addChild(dot_Node);
+
+		if (idnest(dot_Node) && REPTVARIABLEORFUNCTIONCALL(dot_Node))
 		{
 			*m_derivationFile << "REPTVARIABLEORFUNCTIONCALL -> idnest REPTVARIABLEORFUNCTIONCALL\n";
 			return true;
@@ -1486,7 +1504,10 @@ bool Parser::idnest2(Node* root)
 
 	if (m_lookAheadToken->type == OPENPAR)
 	{
-		if (match(TokenType::OPENPAR) && aParams(root) && match(TokenType::CLOSEPAR))
+		Node* fCall_Node = m_nodeFactory->makeNode(Type::fCall);
+		root->addChild(fCall_Node);
+
+		if (match(TokenType::OPENPAR) && aParams(fCall_Node) && match(TokenType::CLOSEPAR))
 		{
 			*m_derivationFile << "idnest2 -> '(' aParams ')'\n";
 			return true;
@@ -1649,12 +1670,14 @@ bool Parser::returnType(Node* root)
 	else return false;
 }
 
-bool Parser::aParams(Node* root)
+bool Parser::aParams(Node* node)
 {
 	std::vector<TokenType> first = { OPENPAR, floatnum, intnum, NOT, id, SELF, MINUS, PLUS };
 	std::vector<TokenType> follow = { CLOSEPAR };
 
 	if (!skipErrors(true, first, follow)) return false;
+
+
 
 	if (m_lookAheadToken->type == OPENPAR
 		|| m_lookAheadToken->type == TokenType::floatnum
@@ -1664,7 +1687,7 @@ bool Parser::aParams(Node* root)
 		|| m_lookAheadToken->type == PLUS 
 		|| m_lookAheadToken->type == MINUS)
 	{
-		if (expr(root) && REPTAPARAMS1(root))
+		if (expr(node) && REPTAPARAMS1(node))
 		{
 			*m_derivationFile << "aParams -> expr REPTAPARAMS1\n";
 			return true;

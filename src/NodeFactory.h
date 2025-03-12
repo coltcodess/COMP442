@@ -60,8 +60,10 @@ public:
 			return new inheritList_Node(t);
 		case memDeclList:
 			return new memDeclList_Node(t);
-		case memDecl:
-			return new memDecl_Node(t);
+		case memDeclFunc:
+			return new memDeclFunc_Node(t);
+		case memDeclAttrib:
+			return new memDeclAttrib_Node(t);
 		case fParamsList:
 			return new fParamsList_Node(t);
 		case fParam:
@@ -88,7 +90,14 @@ public:
 			return new varDecl_Node(t);
 		case relExpr:
 			return new relExpr_Node(t);
-
+		case fCall:
+			return new fCall_Node(t);
+		case aParams:
+			return new aParams_Node(t);
+		case dot:
+			return new dot_Node(t);
+		case dataMem:
+			return new dataMem_Node(t);
 
 
 		default: 

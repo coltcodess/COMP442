@@ -24,12 +24,14 @@ enum Type {
 	impleDef,
 	inheritList, 
 	memDeclList,
-	memDecl, 
+	memDeclFunc, 
+	memDeclAttrib,
 	funcDecl, 
 	varDecl,
 	dimList, 
 	fParamsList,
 	fParam, 
+	fCall,
 	aParams,
 	arraySizeList,
 
@@ -44,6 +46,7 @@ enum Type {
 	factor,
 	dot, 
 	dotParams,
+	dataMem,
 	assignStat, 
 	ifStat, 
 	whileStat, 
@@ -224,8 +227,10 @@ public:
 			return "multiOp";
 		case Type::memDeclList:
 			return "memDeclList";
-		case Type::memDecl:
-			return "memDecl";
+		case Type::memDeclFunc:
+			return "memDeclFunc";
+		case Type::memDeclAttrib:
+			return "memDeclAttrib";
 		case Type::fParamsList:
 			return "fParamsList";
 		case Type::fParam:
@@ -252,9 +257,14 @@ public:
 			return "relOp";
 		case Type::ifStat:
 			return "ifStat";
-
-
-
+		case Type::fCall:
+			return "fCall";
+		case Type::aParams:
+			return "aParams";
+		case Type::dot:
+			return "dot";
+		case Type::dataMem:
+			return "dataMem";
 
 		case Type::error:
 			return "error";
@@ -383,10 +393,20 @@ public:
 
 /////////////////////////////////////////////////////////////////////
 
-class memDecl_Node : public Node
+class memDeclFunc_Node : public Node
 {
 public:
-	memDecl_Node(Type t) : Node(t)
+	memDeclFunc_Node(Type t) : Node(t)
+	{ }
+};
+
+/////////////////////////////////////////////////////////////////////
+
+
+class memDeclAttrib_Node : public Node
+{
+public:
+	memDeclAttrib_Node(Type t) : Node(t)
 	{ }
 };
 
@@ -509,6 +529,24 @@ public:
 
 /////////////////////////////////////////////////////////////////////
 
+class fCall_Node: public Node
+{
+public:
+	fCall_Node(Type t) : Node(t)
+	{ }
+};
+
+/////////////////////////////////////////////////////////////////////
+
+class aParams_Node : public Node
+{
+public:
+	aParams_Node(Type t) : Node(t)
+	{ }
+};
+
+/////////////////////////////////////////////////////////////////////
+
 
 class idLit_Node : public Node
 {
@@ -574,3 +612,20 @@ public:
 
 /////////////////////////////////////////////////////////////////////
 
+class dot_Node : public Node
+{
+public:
+	dot_Node(Type t) : Node(t)
+	{ }
+};
+
+/////////////////////////////////////////////////////////////////////
+
+class dataMem_Node : public Node
+{
+public:
+	dataMem_Node(Type t) : Node(t)
+	{ }
+};
+
+/////////////////////////////////////////////////////////////////////

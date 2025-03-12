@@ -73,6 +73,8 @@ function main() => void
   f2 := f2.build(-2.0, 1.0, 0.0);
   counter := 1;
 	
+  f1.build();
+
   while(counter <= 10)
   {
     write(counter);
