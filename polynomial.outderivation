@@ -703,11 +703,11 @@ arithExpr -> term RIGHTRECARITHEXPR
 expr2 -> EPSILON
 expr -> arithExpr exp2
 statement -> 'write' '(' expr ')' ';'
-STATEMENTS -> ESPILON
-STATEMENTS -> statement STATEMENTS
-STATEMENTS -> statement STATEMENTS
-STATEMENTS -> statement STATEMENTS
-statBlock -> '{' STATEMENTS '}'
+repStatBlock -> ESPILON
+repStatBlock -> statement
+repStatBlock -> statement
+repStatBlock -> statement
+statBlock -> '{' repStatBlock '}'
 statement -> 'while' '(' relExpr ')' statBlock ';'
 LOCALVARDECLORSTAT2 -> statement
 LOCALVARDECLORSTAT2 -> EPSILON
