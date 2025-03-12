@@ -33,14 +33,14 @@
           | idLit
           | idLit
         | assignStat
-          | idLit
           | intLit
+          | idLit
         | assignStat
-          | idLit
           | intLit
+          | idLit
         | assignStat
-          | idLit
           | intLit
+          | idLit
         | whileStat
           | relExpr
             | relOp
@@ -71,32 +71,32 @@
                   | statBlock
                     | assignStat
                       | idLit
-                      | idLit
                         | idLit
-                    | assignStat
                       | idLit
+                    | assignStat
                       | idLit
                       | idLit
                         | addOp
                           | idLit
                           | intLit
-                    | assignStat
                       | idLit
+                    | assignStat
                       | addOp
                         | idLit
                         | intLit
                       | idLit
+                      | idLit
                   | statBlock
                 | assignStat
-                  | idLit
                   | addOp
                     | idLit
                     | intLit
+                  | idLit
             | assignStat
-              | idLit
               | addOp
                 | idLit
                 | intLit
+              | idLit
     | funcDef
       | idLit
       | fParamsList
@@ -120,8 +120,8 @@
           | idLit
           | idLit
         | assignStat
-          | idLit
           | intLit
+          | idLit
         | whileStat
           | relExpr
             | relOp
@@ -132,10 +132,10 @@
               | idLit
                 | idLit
             | assignStat
-              | idLit
               | addOp
                 | idLit
                 | intLit
+              | idLit
     | funcDef
       | idLit
       | fParamsList
@@ -147,30 +147,30 @@
           | arraySizeList
             | intLit
         | assignStat
+          | intLit
+          | intLit
           | idLit
-          | intLit
-          | intLit
         | assignStat
+          | intLit
+          | intLit
           | idLit
-          | intLit
-          | intLit
         | assignStat
+          | intLit
+          | intLit
           | idLit
-          | intLit
-          | intLit
         | assignStat
+          | intLit
+          | intLit
           | idLit
-          | intLit
-          | intLit
         | assignStat
+          | intLit
+          | intLit
           | idLit
-          | intLit
-          | intLit
         | assignStat
+          | intLit
+          | intLit
           | idLit
-          | intLit
-          | intLit
         | assignStat
+          | intLit
+          | intLit
           | idLit
-          | intLit
-          | intLit

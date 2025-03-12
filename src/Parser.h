@@ -60,9 +60,9 @@ private:
 	bool localVarDecl(Node* root);
 	bool statement(Node* root);
 	bool FUNCALLORASSIGN(Node* root);
-	bool FUNCALLORASSIGN2(Node* root);
-	bool FUNCALLORASSIGN3(Node* root);
-	bool FUNCALLORASSIGN4(Node* root);
+	bool FUNCALLORASSIGN2(Node& child, Node* root);
+	bool FUNCALLORASSIGN3(Node& child, Node* root);
+	bool FUNCALLORASSIGN4(Node& child, Node* root);
 	bool variable(Node* root);
 	bool variable2(Node* root);
 	bool reptVariable(Node* root);

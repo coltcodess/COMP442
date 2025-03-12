@@ -69,7 +69,7 @@
 [id, f2, 69] [assign, :=, 69] [id, f2, 69] [dot, ., 69] [id, build, 69] [openpar, (, 69] [minus, -, 69] [floatnum, 2.0, 69] [comma, ,, 69] [floatnum, 1.0, 69] [comma, ,, 69] [floatnum, 0.0, 69] [closepar, ), 69] [semi, ;, 69] 
 [id, counter, 70] [assign, :=, 70] [intnum, 1, 70] [semi, ;, 70] 
 [id, f1, 72] 
-[dot, ., 72] [id, build, 72] [openpar, (, 72] [closepar, ), 72] [semi, ;, 72] 
+[dot, ., 72] [id, build, 72] [openpar, (, 72] [id, d, 72] [closepar, ), 72] [semi, ;, 72] 
 [while, while, 74] 
 [openpar, (, 74] [id, counter, 74] [leq, <=, 74] [intnum, 10, 74] [closepar, ), 74] 
 [opencubr, {, 75] 

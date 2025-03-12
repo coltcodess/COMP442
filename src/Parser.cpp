@@ -782,10 +782,12 @@ bool Parser::FUNCALLORASSIGN(Node* root)
 
 	if (m_lookAheadToken->type == id || m_lookAheadToken->type == SELF)
 	{
-		FUNCALLORASSIGN2_Node->addChild(m_nodeFactory->makeNode(idLit));
+		Node* id_node = m_nodeFactory->makeNode(idLit);
+		Node* FUNCALLORASSIGN2_Node = m_nodeFactory->makeNode();
 
-		if (IDORSELF() && FUNCALLORASSIGN2(FUNCALLORASSIGN2_Node))
+		if (IDORSELF() && FUNCALLORASSIGN2(*id_node, FUNCALLORASSIGN2_Node))
 		{
+			FUNCALLORASSIGN2_Node->addChild(id_node);
 			root->addChild(FUNCALLORASSIGN2_Node);
 			*m_derivationFile << "FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2\n";
 			return true;
@@ -795,7 +797,7 @@ bool Parser::FUNCALLORASSIGN(Node* root)
 	else return false;
 }
 
-bool Parser::FUNCALLORASSIGN2(Node* root)
+bool Parser::FUNCALLORASSIGN2(Node& child, Node* root)
 {
 	std::vector<TokenType> first = { OPENSQBR, DOT, ASSIGN, OPENPAR };
 	std::vector<TokenType> follow = {};
@@ -804,9 +806,9 @@ bool Parser::FUNCALLORASSIGN2(Node* root)
 
 	if (m_lookAheadToken->type == OPENSQBR || m_lookAheadToken->type == DOT || m_lookAheadToken->type == ASSIGN)
 	{
-		if (indices(root) && FUNCALLORASSIGN3(root))
+		if (indices(root) && FUNCALLORASSIGN3(child, root))
 		{
-			root->setType(Type::assignStat);
+
 			*m_derivationFile << "FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3\n";
 			return true;
 		}
@@ -817,7 +819,7 @@ bool Parser::FUNCALLORASSIGN2(Node* root)
 		root->setType(Type::fCall);
 		Node* aParams_Node = m_nodeFactory->makeNode(Type::aParams);
 
-		if (match(OPENPAR) && aParams(aParams_Node) && match(CLOSEPAR) && FUNCALLORASSIGN4(root))
+		if (match(OPENPAR) && aParams(aParams_Node) && match(CLOSEPAR) && FUNCALLORASSIGN4(child, root))
 		{
 			root->addChild(aParams_Node);
 			*m_derivationFile << "FUNCALLORASSIGN2 -> '(' aParams ')' FUNCALLORASSIGN4\n";
@@ -828,7 +830,7 @@ bool Parser::FUNCALLORASSIGN2(Node* root)
 	else return false;
 }
 
-bool Parser::FUNCALLORASSIGN3(Node* root)
+bool Parser::FUNCALLORASSIGN3(Node& child, Node* root)
 {
 	std::vector<TokenType> first = { DOT, ASSIGN};
 	std::vector<TokenType> follow = {};
@@ -839,6 +841,7 @@ bool Parser::FUNCALLORASSIGN3(Node* root)
 	{
 		if (assignOp(root) && expr(root))
 		{
+			
 			*m_derivationFile << "FUNCALLORASSIGN3 -> assignOp expr\n";
 			return true;
 		}
@@ -851,7 +854,7 @@ bool Parser::FUNCALLORASSIGN3(Node* root)
 		root->addChild(dot_Node);
 		dot_Node->addChild(dataMem_Node);
 
-		if (match(DOT) && match(id) && FUNCALLORASSIGN2(dataMem_Node))
+		if (match(DOT) && match(id) && FUNCALLORASSIGN2(child, root))
 		{
 			*m_derivationFile << "FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2\n";
 			return true;
@@ -862,7 +865,7 @@ bool Parser::FUNCALLORASSIGN3(Node* root)
 
 }
 
-bool Parser::FUNCALLORASSIGN4(Node* root)
+bool Parser::FUNCALLORASSIGN4(Node& child, Node* root)
 {
 	std::vector<TokenType> first = { DOT };
 	std::vector<TokenType> follow = { SEMI };
@@ -871,7 +874,10 @@ bool Parser::FUNCALLORASSIGN4(Node* root)
 
 	if (m_lookAheadToken->type == DOT)
 	{
-		if (match(DOT) && match(id) && FUNCALLORASSIGN2(root))
+		root->setType(Type::dataMem);
+		root->addChild(&child);
+
+		if (match(DOT) && match(id) && FUNCALLORASSIGN2(child, root->parent))
 		{
 			*m_derivationFile << "FUNCALLORASSIGN4 -> '.' 'id' FUNCALLORASSIGN2\n";
 			return true;
@@ -880,7 +886,6 @@ bool Parser::FUNCALLORASSIGN4(Node* root)
 	}
 	else if (tokenInFollowSet(follow))
 	{
-		root->setType(Type::idLit);
 		*m_derivationFile << "FUNCALLORASSIGN4 -> 'EPSILON\n";
 		return true;
 	}
@@ -1834,6 +1839,7 @@ bool Parser::assignOp(Node* root)
 	{
 		if (match(ASSIGN))
 		{
+			root->setType(Type::assignStat);
 			*m_derivationFile << "assignOp -> :=";
 			return true;
 		}
