@@ -784,11 +784,11 @@ bool Parser::FUNCALLORASSIGN(Node* root)
 	{
 		Node* id_node = m_nodeFactory->makeNode(idLit);
 		Node* FUNCALLORASSIGN2_Node = m_nodeFactory->makeNode();
+		FUNCALLORASSIGN2_Node->addChild(id_node);
+		root->addChild(FUNCALLORASSIGN2_Node);
 
 		if (IDORSELF() && FUNCALLORASSIGN2(*id_node, FUNCALLORASSIGN2_Node))
 		{
-			FUNCALLORASSIGN2_Node->addChild(id_node);
-			root->addChild(FUNCALLORASSIGN2_Node);
 			*m_derivationFile << "FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2\n";
 			return true;
 		}

@@ -109,19 +109,19 @@
             | idLit
             | idLit
           | assignStat
+            | idLit
             | addOp
               | multiOp
                 | idLit
                 | idLit
               | idLit
-            | idLit
           | assignStat
+            | idLit
             | addOp
               | multiOp
                 | idLit
                 | idLit
               | idLit
-            | idLit
           | returnStat
             | idLit
       | funcDef
@@ -143,19 +143,19 @@
             | type
             | arraySizeList
           | assignStat
+            | idLit
             | dot
               | dataMem
-            | idLit
             | idLit
           | assignStat
+            | idLit
             | dot
               | dataMem
-            | idLit
             | idLit
           | assignStat
+            | idLit
             | dot
               | dataMem
-            | idLit
             | idLit
           | returnStat
             | idLit
@@ -177,14 +177,14 @@
             | type
             | arraySizeList
           | assignStat
+            | idLit
             | dot
               | dataMem
-            | idLit
             | idLit
           | assignStat
+            | idLit
             | dot
               | dataMem
-            | idLit
             | idLit
           | returnStat
             | idLit
@@ -201,15 +201,15 @@
             | type
             | arraySizeList
           | assignStat
-            | floatLit
             | idLit
+            | floatLit
           | assignStat
+            | idLit
             | addOp
               | multiOp
                 | idLit
                 | idLit
               | idLit
-            | idLit
           | returnStat
             | idLit
   | funcDefList
@@ -232,28 +232,28 @@
           | arraySizeList
         | assignStat
           | idLit
+          | idLit
             | dot
               | fCall
                 | intLit
                 | floatLit
-          | idLit
         | assignStat
+          | idLit
           | idLit
             | dot
               | fCall
                 | floatLit
                 | floatLit
                 | floatLit
-          | idLit
         | assignStat
-          | intLit
           | idLit
+          | intLit
         | fCall
+          | idLit
           | dot
             | dataMem
           | aParams
             | idLit
-          | idLit
         | whileStat
           | relExpr
             | relOp
