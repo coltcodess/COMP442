@@ -1,9 +1,9 @@
-// ====== struct declarations ====== //
+ // ====== struct declarations ====== //
 class POLYNOMIAL {
-	public function evaluate(x: float) => float;
+	
 };
 
-class LINEAR isa POLYNOMIAL {
+class LINEAR isa POLYNOMIAL, SHAPE {
 	private attribute a: float;
 	private attribute b: float;
 	public  function build(A: float, B: float) => LINEAR;
@@ -11,7 +11,7 @@ class LINEAR isa POLYNOMIAL {
 };
 
 class QUADRATIC isa POLYNOMIAL {
-	private attribute a: float;
+	private attribute a: float[2][2];
 	private attribute b: float;
 	private attribute c: float;
 	public  function build(A: float, B: float, C: float) => QUADRATIC;
@@ -73,6 +73,8 @@ function main() => void
   f2 := f2.build(-2.0, 1.0, 0.0);
   counter := 1;
 	
+  f1.build(d);
+
   while(counter <= 10)
   {
     write(counter);

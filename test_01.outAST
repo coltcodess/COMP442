@@ -1,5 +1,46 @@
 | prog
   | classDeclList
     | classDecl
-  | classDeclList
+      | idLit
+      | memDeclList
+        | memDecl
+          | idLit
+          | fParamsList
+            | varDecl
+              | idLit
+              | type
+          | type
     | classDecl
+      | idLit
+      | inheritList
+        | idLit
+      | memDeclList
+        | memDecl
+          | varDecl
+            | idLit
+            | type
+            | arraySizeList
+        | memDecl
+          | varDecl
+            | idLit
+            | type
+            | arraySizeList
+        | memDecl
+          | idLit
+          | fParamsList
+            | varDecl
+              | idLit
+              | type
+            | varDecl
+              | idLit
+              | type
+          | type
+        | memDecl
+          | idLit
+          | fParamsList
+            | varDecl
+              | idLit
+              | type
+          | type
+  | implDefList
+  | funcDefList

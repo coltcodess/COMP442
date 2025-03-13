@@ -8,9 +8,6 @@
 const std::string SOURCE_FILE_TYPE = ".src";
 const std::string OUTPUT_TOKEN_FILE_TYPE = ".outlextokens";
 
-
-
-
 int main()
 {
     // Intro message:

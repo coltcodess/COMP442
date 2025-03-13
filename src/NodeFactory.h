@@ -1,222 +1,7 @@
 #pragma once
 #include <string>
 #include <stdarg.h>
-
-
-/////////////////////////////////////////////////////////////////////
-
-class Node
-{
-private:
-	std::string type;
-public:
-	std::vector<Node*> children;
-	std::vector<Node*> siblings;
-
-	Token* token = nullptr;
-	virtual std::string getType() = 0;
-
-
-	void printChildren()
-	{
-		std::cout << "-------- \n" << std::endl;
-		std::cout << "Parent: " + this->getType() << std::endl;
-		
-		if (children.empty())
-		{
-			std::cout << "Has no children" << std::endl;
-		}
-		else
-		{
-			for (auto i : children)
-			{
-				std::cout << i->getType() << std::endl;
-			}
-		}
-
-	};
-	void printNodeTokenLexem()
-	{
-		if (this->token == nullptr)
-		{
-			std::cout << "ERROR: Node has no token attached...... " << std::endl;
-		}
-		else 
-		{
-			std::cout << "Node Token Lexem: " + this->token->lexem << std::endl;
-		}
-	}; 
-
-
-
-};
-
-/////////////////////////////////////////////////////////////////////
-
-class null_Node : public Node
-{
-public:
-	std::string getType() { return "NULL"; }
-
-};
-
-/////////////////////////////////////////////////////////////////////
-
-class prog_Node : public Node
-{
-public:
-	std::string getType() { return "prog"; }
-
-};
-
-/////////////////////////////////////////////////////////////////////
-
-class classDeclList_Node : public Node
-{
-public:
-	std::string getType() { return "classDeclList"; }
-
-};
-
-/////////////////////////////////////////////////////////////////////
-
-class classDecl_Node : public Node
-{
-public:
-	std::string getType() { return "classDecl"; }
-
-};
-
-/////////////////////////////////////////////////////////////////////
-
-class implDefList_Node : public Node
-{
-public:
-	std::string getType() { return "implDefList"; }
-
-};
-
-/////////////////////////////////////////////////////////////////////
-
-class funcDefList_Node : public Node
-{
-public:
-	std::string getType() { return "funcDefList"; }
-
-};
-
-/////////////////////////////////////////////////////////////////////
-
-class funcDecl_Node : public Node
-{
-public:
-	std::string getType() { return "funcDecl_Node"; }
-
-};
-
-/////////////////////////////////////////////////////////////////////
-
-
-
-
-class idLit_Node : public Node
-{
-public:
-	std::string getType() {return "id";}
-
-};
-
-/////////////////////////////////////////////////////////////////////
-
-class type_Node : public Node
-{
-public:
-	std::string getType() { return "type"; };
-
-};
-
-/////////////////////////////////////////////////////////////////////
-
-class intLit_Node : public Node
-{
-public:
-	std::string getType() { return "intLit"; }
-
-};
-
-/////////////////////////////////////////////////////////////////////
-
-class floatLit_Node : public Node
-{
-public:
-	std::string getType() { return "floatLit"; }
-
-};
-
-/////////////////////////////////////////////////////////////////////
-
-class relOp_Node : public Node
-{
-public:
-	std::string getType() { return "relOp"; }
-
-};
-
-/////////////////////////////////////////////////////////////////////
-
-class addOp_Node : public Node
-{
-public:
-	std::string getType() { return "addOp"; }
-
-};
-
-/////////////////////////////////////////////////////////////////////
-
-class multiOp_Node : public Node
-{
-public:
-	std::string getType() { return "multiOp"; }
-
-};
-
-/////////////////////////////////////////////////////////////////////
-
-class assignOp_Node : public Node
-{
-public:
-	std::string getType() { return "assignOp"; }
-
-};
-
-/////////////////////////////////////////////////////////////////////
-
-enum Type {
-	
-	// Terminals
-	idLit, intLit, floatLit, type, relOp, multiOp, assignOp, addOp,
-
-	prog,
-	classDeclList, funcDefList, implDefList,
-	classDecl, funcDef, ImpleDef,
-	inheritList, memberList,
-	memberDecl, funcDecl, varDecl,
-	dimList, fParamsList, 
-	fParam, aParams,
-
-	statBlock, 
-	statOrVarDecl, 
-
-
-	_not, sign, plus, minus, 
-	term, factor, 
-	dot, dotParams,
-	assignStat, ifStat, whileStat, readStat, writeStat, returnStat,
-	relExpr, airthExpr, 
-	expr,
-
-
-};
+#include "Node.h"
 
 /////////////////////////////////////////////////////////////////////
 
@@ -242,32 +27,78 @@ public:
 		switch (t)
 		{
 		case idLit:
-			return new idLit_Node();
+			return new idLit_Node(t);
 		case intLit:
-			return new intLit_Node();
+			return new intLit_Node(t);
 		case floatLit:
-			return new floatLit_Node();
+			return new floatLit_Node(t);
+		case type:
+			return new type_Node(t);
 		case relOp:
-			return new relOp_Node();
+			return new relOp_Node(t);
 		case addOp:
-			return new addOp_Node();
+			return new addOp_Node(t);
 		case multiOp:
-			return new multiOp_Node();
-		case assignOp:
-			return new assignOp_Node();
-
+			return new multiOp_Node(t);
 		case prog:
-			return new prog_Node();
+			return new prog_Node(t);
 		case classDeclList:
-			return new classDeclList_Node();
+			return new classDeclList_Node(t);
 		case classDecl:
-			return new classDecl_Node();
+			return new classDecl_Node(t);
 		case implDefList:
-			return new implDefList_Node();
+			return new implDefList_Node(t);
+		case impleDef:
+			return new impleDef_Node(t);
 		case funcDefList:
-			return new funcDefList_Node();
+			return new funcDefList_Node(t);
 		case funcDecl:
-			return new funcDecl_Node();
+			return new funcDecl_Node(t);
+		case funcDef:
+			return new funcDef_Node(t);
+		case inheritList:
+			return new inheritList_Node(t);
+		case memDeclList:
+			return new memDeclList_Node(t);
+		case memDeclFunc:
+			return new memDeclFunc_Node(t);
+		case memDeclAttrib:
+			return new memDeclAttrib_Node(t);
+		case fParamsList:
+			return new fParamsList_Node(t);
+		case fParam:
+			return new fParam_Node(t);
+		case arraySizeList:
+			return new arraySizeList_Node(t);
+		case statBlock:
+			return new statBlock_Node(t);
+		case returnStat:
+			return new returnStat_Node(t);
+		case whileStat:
+			return new whileStat_Node(t);
+		case writeStat:
+			return new writeStat_Node(t);
+		case readStat:
+			return new readStat_Node(t);
+		case ifStat:
+			return new ifStat_Node(t);
+		case expr:
+			return new expr_Node(t);
+		case varDecl:
+			return new varDecl_Node(t);
+		case assignStat:
+			return new varDecl_Node(t);
+		case relExpr:
+			return new relExpr_Node(t);
+		case fCall:
+			return new fCall_Node(t);
+		case aParams:
+			return new aParams_Node(t);
+		case dot:
+			return new dot_Node(t);
+		case dataMem:
+			return new dataMem_Node(t);
+
 
 		default: 
 			std::cout << "Error: Invalid Type past to makeNode()....." << std::endl;
@@ -287,7 +118,7 @@ public:
 		for (i = 0; i < count; i++)
 		{
 			Node* temp = va_arg(args, Node*);
-			op->children.push_back(temp);
+			op->addChild(temp);
 		}
 		va_end(args);
 		
@@ -298,6 +129,7 @@ public:
 
 	void makeSiblings(int count, Node*...)
 	{
+
 
 	}
 
