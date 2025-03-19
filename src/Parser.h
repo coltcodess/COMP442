@@ -15,6 +15,7 @@ public:
 	Parser(const std::string fileName, Lexer& lexer);
 	~Parser();
 	bool parse();
+	Node* getASTroot();
 
 private:
 	bool match(TokenType type);
@@ -36,6 +37,7 @@ private:
 	std::ofstream* m_ASTFile;
 
 	std::ofstream* astFile;
+
 	bool skipErrors(bool containsESPILON, std::vector<TokenType> first, std::vector<TokenType> follow);
 
 	// Non Terminals
@@ -127,6 +129,7 @@ private:
 
 	bool tokenInFollowSet(std::vector<TokenType> _follow);
 	bool tokenInFirstSet(std::vector<TokenType> _first);
+
 
 };
 

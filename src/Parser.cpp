@@ -7,6 +7,7 @@ Parser::Parser(const std::string fileName, Lexer& lexer) : m_sourceFileName(file
 	std::ofstream outDev(m_sourceFileName + ".outderivation", std::ofstream::out);
 	std::ofstream outErrors(m_sourceFileName + ".outsyntaxerrors", std::ofstream::out);
 	std::ofstream outAST(m_sourceFileName + ".outAST", std::ofstream::out);
+	
 
 	m_derivationFile = &outDev;
 	m_syntaxErrorsFile = &outErrors;
@@ -31,10 +32,13 @@ Parser::Parser(const std::string fileName, Lexer& lexer) : m_sourceFileName(file
 	m_syntaxErrorsFile->close();
 	m_ASTFile->close();
 
+
+
+
 	m_derivationFile = nullptr;
 	m_syntaxErrorsFile = nullptr;
 	m_ASTFile = nullptr;
-	
+
 }
 
 Parser::~Parser()
@@ -177,7 +181,7 @@ bool Parser::classOrImplOrFunc(Node* root)
 	std::vector<TokenType> first = { FUNCTION, CONSTRUCTOR, CLASS, IMPLEMENTATION };
 	std::vector<TokenType> follow = { };
 
-	// Gross hack!
+	
 	Node* classDeclList_Node = m_nodeFactory->makeNode(Type::classDeclList);
 	if (!root->hasChild(Type::classDeclList))
 	{
@@ -2048,6 +2052,11 @@ bool Parser::tokenInFirstSet(std::vector<TokenType> _first)
 		return true;
 	}
 	return false;
+}
+
+Node* Parser::getASTroot()
+{
+	return m_astRoot;
 }
 
 void Parser::writeAST(Node* root, int level)

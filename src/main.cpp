@@ -4,6 +4,7 @@
 #include "Lexer.h"
 #include "Parser.h"
 #include "NodeFactory.h"
+#include "SymbolTableCreatorVistor.h"
 
 const std::string SOURCE_FILE_TYPE = ".src";
 const std::string OUTPUT_TOKEN_FILE_TYPE = ".outlextokens";
@@ -53,7 +54,22 @@ int main()
     // Create Lexer with source file  
     Lexer* lexer = new Lexer(buffer->str(), fileInput);
     Parser* parser = new Parser(fileInput, *lexer);
+    
+    // Create Vistor
+    // Assignment 4
+    std::ofstream* outSemErrors = new std::ofstream(fileInput + ".outsemanticerrors", std::ofstream::out);
+    std::ofstream* outSymbolTables = new std::ofstream(fileInput + ".outsymboltables", std::ofstream::out);
 
+    SymbolTableCreatorVistor symbolTableCreatorVistor(outSymbolTables);
+    
+    Node* astRoot = parser->getASTroot();
+
+    astRoot->accept(symbolTableCreatorVistor);
+
+
+
+
+    
 
     return 0;
 }
