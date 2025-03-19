@@ -17,6 +17,13 @@ public:
 		this->link = symbolTable;
 	};
 
+	SymbolTableEntry(std::string name, Kind kind)
+	{
+		this->name = name;
+		this->kind = kind;
+		this->link = nullptr;
+	};
+
 	std::string name;
 	Kind kind;
 	std::string type;
@@ -41,7 +48,7 @@ public:
 
 private:
 	std::string name;
-	std::vector<SymbolTableEntry>* entries;
+	std::vector<SymbolTableEntry> entries;
 
 };
 

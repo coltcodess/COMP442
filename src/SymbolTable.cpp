@@ -22,19 +22,19 @@ void SymbolTable::setName(std::string name)
 
 const std::vector<SymbolTableEntry>& SymbolTable::getEntries()
 {
-    return *entries;
+    return entries;
 }
 
 void SymbolTable::appendEntry(SymbolTableEntry entry)
 {
-    entries->push_back(entry);
+    entries.push_back(entry);
 }
 
 void SymbolTable::addAtFront(SymbolTableEntry entry)
 {
     std::vector<SymbolTableEntry>::iterator it;
-    it = entries->begin();
-    it = entries->insert(it, 0, entry);
+    it = entries.begin();
+    it = entries.insert(it, 0, entry);
 }
 
 

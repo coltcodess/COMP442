@@ -66,7 +66,10 @@ int main()
 
     astRoot->accept(symbolTableCreatorVistor);
 
-
+    //// Debugging
+    while (true)
+    {
+    }
 
 
     
