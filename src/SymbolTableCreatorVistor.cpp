@@ -38,6 +38,36 @@ void SymbolTableCreatorVistor::visit(classDeclList_Node& node)
 
 }
 
+void SymbolTableCreatorVistor::visit(funcDefList_Node& node)
+{
+	std::cout << "Visited funcDefList_Node" << std::endl;
+}
+
+void SymbolTableCreatorVistor::visit(implDefList_Node& node)
+{
+	std::cout << "Visited implDefList_Node" << std::endl;
+}
+
+void SymbolTableCreatorVistor::visit(classDecl_Node& node)
+{
+	std::cout << "Visited classDecl_Node" << std::endl;
+}
+
+void SymbolTableCreatorVistor::visit(funcDef_Node& node)
+{
+	std::cout << "Visited funcDef_Node" << std::endl;
+}
+
+void SymbolTableCreatorVistor::visit(impleDef_Node& node)
+{
+	std::cout << "Visited impleDef_Node" << std::endl;
+}
+
+void SymbolTableCreatorVistor::visit(varDecl_Node& node)
+{
+	std::cout << "Visited varDecl_Node" << std::endl;
+}
+
 //////////////////
 // Terminals 
 //////////////////
