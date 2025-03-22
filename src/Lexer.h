@@ -17,6 +17,7 @@ public:
 
     Token* getNextToken();
     bool isFinished();
+    Token* peekAheadToken();
 
 private:
 

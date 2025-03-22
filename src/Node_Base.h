@@ -69,12 +69,12 @@ class Node
 {
 private:
 	Type m_type = Type::none;
-	Token* token = nullptr;
 
 	std::vector<Node*> children;
 
 public:
 
+	Token* token;
 	Node* parent = nullptr;
 	SymbolTable* m_symbolTable = nullptr;
 	SymbolTableEntry* m_symbolEntry = nullptr;

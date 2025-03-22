@@ -21,21 +21,23 @@
             | type
             | arraySizeList
         | memDeclFunc
+          | type
           | idLit
           | fParamsList
-            | varDecl
-              | idLit
+            | fParam
               | type
-            | varDecl
               | idLit
+            | fParam
               | type
+              | idLit
           | type
         | memDeclFunc
+          | type
           | idLit
           | fParamsList
-            | varDecl
-              | idLit
+            | fParam
               | type
+              | idLit
           | type
     | classDecl
       | idLit
@@ -60,34 +62,37 @@
             | type
             | arraySizeList
         | memDeclFunc
+          | type
           | idLit
           | fParamsList
-            | varDecl
-              | idLit
+            | fParam
               | type
-            | varDecl
               | idLit
+            | fParam
               | type
-            | varDecl
               | idLit
+            | fParam
               | type
+              | idLit
           | type
         | memDeclFunc
+          | type
           | idLit
           | fParamsList
-            | varDecl
-              | idLit
+            | fParam
               | type
+              | idLit
           | type
   | implDefList
     | impleDef
       | idLit
       | funcDef
+        | type
         | idLit
         | fParamsList
-          | varDecl
-            | idLit
+          | fParam
             | type
+            | idLit
         | type
         | statBlock
           | returnStat
@@ -95,11 +100,12 @@
     | impleDef
       | idLit
       | funcDef
+        | type
         | idLit
         | fParamsList
-          | varDecl
-            | idLit
+          | fParam
             | type
+            | idLit
         | type
         | statBlock
           | varDecl
@@ -126,17 +132,18 @@
           | returnStat
             | idLit
       | funcDef
+        | type
         | idLit
         | fParamsList
-          | varDecl
-            | idLit
+          | fParam
             | type
-          | varDecl
             | idLit
+          | fParam
             | type
-          | varDecl
             | idLit
+          | fParam
             | type
+            | idLit
         | type
         | statBlock
           | varDecl
@@ -163,14 +170,15 @@
     | impleDef
       | idLit
       | funcDef
+        | type
         | idLit
         | fParamsList
-          | varDecl
-            | idLit
+          | fParam
             | type
-          | varDecl
             | idLit
+          | fParam
             | type
+            | idLit
         | type
         | statBlock
           | varDecl
@@ -190,11 +198,12 @@
           | returnStat
             | idLit
       | funcDef
+        | type
         | idLit
         | fParamsList
-          | varDecl
-            | idLit
+          | fParam
             | type
+            | idLit
         | type
         | statBlock
           | varDecl
@@ -217,9 +226,6 @@
     | funcDef
       | idLit
       | fParamsList
-        | varDecl
-          | idLit
-          | type
       | type
       | statBlock
         | varDecl

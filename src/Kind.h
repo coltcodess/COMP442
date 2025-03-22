@@ -7,5 +7,6 @@ enum Kind {
 	_variable,
 	_class,
 	_parameter,
-
+	_inherit,
+	_local,
 };

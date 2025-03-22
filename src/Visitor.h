@@ -13,7 +13,7 @@ class impleDef_Node;
 class inheritList_Node;
 class memDeclAttrib_Node;
 class memDeclFunc_Node;
-class fParamsList_Node;
+class fParam_Node;
 
 
 class varDecl_Node;
@@ -22,6 +22,7 @@ class idLit_Node;
 class intLit_Node;
 class floatLit_Node;
 class type_Node;
+
 
 class Visitor
 {
@@ -40,8 +41,7 @@ public:
 
 	virtual void visit(memDeclAttrib_Node& node) = 0;
 	virtual void visit(memDeclFunc_Node& node) = 0;
-	virtual void visit(fParamsList_Node& node) = 0;
-
+	virtual void visit(fParam_Node& node) = 0;
 
 	virtual void visit(inheritList_Node& node) = 0;
 

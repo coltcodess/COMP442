@@ -24,6 +24,22 @@ public:
 		this->link = nullptr;
 	};
 
+	SymbolTableEntry(std::string name, Kind kind, std::string type, SymbolTable* symbolTable)
+	{
+		this->name = name;
+		this->kind = kind;
+		this->type = type;
+		this->link = symbolTable;
+	};
+
+	SymbolTableEntry(std::string name, Kind kind, std::string type)
+	{
+		this->name = name;
+		this->kind = kind;
+		this->type = type;
+		this->link = nullptr;
+	};
+
 	std::string name;
 	Kind kind;
 	std::string type;

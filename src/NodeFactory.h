@@ -20,6 +20,15 @@ public:
 		return new null_Node();
 	}
 
+	Node* makeNode(Token& token, Type t)
+	{
+		switch (t)
+		{
+		case type:
+			return new type_Node(token, t);
+		}
+	}
+
 	/////////////////////////////////////////////////////////////////////
 
 	Node* makeNode(Type t)

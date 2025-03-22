@@ -60,7 +60,7 @@
 [closecubr, }, 60] 
 [closecubr, }, 61] 
 [inlinecmt, // ====== main ====== //, 63] 
-[function, function, 63] [id, main, 63] [openpar, (, 63] [id, x, 63] [colon, :, 63] [float, float, 63] [closepar, ), 63] [arrow, =>, 63] [void, void, 63] 
+[function, function, 63] [id, main, 63] [openpar, (, 63] [closepar, ), 63] [arrow, =>, 63] [void, void, 63] 
 [opencubr, {, 64] 
 [local, local, 65] [id, f1, 65] [colon, :, 65] [id, LINEAR, 65] [semi, ;, 65] 
 [local, local, 66] [id, f2, 66] [colon, :, 66] [id, QUADRATIC, 66] [semi, ;, 66] 

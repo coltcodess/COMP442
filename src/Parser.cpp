@@ -254,6 +254,8 @@ bool Parser::classDecl(Node* root)
 	root->addChild(classDecl_Node);
 	classDecl_Node->addChild(m_nodeFactory->makeNode(Type::idLit));
 
+	classDecl_Node->token = m_lexer.peekAheadToken();
+
 	if (!skipErrors(false, first, follow)) return false;
 
 	if (m_lookAheadToken->type == CLASS)
@@ -410,6 +412,8 @@ bool Parser::funcDef(Node* root)
 	Node* funcDef = m_nodeFactory->makeNode(Type::funcDef);
 	root->addChild(funcDef);
 
+	funcDef->token = m_lexer.peekAheadToken();
+
 	if (m_lookAheadToken->type == FUNCTION || m_lookAheadToken->type == CONSTRUCTOR)
 	{
 		if (funcHead(funcDef) && funcBody(funcDef))
@@ -460,8 +464,8 @@ bool Parser::memberDecl(Node* root)
 
 	if (m_lookAheadToken->type == CONSTRUCTOR || m_lookAheadToken->type == FUNCTION)
 	{
-
 		Node* memDeclFunc_Node = m_nodeFactory->makeNode(Type::memDeclFunc);
+		memDeclFunc_Node->token = m_lexer.peekAheadToken();
 		root->addChild(memDeclFunc_Node);
 
 		if (funcDec1(memDeclFunc_Node))
@@ -495,6 +499,7 @@ bool Parser::funcDec1(Node* root)
 
 	if (m_lookAheadToken->type == CONSTRUCTOR || m_lookAheadToken->type == FUNCTION)
 	{
+		
 		if (funcHead(root) && match(TokenType::SEMI))
 		{
 			*m_derivationFile << "funcDec1 -> funcHead\n";
@@ -514,6 +519,7 @@ bool Parser::funcHead(Node* root)
 	if (!skipErrors(false, first, follow)) return false;
 
 	Node* fParams_node = m_nodeFactory->makeNode(Type::fParamsList);
+	fParams_node->token = m_lookAheadToken;
 
 	if (m_lookAheadToken->type == CONSTRUCTOR)
 	{
@@ -526,6 +532,7 @@ bool Parser::funcHead(Node* root)
 	}
 	else if (m_lookAheadToken->type == FUNCTION)
 	{
+		
 		if (match(TokenType::FUNCTION) && match(TokenType::id) && match(TokenType::OPENPAR) && fParams(fParams_node) && match(TokenType::CLOSEPAR) && match(TokenType::ARROW) && returnType(root))
 		{
 			*m_derivationFile << "'function' 'id' '(' fParams ')' '=>' returnType\n";
@@ -680,11 +687,13 @@ bool Parser::varDecl(Node* root)
 
 	if (m_lookAheadToken->type == TokenType::id)
 	{
-		if (match(TokenType::id) && match(TokenType::COLON) && type() && arraySizes(arraySizeList_node) && match(TokenType::SEMI))
-		{
+		Node* id_node = m_nodeFactory->makeNode(Type::idLit);
+		id_node->token = m_lookAheadToken;
+		varDecl_Node->addChild(id_node);
 
-			varDecl_Node->addChild(m_nodeFactory->makeNode(Type::idLit));
-			varDecl_Node->addChild(m_nodeFactory->makeNode(Type::type));
+		if (match(TokenType::id) && match(TokenType::COLON) && type(varDecl_Node) && arraySizes(arraySizeList_node) && match(TokenType::SEMI))
+		{
+			
 			varDecl_Node->addChild(arraySizeList_node);
 
 			root->addChild(varDecl_Node);
@@ -792,7 +801,7 @@ bool Parser::FUNCALLORASSIGN(Node* root)
 		FUNCALLORASSIGN2_Node->addChild(id_node);
 		root->addChild(FUNCALLORASSIGN2_Node);
 
-		if (IDORSELF() && FUNCALLORASSIGN2(*id_node, FUNCALLORASSIGN2_Node))
+		if (IDORSELF(id_node) && FUNCALLORASSIGN2(*id_node, FUNCALLORASSIGN2_Node))
 		{
 			*m_derivationFile << "FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2\n";
 			return true;
@@ -1205,7 +1214,7 @@ bool Parser::factor(Node* root)
 	else if (m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::SELF)
 	{
 		root->setType(Type::idLit);
-		if (IDORSELF() && factor2(root) && REPTVARIABLEORFUNCTIONCALL(root))
+		if (IDORSELF(root) && factor2(root) && REPTVARIABLEORFUNCTIONCALL(root))
 		{
 			*m_derivationFile << "factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL\n";
 			return true;
@@ -1367,7 +1376,7 @@ bool Parser::variable(Node* root)
 	{
 		root->setType(Type::idLit);
 
-		if (IDORSELF() && variable2(root))
+		if (IDORSELF(root) && variable2(root))
 		{
 			*m_derivationFile << "variable -> IDORSELF variable2\n";
 			return true;
@@ -1612,12 +1621,17 @@ bool Parser::arraySizes(Node* root)
 	else return false;
 }
 
-bool Parser::type()
+bool Parser::type(Node* root)
 {
 	std::vector<TokenType> first = { INT, FLOAT, id };
 	std::vector<TokenType> follow = {};
 
 	if (!skipErrors(false, first, follow)) return false;
+
+	Node* node = m_nodeFactory->makeNode(Type::type);
+	root->addChild(node);
+
+	node->token = m_lookAheadToken;
 
 	if (m_lookAheadToken->type == INT)
 	{
@@ -1661,7 +1675,7 @@ bool Parser::returnType(Node* root)
 		m_lookAheadToken->type == TokenType::FLOAT ||
 		m_lookAheadToken->type == TokenType::id)
 	{
-		if (type())
+		if (type(root))
 		{
 			*m_derivationFile << "returnType -> type\n";
 			return true;
@@ -1762,16 +1776,18 @@ bool Parser::fParams(Node* root)
 
 	if (!skipErrors(true, first, follow)) return false;
 
-	Node* varDecl_Node = m_nodeFactory->makeNode(Type::varDecl);
+	Node* fParams_Node = m_nodeFactory->makeNode(Type::fParam);
 	Node* arraySizeList_Node = m_nodeFactory->makeNode(Type::arraySizeList);
 
 	if (m_lookAheadToken->type == TokenType::id)
 	{
-		if (match(TokenType::id) && match(TokenType::COLON) && type() && arraySizes(root) && REPTFPARAMS1(root))
+		Node* id_node = m_nodeFactory->makeNode(Type::idLit);
+		id_node->token = m_lookAheadToken;
+
+		if (match(TokenType::id) && match(TokenType::COLON) && type(fParams_Node) && arraySizes(root) && REPTFPARAMS1(root))
 		{
-			varDecl_Node->addChild(m_nodeFactory->makeNode(Type::idLit));
-			varDecl_Node->addChild(m_nodeFactory->makeNode(Type::type));
-			root->addChild(varDecl_Node);
+			fParams_Node->addChild(id_node);
+			root->addChild(fParams_Node);
 			*m_derivationFile << "fParams -> 'id' ':' type arraySizes REPTFPARAMS1\n";
 			return true;
 		}
@@ -1816,15 +1832,19 @@ bool Parser::fParamsTail(Node* root)
 
 	if (!skipErrors(false, first, follow)) return false;
 
-	Node* varDecl_Node = m_nodeFactory->makeNode(Type::varDecl);
+	Node* fParams_Node = m_nodeFactory->makeNode(Type::fParam);
+
+	fParams_Node->token = m_lookAheadToken;
 
 	if (m_lookAheadToken->type == COMMA)
 	{
-		if (match(TokenType::COMMA) && match(TokenType::id) && match(TokenType::COLON) && type() && arraySizes(root))
+		Node* id_node = m_nodeFactory->makeNode(Type::idLit);
+		id_node->token = m_lexer.peekAheadToken();
+
+		if (match(TokenType::COMMA) && match(TokenType::id) && match(TokenType::COLON) && type(fParams_Node) && arraySizes(root))
 		{
-			varDecl_Node->addChild(m_nodeFactory->makeNode(Type::idLit));
-			varDecl_Node->addChild(m_nodeFactory->makeNode(Type::type));
-			root->addChild(varDecl_Node);
+			fParams_Node->addChild(id_node);
+			root->addChild(fParams_Node);
 			*m_derivationFile << "fParasTail -> ',' 'id' ':' type arraySizes\n";
 			return true;
 		}
@@ -1994,12 +2014,14 @@ bool Parser::multOp()
 	else return false;
 }
 
-bool Parser::IDORSELF()
+bool Parser::IDORSELF(Node* node)
 {
 	std::vector<TokenType> first = { id, SELF };
 	std::vector<TokenType>  follow = {};
 
 	if (!skipErrors(false, first, follow)) return false;
+
+	node->token = m_lookAheadToken;
 
 	if (m_lookAheadToken->type == id)
 	{

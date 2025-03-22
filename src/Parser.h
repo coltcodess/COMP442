@@ -116,10 +116,10 @@ private:
 	bool assignOp(Node* root);
 	bool sign();
 	bool multOp();
-	bool IDORSELF();
+	bool IDORSELF(Node* root);
 	bool addOp();
 	bool relOp();
-	bool type();
+	bool type(Node* root);
 	
 	// Write AST to file
 	void writeAST(Node* root, int level);

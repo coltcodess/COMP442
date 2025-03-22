@@ -700,6 +700,9 @@ public:
 	type_Node(Type t) : Node(t)
 	{ }
 
+	type_Node(Token& token, Type t) : Node(&token, t)
+	{ }
+
 	virtual ~type_Node() {};
 
 	void accept(Visitor& visitor) override {

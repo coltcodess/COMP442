@@ -2,6 +2,8 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
+#include <vector>
 
 #include "Node.h"
 
@@ -23,8 +25,7 @@ public:
 	void visit(memDeclAttrib_Node& node) override;
 	void visit(memDeclFunc_Node& node) override;
 
-
-	void visit(fParamsList_Node& node) override;
+	void visit(fParam_Node& node) override;
 
 	void visit(varDecl_Node& node) override;
 
