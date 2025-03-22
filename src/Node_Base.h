@@ -77,6 +77,7 @@ public:
 
 	Node* parent = nullptr;
 	SymbolTable* m_symbolTable = nullptr;
+	SymbolTableEntry* m_symbolEntry = nullptr;
 
 	// Constructors 
 	Node(Type t) : m_type(t)

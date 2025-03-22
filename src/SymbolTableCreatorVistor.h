@@ -19,6 +19,7 @@ public:
 	void visit(classDecl_Node& node) override;
 	void visit(funcDef_Node& node) override;
 	void visit(impleDef_Node& node) override;
+	void visit(inheritList_Node& node) override;
 
 	void visit(varDecl_Node& node) override;
 
@@ -26,6 +27,8 @@ public:
 	void visit(intLit_Node& node) override;
 	void visit(floatLit_Node& node) override;
 	void visit(type_Node& node) override;
+
+	void print();
 
 
 

@@ -10,6 +10,8 @@ class classDecl_Node;
 class funcDef_Node;
 class impleDef_Node;
 
+class inheritList_Node;
+
 class varDecl_Node;
 
 class idLit_Node;
@@ -31,6 +33,8 @@ public:
 	virtual void visit(classDecl_Node& node) = 0;
 	virtual void visit(funcDef_Node& node) = 0;
 	virtual void visit(impleDef_Node& node) = 0;
+
+	virtual void visit(inheritList_Node& node) = 0;
 
 	virtual void visit(varDecl_Node& node) = 0;
 

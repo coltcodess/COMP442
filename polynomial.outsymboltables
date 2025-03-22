@@ -1,2 +1,21 @@
- || Global -------------------------------------------------- ||
- ||   program | 
+ || table: global
+ -------------------------------- 
+ ||   class : | id
+ -------------------------------- 
+   ||   table: className
+     ||   inherit | none
+     ||   function | 
+ ||   class : | id
+ -------------------------------- 
+   ||   table: className
+     ||   inherit | 
+     ||   data | id | type
+     ||   data | id | type
+     ||   function | 
+ ||   class : | id
+ -------------------------------- 
+   ||   table: className
+     ||   inherit | 
+     ||   data | id | type
+     ||   function | 
+ ||   function : | 
