@@ -20,6 +20,11 @@ public:
 	void visit(funcDef_Node& node) override;
 	void visit(impleDef_Node& node) override;
 	void visit(inheritList_Node& node) override;
+	void visit(memDeclAttrib_Node& node) override;
+	void visit(memDeclFunc_Node& node) override;
+
+
+	void visit(fParamsList_Node& node) override;
 
 	void visit(varDecl_Node& node) override;
 

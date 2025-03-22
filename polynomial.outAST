@@ -2,6 +2,7 @@
   | classDeclList
     | classDecl
       | idLit
+      | inheritList
       | memDeclList
     | classDecl
       | idLit
@@ -216,6 +217,9 @@
     | funcDef
       | idLit
       | fParamsList
+        | varDecl
+          | idLit
+          | type
       | type
       | statBlock
         | varDecl

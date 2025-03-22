@@ -1,21 +1,36 @@
  || table: global
  -------------------------------- 
- ||   class : | id
+ || class :
  -------------------------------- 
-   ||   table: className
-     ||   inherit | none
-     ||   function | 
- ||   class : | id
+ || class :
  -------------------------------- 
-   ||   table: className
-     ||   inherit | 
-     ||   data | id | type
-     ||   data | id | type
-     ||   function | 
- ||   class : | id
+   || data :
+   || data :
+   || function :
  -------------------------------- 
-   ||   table: className
-     ||   inherit | 
-     ||   data | id | type
-     ||   function | 
- ||   function : | 
+     || parameter
+     || parameter
+ -------------------------------- 
+   || function :
+ -------------------------------- 
+     || parameter
+ -------------------------------- 
+ || class :
+ -------------------------------- 
+   || data :
+   || data :
+   || data :
+   || function :
+ -------------------------------- 
+     || parameter
+     || parameter
+     || parameter
+ -------------------------------- 
+   || function :
+ -------------------------------- 
+     || parameter
+ -------------------------------- 
+ || function :
+ -------------------------------- 
+     || parameter
+ -------------------------------- 

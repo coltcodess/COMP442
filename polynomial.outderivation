@@ -506,7 +506,10 @@ impleBody -> funcDef impleBody
 impleBody -> funcDef impleBody
 implDef -> 'implementation' 'id' '{' funcDef '}'
 classOrImplOrFunc -> implDef
-fParams -> EPSILON
+type -> 'float'
+arraySizes -> EPSILON
+REPTFPARAMS1 -> EPSILON
+fParams -> 'id' ':' type arraySizes REPTFPARAMS1
 returnType -> 'void'
 'function' 'id' '(' fParams ')' '=>' returnType
 type -> 'id'

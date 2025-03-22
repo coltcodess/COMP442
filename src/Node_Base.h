@@ -162,6 +162,11 @@ public:
 		return this->token;
 	}
 
+	std::string getData()
+	{
+		return "";
+	}
+
 	void printChildren()
 	{
 		std::cout << "-------- \n" << std::endl;

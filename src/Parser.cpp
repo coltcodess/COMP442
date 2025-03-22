@@ -319,6 +319,7 @@ bool Parser::ISA1(Node* root)
 	}
 	else if (tokenInFollowSet(follow))
 	{
+		root->addChild(inheritList_Node);
 		*m_derivationFile << "ISA1 -> EPSILON\n";
 		return true;
 	}
