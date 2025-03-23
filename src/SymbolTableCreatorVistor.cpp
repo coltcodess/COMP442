@@ -99,8 +99,46 @@ void SymbolTableCreatorVistor::visit(funcDef_Node& node)
 
 void SymbolTableCreatorVistor::visit(impleDef_Node& node)
 {
+	Node* prog = node.parent->parent;
+
+	Node* classList = prog->getChild(Type::classDeclList);
+
+	std::string className = node.token->lexem;
+
+	SymbolTable* classTable = nullptr;
+	SymbolTable* funcTable = nullptr;
+
+	for (auto i : classList->getChildren())
+	{
+		if (i->token->lexem.compare(className) == 0 && !i->m_symbolTable->getEntries().empty())
+		{
+			classTable = i->m_symbolTable;
+
+			for (auto j : classTable->getEntries())
+			{
+				if (j->name.compare(node.getChild(Type::funcDef)->token->lexem) == 0)
+				{
+					funcTable = j->link;
+				}
+			}
+		}
+	}
+
+	if (funcTable != nullptr)
+	{
+		for (auto i : node.getChild(Type::funcDef)->m_symbolTable->getEntries())
+		{
+			funcTable->appendEntry(i);
+		}
+	}
 
 
+
+	
+
+
+
+	
 	node.m_symbolEntry = new SymbolTableEntry("woow", Kind::_function, node.m_symbolTable);
 }
 
@@ -243,7 +281,14 @@ void SymbolTableCreatorVistor::print()
 
 						for (auto k : j->link->getEntries())
 						{
-							*m_output << "        param: | " + k->type + " | " + k->name << std::endl;
+							if (k->kind == Kind::_parameter)
+							{
+								*m_output << "        param: | " + k->type + " | " + k->name << std::endl;
+							}
+							else if (k->kind == Kind::_variable)
+							{
+								*m_output << "        local: | " + k->type + " | " + k->name << std::endl;
+							}
 						}
 
 					}
