@@ -366,12 +366,12 @@ bool Parser::implDef(Node* root)
 
 	Node* impleDef_Node = m_nodeFactory->makeNode(Type::impleDef);
 
-
 	if (!skipErrors(false, first, follow)) return false;
 
 	if (m_lookAheadToken->type == IMPLEMENTATION)
 	{
 		impleDef_Node->addChild(m_nodeFactory->makeNode(idLit));
+		impleDef_Node->token = m_lexer.peekAheadToken();
 
 		if (match(TokenType::IMPLEMENTATION) && match(TokenType::id) && match(TokenType::OPENCUBR) && impleBody(impleDef_Node) && match(TokenType::CLOSECUBR))
 		{
