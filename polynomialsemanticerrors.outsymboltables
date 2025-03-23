@@ -7,21 +7,25 @@
  -------------------------------- 
         param: | float | x
  -------------------------------- 
+        table:  POLYNOMIAL::evaluate2
+ -------------------------------- 
+        param: | float | x
+ -------------------------------- 
   || class: LINEAR
-  inherit: | SHAPE
+  inherit: | POLYNOMIAL
   data:  | a | float
   data:  | b | float
  -------------------------------- 
         table:  LINEAR::build
  -------------------------------- 
-        local: | id | new_function
         param: | float | B
         param: | float | A
+        local: | id | new_functiontion
  -------------------------------- 
         table:  LINEAR::evaluate
  -------------------------------- 
-        local: | float | result
         param: | float | x
+        local: | float | result
  -------------------------------- 
   || class: QUADRATIC
   inherit: | POLYNOMIAL
@@ -31,18 +35,35 @@
  -------------------------------- 
         table:  QUADRATIC::build
  -------------------------------- 
-        local: | id | new_function
         param: | float | B
         param: | float | C
         param: | float | A
+        local: | id | new_functiontion
  -------------------------------- 
         table:  QUADRATIC::evaluate
  -------------------------------- 
-        local: | float | result
         param: | float | x
+        local: | float | result
+ -------------------------------- 
+  || class: C
+  inherit: | E
+  data:  | a | int
+ -------------------------------- 
+  || class: D
+  inherit: | C
+  data:  | b | int
+ -------------------------------- 
+  || class: E
+  inherit: | D
+  data:  | c | int
+ -------------------------------- 
+  || function: f
+ -------------------------------- 
+  || function: f
+ -------------------------------- 
+  || function: f
+ -------------------------------- 
+  || function: f3
  -------------------------------- 
   || function: main
-        local: | id | f1
-        local: | id | f2
-        local: | int | counter
  -------------------------------- 

@@ -66,10 +66,12 @@ int main()
 
     Node* astRoot = parser->getASTroot();
 
+    // Symbol Table visitor
     astRoot->accept(symbolTableCreatorVistor);
     symbolTableCreatorVistor.print();
 
-
+    // Type checking visitor
+    astRoot->accept(typeCheckingVisitor);
 
 
     

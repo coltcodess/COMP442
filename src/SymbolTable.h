@@ -65,6 +65,8 @@ public:
 	SymbolTableEntry* getEntryByKind(Kind kind);
 	bool checkEntryInTable(SymbolTableEntry* entry);
 
+	bool checkEntryNameKindInTable(SymbolTableEntry* entry);
+
 private:
 	std::string name;
 	std::vector<SymbolTableEntry*> entries;

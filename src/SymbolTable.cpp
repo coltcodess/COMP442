@@ -68,6 +68,16 @@ bool SymbolTable::checkEntryInTable(SymbolTableEntry* entry)
 {
     for (auto i : this->entries)
     {
+        if (i->name.compare(entry->name) == 0 && i->kind == entry->kind && i->type.compare(entry->type) == 0) return true;
+    }
+
+    return false;
+}
+
+bool SymbolTable::checkEntryNameKindInTable(SymbolTableEntry* entry)
+{
+    for (auto i : this->entries)
+    {
         if (i->name.compare(entry->name) == 0 && i->kind == entry->kind) return true;
     }
 
