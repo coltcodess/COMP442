@@ -22,6 +22,7 @@ class idLit_Node;
 class intLit_Node;
 class floatLit_Node;
 class type_Node;
+class statBlock_Node;
 
 
 class Visitor
@@ -30,9 +31,7 @@ public:
 	Visitor() {};
 	virtual void visit(Node& node) = 0;
 	virtual void visit(prog_Node& node) = 0;
-	virtual void visit(classDeclList_Node& node) = 0;
-	virtual void visit(funcDefList_Node& node) = 0;
-	virtual void visit(implDefList_Node& node) = 0;
+
 	
 
 	virtual void visit(classDecl_Node& node) = 0;
@@ -42,6 +41,7 @@ public:
 	virtual void visit(memDeclAttrib_Node& node) = 0;
 	virtual void visit(memDeclFunc_Node& node) = 0;
 	virtual void visit(fParam_Node& node) = 0;
+	virtual void visit(statBlock_Node& node) = 0;
 
 	virtual void visit(inheritList_Node& node) = 0;
 

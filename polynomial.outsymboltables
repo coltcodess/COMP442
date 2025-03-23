@@ -1,26 +1,34 @@
  || table: global
  -------------------------------- 
- || class : POLYNOMIAL
+  || class: POLYNOMIAL
  -------------------------------- 
- || class : LINEAR
+  || class: LINEAR
   data:  | a | float
   data:  | b | float
-  function: build
-    param: | float | B
-    param: | float | A
-  function: evaluate
-    param: | float | x
  -------------------------------- 
- || class : QUADRATIC
+        table:  LINEAR::build
+ -------------------------------- 
+        param: | float | B
+        param: | float | A
+ -------------------------------- 
+        table:  LINEAR::evaluate
+ -------------------------------- 
+        param: | float | x
+ -------------------------------- 
+  || class: QUADRATIC
   data:  | a | float
   data:  | b | float
   data:  | c | float
-  function: build
-    param: | float | B
-    param: | float | C
-    param: | float | A
-  function: evaluate
-    param: | float | x
  -------------------------------- 
-  function:  | main
+        table:  QUADRATIC::build
+ -------------------------------- 
+        param: | float | B
+        param: | float | C
+        param: | float | A
+ -------------------------------- 
+        table:  QUADRATIC::evaluate
+ -------------------------------- 
+        param: | float | x
+ -------------------------------- 
+  || function: main
  -------------------------------- 

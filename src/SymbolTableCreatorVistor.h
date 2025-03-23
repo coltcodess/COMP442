@@ -15,15 +15,13 @@ public:
 
 	void visit(Node& node) override;
 	void visit(prog_Node& node) override;
-	void visit(classDeclList_Node& node) override;
-	void visit(funcDefList_Node& node) override;
-	void visit(implDefList_Node& node) override;
 	void visit(classDecl_Node& node) override;
 	void visit(funcDef_Node& node) override;
 	void visit(impleDef_Node& node) override;
 	void visit(inheritList_Node& node) override;
 	void visit(memDeclAttrib_Node& node) override;
 	void visit(memDeclFunc_Node& node) override;
+	void visit(statBlock_Node& node) override;
 
 	void visit(fParam_Node& node) override;
 
@@ -34,12 +32,11 @@ public:
 	void visit(floatLit_Node& node) override;
 	void visit(type_Node& node) override;
 
-	void print();
-
 
 
 private: 
 	std::ofstream* m_output;
+	std::vector<SymbolTable> m_tables;
 
 };
 

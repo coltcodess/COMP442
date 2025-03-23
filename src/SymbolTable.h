@@ -58,13 +58,14 @@ public:
 
 	std::string getName();
 	void setName(std::string name);
-	const std::vector<SymbolTableEntry>& getEntries();
-	void appendEntry(SymbolTableEntry entry);
-	void addAtFront(SymbolTableEntry entry);
+	const std::vector<SymbolTableEntry*> getEntries();
+	void appendEntry(SymbolTableEntry* entry);
+	void addAtFront(SymbolTableEntry* entry);
+	SymbolTableEntry* getEntryByNameKind(std::string name, Kind kind);
 
 private:
 	std::string name;
-	std::vector<SymbolTableEntry> entries;
+	std::vector<SymbolTableEntry*> entries;
 
 };
 

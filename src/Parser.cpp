@@ -306,6 +306,9 @@ bool Parser::ISA1(Node* root)
 
 	Node* inheritList_Node = m_nodeFactory->makeNode(Type::inheritList);
 
+	Node* id_node = m_nodeFactory->makeNode(Type::idLit);
+	id_node->token = m_lexer.peekAheadToken();
+
 	if (!skipErrors(true, first, follow)) return false;
 
 	if (m_lookAheadToken->type == ISA)
@@ -313,7 +316,7 @@ bool Parser::ISA1(Node* root)
 		if (match(TokenType::ISA) && match(TokenType::id) && ISA2(inheritList_Node))
 		{
 			root->addChild(inheritList_Node);
-			inheritList_Node->addChild(m_nodeFactory->makeNode(Type::idLit));
+			inheritList_Node->addChild(id_node);
 			*m_derivationFile << "ISA1 -> 'isa' 'id' ISA2\n";
 			return true;
 		}
@@ -335,11 +338,14 @@ bool Parser::ISA2(Node* root)
 
 	if (!skipErrors(true, first, follow)) return false;
 
+	Node* id_node = m_nodeFactory->makeNode(Type::idLit);
+	id_node->token = m_lexer.peekAheadToken();
+
 	if (m_lookAheadToken->type == COMMA)
 	{
 		if (match(TokenType::COMMA) && match(TokenType::id) && ISA2(root))
 		{
-			root->addChild(m_nodeFactory->makeNode(Type::idLit));
+			root->addChild(id_node);
 			*m_derivationFile << "ISA2 -> ',' 'id' ISA2\n";
 			return true;
 		}
