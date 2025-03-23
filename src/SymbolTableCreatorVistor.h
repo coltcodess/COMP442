@@ -10,7 +10,9 @@
 class SymbolTableCreatorVistor : public Visitor
 {
 public:
-	SymbolTableCreatorVistor(std::ofstream* output);
+	SymbolTable* m_global_table;
+
+	SymbolTableCreatorVistor(std::ofstream* output, std::ofstream* errors);
 	virtual ~SymbolTableCreatorVistor() {};
 
 	void visit(Node& node) override;
@@ -32,11 +34,14 @@ public:
 	void visit(floatLit_Node& node) override;
 	void visit(type_Node& node) override;
 
+	void print();
+
 
 
 private: 
 	std::ofstream* m_output;
-	std::vector<SymbolTable> m_tables;
+	std::ofstream* m_errors;
+	
 
 };
 

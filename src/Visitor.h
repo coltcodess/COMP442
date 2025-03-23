@@ -32,8 +32,6 @@ public:
 	virtual void visit(Node& node) = 0;
 	virtual void visit(prog_Node& node) = 0;
 
-	
-
 	virtual void visit(classDecl_Node& node) = 0;
 	virtual void visit(funcDef_Node& node) = 0;
 	virtual void visit(impleDef_Node& node) = 0;

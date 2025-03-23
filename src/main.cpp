@@ -5,6 +5,7 @@
 #include "Parser.h"
 #include "NodeFactory.h"
 #include "SymbolTableCreatorVistor.h"
+#include "TypeCheckingVisitor.h"
 
 const std::string SOURCE_FILE_TYPE = ".src";
 const std::string OUTPUT_TOKEN_FILE_TYPE = ".outlextokens";
@@ -60,11 +61,13 @@ int main()
     std::ofstream* outSemErrors = new std::ofstream(fileInput + ".outsemanticerrors", std::ofstream::out);
     std::ofstream* outSymbolTables = new std::ofstream(fileInput + ".outsymboltables", std::ofstream::out);
 
-    SymbolTableCreatorVistor symbolTableCreatorVistor(outSymbolTables);
-    
+    SymbolTableCreatorVistor symbolTableCreatorVistor(outSymbolTables, outSemErrors);
+    TypeCheckingVisitor typeCheckingVisitor(outSemErrors);
+
     Node* astRoot = parser->getASTroot();
 
     astRoot->accept(symbolTableCreatorVistor);
+    symbolTableCreatorVistor.print();
 
 
 
