@@ -62,6 +62,7 @@ public:
 	void appendEntry(SymbolTableEntry* entry);
 	void addAtFront(SymbolTableEntry* entry);
 	SymbolTableEntry* getEntryByNameKind(std::string name, Kind kind);
+	SymbolTableEntry* getEntryByKind(Kind kind);
 
 private:
 	std::string name;

@@ -1,8 +1,10 @@
  || table: global
  -------------------------------- 
   || class: POLYNOMIAL
+  inherit: | none
  -------------------------------- 
   || class: LINEAR
+  inherit: | SHAPE
   data:  | a | float
   data:  | b | float
  -------------------------------- 
@@ -16,6 +18,7 @@
         param: | float | x
  -------------------------------- 
   || class: QUADRATIC
+  inherit: | POLYNOMIAL
   data:  | a | float
   data:  | b | float
   data:  | c | float

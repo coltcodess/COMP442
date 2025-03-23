@@ -52,8 +52,15 @@ void SymbolTableCreatorVistor::visit(prog_Node& node)
 		if (i->kind == Kind::_class)
 		{
 			*m_output << "  || class: " + i->name << std::endl;
-
-
+			
+			if (i->link->getEntryByKind(Kind::_inherit) != nullptr)
+			{
+				*m_output << "  inherit: | " + i->link->getEntryByKind(Kind::_inherit)->name << std::endl;
+			}
+			else
+			{
+				*m_output << "  inherit: | none" << std::endl;
+			}
 
 			for (auto j : i->link->getEntries())
 			{
