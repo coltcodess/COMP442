@@ -23,6 +23,13 @@ void SymbolTableCreatorVistor::visit(prog_Node& node)
 	// ClassDeclList
 	for (Node* i : node.getChildren()[0]->getChildren())
 	{
+		// Semantic check - Multiple Classes 
+		if (node.m_symbolTable->checkEntryInTable(i->m_symbolEntry))
+		{
+			*m_errors << "ERROR: global - Multiply declared class - " + i->m_symbolEntry->name << std::endl;
+			continue;
+		}
+
 		node.m_symbolTable->appendEntry(i->m_symbolEntry);
 	}
 
@@ -54,11 +61,24 @@ void SymbolTableCreatorVistor::visit(classDecl_Node& node)
 			{
 				for (auto j : i->getChildren())
 				{
-					node.m_symbolTable->appendEntry(j->m_symbolEntry);
+					// Semantic Check - Same Member variable added
+					if (node.m_symbolTable->checkEntryInTable(j->m_symbolEntry))
+					{
+						*m_errors << "ERROR: " + node.token->lexem + " - Multiply declared data member - " + j->m_symbolEntry->name << std::endl;
+					}
+					else
+					{
+						node.m_symbolTable->appendEntry(j->m_symbolEntry);
+					}
 				}
 			}
 			else if (i->getType() == Type::memDeclFunc)
 			{
+				if (node.m_symbolTable->checkEntryInTable(i->m_symbolEntry))
+				{
+					*m_errors << "ERROR: " + node.token->lexem + " - Multiply declared function - " + i->m_symbolEntry->name << std::endl;
+				}
+
 				node.m_symbolTable->appendEntry(i->m_symbolEntry);
 				i->m_symbolTable->parentTable = node.m_symbolTable;
 			}
@@ -70,7 +90,6 @@ void SymbolTableCreatorVistor::visit(classDecl_Node& node)
 	{
 		node.m_symbolTable->appendEntry(node.getChildren()[1]->m_symbolEntry);
 	}
-
 
 }
 
@@ -105,22 +124,42 @@ void SymbolTableCreatorVistor::visit(impleDef_Node& node)
 
 	SymbolTable* classTable = nullptr;
 	std::string className = node.token->lexem;
+	std::vector<Node*> classDecl = classList->getChildren();
+	
+	bool foundClassDef = false;
+
+	// Semantic check - Undefined Class for definition
+	for (auto i : classDecl)
+	{
+		if (i->token->lexem == node.token->lexem) foundClassDef = true;
+	}
+	if (!foundClassDef)
+	{
+		*m_errors << "ERROR: Definition provided for undeclared member function - " + node.token->lexem << std::endl;
+		return;
+	}
 
 	// Get class table 
 	for (auto i : classList->getChildren())
 	{
-		if (i->token->lexem.compare(className) == 0 && !i->m_symbolTable->getEntries().empty())
+		if (i->token->lexem.compare(className) == 0)
 		{
 			classTable = i->m_symbolTable;
 		}
 	}
 
+
 	// All implement functions
 	for (auto i : node.getChildren())
 	{
-		if (i->getType() == Type::funcDef && !i->m_symbolTable->getEntries().empty())
+		if (i->getType() == Type::funcDef)
 		{
-			std::cout << "t";
+			//Semantic Check
+			if (classTable->getEntries().empty())
+			{
+				*m_errors << "ERROR: Definition provided for undeclared member function - " + node.token->lexem << std::endl;
+				return;
+			}
 
 			for (auto j : classTable->getEntries())
 			{
@@ -132,8 +171,8 @@ void SymbolTableCreatorVistor::visit(impleDef_Node& node)
 					}
 				}
 			}
-
 		}
+
 	}
 }
 

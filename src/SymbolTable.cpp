@@ -64,4 +64,14 @@ SymbolTableEntry* SymbolTable::getEntryByKind(Kind kind)
     return nullptr;
 }
 
+bool SymbolTable::checkEntryInTable(SymbolTableEntry* entry)
+{
+    for (auto i : this->entries)
+    {
+        if (i->name.compare(entry->name) == 0 && i->kind == entry->kind) return true;
+    }
+
+    return false;
+}
+
 

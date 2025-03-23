@@ -6,7 +6,6 @@
         table:  POLYNOMIAL::evaluate
  -------------------------------- 
         param: | float | x
-        local: | float | result
  -------------------------------- 
   || class: LINEAR
   inherit: | SHAPE

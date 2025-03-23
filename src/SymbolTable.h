@@ -63,6 +63,7 @@ public:
 	void addAtFront(SymbolTableEntry* entry);
 	SymbolTableEntry* getEntryByNameKind(std::string name, Kind kind);
 	SymbolTableEntry* getEntryByKind(Kind kind);
+	bool checkEntryInTable(SymbolTableEntry* entry);
 
 private:
 	std::string name;

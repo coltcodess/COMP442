@@ -1,0 +1,15 @@
+ || table: global
+ -------------------------------- 
+  || function: bubbleSort
+        local: | int | n
+        local: | int | i
+        local: | int | j
+        local: | int | temp
+ -------------------------------- 
+  || function: printArray
+        local: | int | n
+        local: | int | i
+ -------------------------------- 
+  || function: main
+        local: | int | arr
+ -------------------------------- 
