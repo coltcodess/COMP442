@@ -36,4 +36,7 @@
         local: | float | result
  -------------------------------- 
   || function: main
+        local: | id | f1
+        local: | id | f2
+        local: | int | counter
  -------------------------------- 

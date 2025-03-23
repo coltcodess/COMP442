@@ -132,14 +132,6 @@ void SymbolTableCreatorVistor::visit(impleDef_Node& node)
 		}
 	}
 
-
-
-	
-
-
-
-	
-	node.m_symbolEntry = new SymbolTableEntry("woow", Kind::_function, node.m_symbolTable);
 }
 
 void SymbolTableCreatorVistor::visit(inheritList_Node& node)
@@ -306,6 +298,12 @@ void SymbolTableCreatorVistor::print()
 			{
 
 				*m_output << "  || function: " + i->name << std::endl;
+
+				for (auto j : i->link->getEntries())
+				{
+					*m_output << "        local: | " + j->type + " | " + j->name << std::endl;
+				}
+
 				*m_output << " -------------------------------- " << std::endl;
 			}
 		}
