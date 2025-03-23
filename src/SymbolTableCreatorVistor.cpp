@@ -100,38 +100,41 @@ void SymbolTableCreatorVistor::visit(funcDef_Node& node)
 void SymbolTableCreatorVistor::visit(impleDef_Node& node)
 {
 	Node* prog = node.parent->parent;
-
 	Node* classList = prog->getChild(Type::classDeclList);
 
-	std::string className = node.token->lexem;
 
 	SymbolTable* classTable = nullptr;
-	SymbolTable* funcTable = nullptr;
+	std::string className = node.token->lexem;
 
+	// Get class table 
 	for (auto i : classList->getChildren())
 	{
 		if (i->token->lexem.compare(className) == 0 && !i->m_symbolTable->getEntries().empty())
 		{
 			classTable = i->m_symbolTable;
+		}
+	}
+
+	// All implement functions
+	for (auto i : node.getChildren())
+	{
+		if (i->getType() == Type::funcDef && !i->m_symbolTable->getEntries().empty())
+		{
+			std::cout << "t";
 
 			for (auto j : classTable->getEntries())
 			{
-				if (j->name.compare(node.getChild(Type::funcDef)->token->lexem) == 0)
+				if (i->token->lexem == j->name)
 				{
-					funcTable = j->link;
+					for (auto k : i->m_symbolTable->getEntries())
+					{
+						j->link->appendEntry(k);
+					}
 				}
 			}
+
 		}
 	}
-
-	if (funcTable != nullptr)
-	{
-		for (auto i : node.getChild(Type::funcDef)->m_symbolTable->getEntries())
-		{
-			funcTable->appendEntry(i);
-		}
-	}
-
 }
 
 void SymbolTableCreatorVistor::visit(inheritList_Node& node)

@@ -4,6 +4,14 @@
       | idLit
       | inheritList
       | memDeclList
+        | memDeclFunc
+          | type
+          | idLit
+          | fParamsList
+            | fParam
+              | type
+              | idLit
+          | type
     | classDecl
       | idLit
       | inheritList
@@ -95,6 +103,10 @@
             | idLit
         | type
         | statBlock
+          | varDecl
+            | idLit
+            | type
+            | arraySizeList
           | returnStat
             | intLit
     | impleDef

@@ -1,5 +1,16 @@
 ISA1 -> EPSILON
+visibility -> 'public'
+type -> 'float'
+arraySizes -> EPSILON
+REPTFPARAMS1 -> EPSILON
+fParams -> 'id' ':' type arraySizes REPTFPARAMS1
+type -> 'float'
+returnType -> type
+'function' 'id' '(' fParams ')' '=>' returnType
+funcDec1 -> funcHead
+memberDecl -> funcDec1
 VISMEMBERDECL -> EPSILON
+VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
 classDecl -> 'class' 'id' ISA1 '{' VISMEMBERDECL '}' ';'
 classOrImplOrFunc -> classDecl
 ISA2 -> EPSILON
@@ -117,6 +128,11 @@ fParams -> 'id' ':' type arraySizes REPTFPARAMS1
 type -> 'float'
 returnType -> type
 'function' 'id' '(' fParams ')' '=>' returnType
+type -> 'float'
+arraySizes -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+LOCALVARDECLORSTAT2 -> localVarDecl
 factor -> 'intLit'
 rightRecTerm -> EPSILON
 term -> factor rightRecTerm
@@ -127,6 +143,7 @@ expr -> arithExpr exp2
 statement -> 'return' '(' expr ')' ';'
 LOCALVARDECLORSTAT2 -> statement
 LOCALVARDECLORSTAT2 -> EPSILON
+LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
 LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
 funcBody -> '{' localVarDeclOrStatRep '}'
 funcDef -> funcHead funcBody

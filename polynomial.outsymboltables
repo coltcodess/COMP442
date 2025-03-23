@@ -3,6 +3,11 @@
   || class: POLYNOMIAL
   inherit: | none
  -------------------------------- 
+        table:  POLYNOMIAL::evaluate
+ -------------------------------- 
+        param: | float | x
+        local: | float | result
+ -------------------------------- 
   || class: LINEAR
   inherit: | SHAPE
   data:  | a | float
@@ -17,6 +22,7 @@
         table:  LINEAR::evaluate
  -------------------------------- 
         param: | float | x
+        local: | float | result
  -------------------------------- 
   || class: QUADRATIC
   inherit: | POLYNOMIAL
@@ -29,6 +35,7 @@
         param: | float | B
         param: | float | C
         param: | float | A
+        local: | id | new_function
  -------------------------------- 
         table:  QUADRATIC::evaluate
  -------------------------------- 
