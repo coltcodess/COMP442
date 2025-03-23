@@ -4,6 +4,7 @@ SymbolTableCreatorVistor::SymbolTableCreatorVistor(std::ofstream* output, std::o
 {
 	m_output = output;
 	m_errors = errors;
+	m_global_table = new SymbolTable("global");
 }
 
 void SymbolTableCreatorVistor::visit(Node& node)
@@ -17,12 +18,7 @@ void SymbolTableCreatorVistor::visit(Node& node)
 
 void SymbolTableCreatorVistor::visit(prog_Node& node)
 {
-	node.m_symbolTable = new SymbolTable("global");
-	m_global_table = node.m_symbolTable;
-
-	*m_output << " || table: " + node.m_symbolTable->getName() << std::endl;
-
-	*m_output << " -------------------------------- " << std::endl;
+	node.m_symbolTable = m_global_table;
 
 	// ClassDeclList
 	for (Node* i : node.getChildren()[0]->getChildren())
@@ -38,12 +34,13 @@ void SymbolTableCreatorVistor::visit(prog_Node& node)
 
 }
 
-
 void SymbolTableCreatorVistor::visit(classDecl_Node& node)
 {
 	node.m_symbolTable = new SymbolTable(node.token->lexem);
 
 	std::string name = node.token->lexem;
+
+	node.m_symbolTable->parentTable = m_global_table;
 
 	node.m_symbolEntry = new SymbolTableEntry(name, Kind::_class, node.m_symbolTable);
 	
@@ -102,9 +99,9 @@ void SymbolTableCreatorVistor::visit(funcDef_Node& node)
 
 void SymbolTableCreatorVistor::visit(impleDef_Node& node)
 {
-	
 
 
+	node.m_symbolEntry = new SymbolTableEntry("woow", Kind::_function, node.m_symbolTable);
 }
 
 void SymbolTableCreatorVistor::visit(inheritList_Node& node)
@@ -213,6 +210,10 @@ void SymbolTableCreatorVistor::visit(type_Node& node)
 
 void SymbolTableCreatorVistor::print()
 {
+	*m_output << " || table: " + m_global_table->getName() << std::endl;
+
+	*m_output << " -------------------------------- " << std::endl;
+
 	for (auto i : m_global_table->getEntries())
 	{
 		// Print classes

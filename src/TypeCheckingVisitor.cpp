@@ -18,7 +18,7 @@ void TypeCheckingVisitor::visit(classDecl_Node& node)
 }
 
 void TypeCheckingVisitor::visit(funcDef_Node& node)
-{
+{ 
 }
 
 void TypeCheckingVisitor::visit(impleDef_Node& node)
