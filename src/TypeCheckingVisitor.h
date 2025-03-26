@@ -1,5 +1,11 @@
 #pragma once
-#include "Visitor.h"
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <algorithm>
+#include <vector>
+
+#include "Node.h"
 
 class TypeCheckingVisitor : public Visitor
 {
@@ -20,6 +26,11 @@ public:
 	 void visit(inheritList_Node& node) override;
 
 	 void visit(varDecl_Node& node) override;
+
+	 // Operators
+	 void visit(assignOp_Node& node) override;
+	 void visit(multiOp_Node& node) override;
+
 
 	// Terminals
 	 void visit(idLit_Node& node) override;

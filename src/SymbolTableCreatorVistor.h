@@ -29,6 +29,10 @@ public:
 
 	void visit(varDecl_Node& node) override;
 
+	// Operators
+	void visit(assignOp_Node& node) override;
+	void visit(multiOp_Node& node) override;
+
 	void visit(idLit_Node& node) override;
 	void visit(intLit_Node& node) override;
 	void visit(floatLit_Node& node) override;

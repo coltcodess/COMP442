@@ -115,7 +115,7 @@ private:
 	// Terminals
 	bool assignOp(Node* root);
 	bool sign();
-	bool multOp();
+	bool multOp(Node* node);
 	bool IDORSELF(Node* root);
 	bool addOp();
 	bool relOp();

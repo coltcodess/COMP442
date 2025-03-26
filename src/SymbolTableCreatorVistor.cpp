@@ -272,6 +272,14 @@ void SymbolTableCreatorVistor::visit(varDecl_Node& node)
 
 }
 
+void SymbolTableCreatorVistor::visit(assignOp_Node& node)
+{
+}
+
+void SymbolTableCreatorVistor::visit(multiOp_Node& node)
+{
+}
+
 //////////////////
 // Terminals 
 //////////////////

@@ -185,6 +185,17 @@ public:
 		}
 	};
 
+	void transferChildren(Node* node)
+	{
+		for (auto i : this->getChildren())
+		{
+			i->parent = node;
+			node->addChild(i);
+		}
+
+		this->parent = node->parent;
+	}
+
 
 	const std::string stringType()
 	{
@@ -252,6 +263,8 @@ public:
 			return "relExpr";
 		case Type::relOp:
 			return "relOp";
+		case Type::assignOp:
+			return "assignOp";
 		case Type::ifStat:
 			return "ifStat";
 		case Type::fCall:

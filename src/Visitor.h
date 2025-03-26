@@ -23,6 +23,8 @@ class intLit_Node;
 class floatLit_Node;
 class type_Node;
 class statBlock_Node;
+class assignOp_Node;
+class multiOp_Node;
 
 
 class Visitor
@@ -44,6 +46,10 @@ public:
 	virtual void visit(inheritList_Node& node) = 0;
 
 	virtual void visit(varDecl_Node& node) = 0;
+
+	//Operators
+	virtual void visit(assignOp_Node& node) = 0;
+	virtual void visit(multiOp_Node& node) = 0;
 
 	// Terminals
 	virtual void visit(idLit_Node& node) = 0;

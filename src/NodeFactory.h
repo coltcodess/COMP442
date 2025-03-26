@@ -107,6 +107,8 @@ public:
 			return new dot_Node(t);
 		case dataMem:
 			return new dataMem_Node(t);
+		case assignOp:
+			return new assignOp_Node(t);
 
 
 		default: 

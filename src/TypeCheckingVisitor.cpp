@@ -1,5 +1,6 @@
 #include "TypeCheckingVisitor.h"
 
+
 TypeCheckingVisitor::TypeCheckingVisitor(std::ofstream* errors)
 {
 	m_errors = errors;
@@ -49,6 +50,18 @@ void TypeCheckingVisitor::visit(varDecl_Node& node)
 {
 }
 
+void TypeCheckingVisitor::visit(assignOp_Node& node)
+{
+
+
+}
+
+void TypeCheckingVisitor::visit(multiOp_Node& node)
+{
+	std::string leftOperandType = node.getChildren()[0]->token->convertTokenTypeToString();
+
+}
+
 void TypeCheckingVisitor::visit(idLit_Node& node)
 {
 }
@@ -63,4 +76,5 @@ void TypeCheckingVisitor::visit(floatLit_Node& node)
 
 void TypeCheckingVisitor::visit(type_Node& node)
 {
+
 }

@@ -120,17 +120,17 @@
             | idLit
             | type
             | arraySizeList
-          | assignStat
+          | assignOp
             | idLit
             | idLit
-          | assignStat
+          | assignOp
             | idLit
             | addOp
               | multiOp
                 | idLit
                 | idLit
               | idLit
-          | assignStat
+          | assignOp
             | idLit
             | addOp
               | multiOp
@@ -158,21 +158,21 @@
             | idLit
             | type
             | arraySizeList
-          | assignStat
+          | dot
             | idLit
-            | dot
-              | dataMem
+            | assignOp
+              | idLit
+              | idLit
+          | dot
             | idLit
-          | assignStat
+            | assignOp
+              | idLit
+              | idLit
+          | dot
             | idLit
-            | dot
-              | dataMem
-            | idLit
-          | assignStat
-            | idLit
-            | dot
-              | dataMem
-            | idLit
+            | assignOp
+              | idLit
+              | idLit
           | returnStat
             | idLit
     | impleDef
@@ -193,16 +193,16 @@
             | idLit
             | type
             | arraySizeList
-          | assignStat
+          | dot
             | idLit
-            | dot
-              | dataMem
+            | assignOp
+              | idLit
+              | idLit
+          | dot
             | idLit
-          | assignStat
-            | idLit
-            | dot
-              | dataMem
-            | idLit
+            | assignOp
+              | idLit
+              | idLit
           | returnStat
             | idLit
       | funcDef
@@ -218,10 +218,10 @@
             | idLit
             | type
             | arraySizeList
-          | assignStat
+          | assignOp
             | idLit
             | floatLit
-          | assignStat
+          | assignOp
             | idLit
             | addOp
               | multiOp
@@ -248,14 +248,14 @@
           | idLit
           | type
           | arraySizeList
-        | assignStat
+        | assignOp
           | idLit
           | idLit
             | dot
               | fCall
                 | intLit
                 | floatLit
-        | assignStat
+        | assignOp
           | idLit
           | idLit
             | dot
@@ -263,13 +263,11 @@
                 | floatLit
                 | floatLit
                 | floatLit
-        | assignStat
+        | assignOp
           | idLit
           | intLit
         | fCall
           | idLit
-          | dot
-            | dataMem
           | aParams
             | idLit
         | whileStat
