@@ -6,6 +6,7 @@
 #include "NodeFactory.h"
 #include "SymbolTableCreatorVistor.h"
 #include "TypeCheckingVisitor.h"
+#include "CodeGeneratorVisitor.h"
 
 const std::string SOURCE_FILE_TYPE = ".src";
 const std::string OUTPUT_TOKEN_FILE_TYPE = ".outlextokens";
@@ -61,8 +62,14 @@ int main()
     std::ofstream* outSemErrors = new std::ofstream(fileInput + ".outsemanticerrors", std::ofstream::out);
     std::ofstream* outSymbolTables = new std::ofstream(fileInput + ".outsymboltables", std::ofstream::out);
 
+    // Assignment 5 - Code Generation
+    std::ofstream* outCodeGeneration = new std::ofstream(fileInput + ".moon", std::ofstream::out);
+
     SymbolTableCreatorVistor symbolTableCreatorVistor(outSymbolTables, outSemErrors);
     TypeCheckingVisitor typeCheckingVisitor(outSemErrors);
+
+    // Assignment 5
+    CodeGeneratorVisitor codeGeneratorVisitor(outCodeGeneration);
 
     Node* astRoot = parser->getASTroot();
 
@@ -72,6 +79,9 @@ int main()
 
     // Type checking visitor
     astRoot->accept(typeCheckingVisitor);
+
+    //Code Generation
+    astRoot->accept(codeGeneratorVisitor);
 
 
     

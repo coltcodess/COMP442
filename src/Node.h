@@ -78,6 +78,26 @@ public:
 
 /////////////////////////////////////////////////////////////////////
 
+class assignStat_Node : public Node
+{
+public:
+	assignStat_Node(Type t) : Node(t)
+	{ }
+
+	virtual ~assignStat_Node() {};
+
+	void accept(Visitor& visitor) override {
+
+		for (Node* child : this->getChildren())
+		{
+			child->accept(visitor);
+		}
+		visitor.visit(*this);
+	};
+};
+
+/////////////////////////////////////////////////////////////////////
+
 class implDefList_Node : public Node
 {
 public:

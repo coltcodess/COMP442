@@ -392,3 +392,7 @@ void SymbolTableCreatorVistor::print()
 
 }
 
+void SymbolTableCreatorVistor::visit(assignStat_Node& node)
+{
+}
+

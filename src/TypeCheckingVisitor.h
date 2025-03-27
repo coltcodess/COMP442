@@ -42,5 +42,9 @@ private:
     std::ofstream* m_errors;
 
 
+
+	// Inherited via Visitor
+	virtual void visit(assignStat_Node& node) override;
+
 };
 

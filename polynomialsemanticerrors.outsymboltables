@@ -5,11 +5,9 @@
  -------------------------------- 
         table:  POLYNOMIAL::evaluate
  -------------------------------- 
-        param: | float | x
  -------------------------------- 
         table:  POLYNOMIAL::evaluate2
  -------------------------------- 
-        param: | float | x
  -------------------------------- 
   || class: LINEAR
   inherit: | POLYNOMIAL
@@ -18,14 +16,13 @@
  -------------------------------- 
         table:  LINEAR::build
  -------------------------------- 
+        local: | id | new_functiontion
         param: | float | B
         param: | float | A
-        local: | id | new_functiontion
  -------------------------------- 
         table:  LINEAR::evaluate
  -------------------------------- 
         param: | float | x
-        local: | float | result
  -------------------------------- 
   || class: QUADRATIC
   inherit: | POLYNOMIAL
@@ -35,15 +32,14 @@
  -------------------------------- 
         table:  QUADRATIC::build
  -------------------------------- 
+        local: | id | new_functiontion
         param: | float | B
         param: | float | C
         param: | float | A
-        local: | id | new_functiontion
  -------------------------------- 
         table:  QUADRATIC::evaluate
  -------------------------------- 
         param: | float | x
-        local: | float | result
  -------------------------------- 
   || class: C
   inherit: | E
@@ -56,14 +52,6 @@
   || class: E
   inherit: | D
   data:  | c | int
- -------------------------------- 
-  || function: f
- -------------------------------- 
-  || function: f
- -------------------------------- 
-  || function: f
- -------------------------------- 
-  || function: f3
  -------------------------------- 
   || function: main
  -------------------------------- 

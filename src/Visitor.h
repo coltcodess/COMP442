@@ -14,7 +14,7 @@ class inheritList_Node;
 class memDeclAttrib_Node;
 class memDeclFunc_Node;
 class fParam_Node;
-
+class assignStat_Node;
 
 class varDecl_Node;
 
@@ -46,6 +46,8 @@ public:
 	virtual void visit(inheritList_Node& node) = 0;
 
 	virtual void visit(varDecl_Node& node) = 0;
+
+	virtual void visit(assignStat_Node& node) = 0;
 
 	//Operators
 	virtual void visit(assignOp_Node& node) = 0;

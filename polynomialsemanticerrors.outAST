@@ -183,14 +183,12 @@
             | idLit
             | type
             | arraySizeList
-          | fCall
+          | dot
             | idLit
-            | dot
-              | dataMem
-            | dot
-              | dataMem
-            | aParams
+            | fCall
               | idLit
+              | aParams
+                | idLit
       | funcDef
         | type
         | idLit
@@ -199,15 +197,13 @@
             | type
             | idLit
         | type
-        | statBlock
+        | fCall
           | varDecl
             | idLit
             | type
             | arraySizeList
-          | fCall
+          | aParams
             | idLit
-            | aParams
-              | idLit
     | impleDef
       | idLit
       | funcDef
@@ -218,15 +214,13 @@
             | type
             | idLit
         | type
-        | statBlock
+        | fCall
           | varDecl
             | idLit
             | type
             | arraySizeList
-          | fCall
+          | aParams
             | idLit
-            | aParams
-              | idLit
       | funcDef
         | type
         | idLit
@@ -246,16 +240,14 @@
             | idLit
             | type
             | arraySizeList
-          | fCall
+          | dot
             | idLit
             | dot
-              | dataMem
-            | dot
-              | dataMem
-            | dot
-              | dataMem
-            | aParams
-              | intLit
+              | idLit
+              | fCall
+                | idLit
+                | aParams
+                  | intLit
       | funcDef
         | type
         | idLit
@@ -275,16 +267,14 @@
             | idLit
             | type
             | arraySizeList
-          | fCall
+          | dot
             | idLit
             | dot
-              | dataMem
-            | dot
-              | dataMem
-            | dot
-              | dataMem
-            | aParams
               | idLit
+              | fCall
+                | idLit
+                | aParams
+                  | idLit
   | funcDefList
     | funcDef
       | idLit

@@ -5,7 +5,7 @@ class POLYNOMIAL {
 };
 class POLYNOMIAL {                                                        // 8.1
 	public function evaluate(x: float) => float;                        
-        public function evaluate(x: int) => integer;                      // 9.2
+    public function evaluate(x: int) => integer;                      // 9.2
 };
 class LINEAR isa POLYNOMIAL {
 	private attribute a: float;

@@ -78,3 +78,7 @@ void TypeCheckingVisitor::visit(type_Node& node)
 {
 
 }
+
+void TypeCheckingVisitor::visit(assignStat_Node& node)
+{
+}

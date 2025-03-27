@@ -79,6 +79,12 @@ public:
 	SymbolTable* m_symbolTable = nullptr;
 	SymbolTableEntry* m_symbolEntry = nullptr;
 
+	std::string moonVarName;
+
+	std::string localRegister = "";
+	std::string leftChildRegister = "";
+	std::string rightChildRegister = "";
+
 	// Constructors 
 	Node(Type t) : m_type(t)
 	{	};
