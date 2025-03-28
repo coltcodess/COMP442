@@ -67,7 +67,7 @@ private:
 	bool FUNCALLORASSIGN4(Node& child, Node* root);
 	bool variable(Node* root);
 	bool variable2(Node* root);
-	bool reptVariable(Node* root);
+	bool reptVariable(Node& child, Node* root);
 	bool varIdNest(Node* root);
 	bool varIdNest2(Node* root);
 

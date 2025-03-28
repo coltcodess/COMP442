@@ -821,7 +821,7 @@ bool Parser::FUNCALLORASSIGN2(Node& child, Node* root)
 
 	if (m_lookAheadToken->type == OPENSQBR || m_lookAheadToken->type == DOT || m_lookAheadToken->type == ASSIGN)
 	{
-		if (indices(root) && FUNCALLORASSIGN3(child, root))
+		if (indices(&child) && FUNCALLORASSIGN3(child, root))
 		{
 			*m_derivationFile << "FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3\n";
 			return true;
@@ -1266,10 +1266,14 @@ bool Parser::factor2(Node* root)
 
 	if (!skipErrors(true, first, follow)) return false;
 
+
 	if (m_lookAheadToken->type == OPENSQBR)
 	{
+
+
 		if (indices(root))
 		{
+
 			*m_derivationFile << "factor2 -> indice\n";
 			return true;
 		}
@@ -1318,10 +1322,13 @@ bool Parser::indices(Node* root)
 
 	if (!skipErrors(true, first, follow)) return false;
 
+	Node* indice_node = m_nodeFactory->makeNode(Type::arraySizeList);
+
 	if (m_lookAheadToken->type == OPENSQBR)
 	{
-		if (indice(root) && indices(root))
+		if (indice(indice_node) && indices(indice_node))
 		{
+			root->addChild(indice_node);
 			*m_derivationFile << "indices -> indice indices\n";
 			return true;
 		}
@@ -1390,10 +1397,15 @@ bool Parser::variable2(Node* root)
 
 	if (!skipErrors(true, first, follow)) return false;
 
+
 	if (m_lookAheadToken->type == OPENSQBR || m_lookAheadToken->type == DOT)
 	{
-		if (indices(root) && reptVariable(root))
+		Node* indices_node = m_nodeFactory->makeNode(Type::arraySizeList);
+		Node* reptVariable_Node = m_nodeFactory->makeNode();
+
+		if (indices(indices_node) && reptVariable(*indices_node, reptVariable_Node))
 		{
+			root->addChild(reptVariable_Node);
 			*m_derivationFile << "variable2 -> indices reptVariable\n";
 			return true;
 		}
@@ -1416,17 +1428,23 @@ bool Parser::variable2(Node* root)
 	else return false;
 }
 
-bool Parser::reptVariable(Node* root)
+bool Parser::reptVariable(Node& child, Node* root)
 {
 	std::vector<TokenType> first = { DOT };
 	std::vector<TokenType> follow = { CLOSEPAR };
 
 	if (!skipErrors(true, first, follow)) return false;
 
+
+
 	if (m_lookAheadToken->type == DOT)
 	{
-		if (varIdNest(root) && reptVariable(root))
+		Node* varIdNest_Node = m_nodeFactory->makeNode();
+		Node* reptVariable_Node = m_nodeFactory->makeNode();
+
+		if (varIdNest(varIdNest_Node) && reptVariable(*varIdNest_Node, reptVariable_Node))
 		{
+			root->addChild(reptVariable_Node);
 			*m_derivationFile << "reptVariable -> varIdNest reptVariable\n";
 			return true;
 		}
@@ -1434,6 +1452,7 @@ bool Parser::reptVariable(Node* root)
 	}
 	else if (tokenInFollowSet(follow))
 	{
+		*root = child;
 		*m_derivationFile << "reptVariable -> EPSILON\n";
 		return true;
 	}
@@ -1861,7 +1880,6 @@ bool Parser::assignOp(Node* root)
 	{
 		if (match(ASSIGN))
 		{
-
 			*m_derivationFile << "assignOp -> :=";
 			return true;
 		}

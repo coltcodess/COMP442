@@ -29,16 +29,16 @@
           | idLit
           | type
           | arraySizeList
-        | assignStat
+        | assignOp
           | idLit
           | idLit
-        | assignStat
-          | idLit
-          | intLit
-        | assignStat
+        | assignOp
           | idLit
           | intLit
-        | assignStat
+        | assignOp
+          | idLit
+          | intLit
+        | assignOp
           | idLit
           | intLit
         | whileStat
@@ -63,36 +63,42 @@
                   | relExpr
                     | relOp
                       | idLit
-                        | idLit
-                      | idLit
-                        | addOp
+                        | arraySizeList
                           | idLit
-                          | intLit
+                      | idLit
+                        | arraySizeList
+                          | addOp
+                            | idLit
+                            | intLit
                   | statBlock
-                    | assignStat
+                    | assignOp
                       | idLit
                       | idLit
-                        | idLit
-                    | assignStat
-                      | idLit
-                      | idLit
-                      | idLit
-                        | addOp
+                        | arraySizeList
                           | idLit
-                          | intLit
-                    | assignStat
+                    | assignOp
                       | idLit
-                      | addOp
-                        | idLit
-                        | intLit
+                        | arraySizeList
+                          | idLit
+                      | idLit
+                        | arraySizeList
+                          | addOp
+                            | idLit
+                            | intLit
+                    | assignOp
+                      | idLit
+                        | arraySizeList
+                          | addOp
+                            | idLit
+                            | intLit
                       | idLit
                   | statBlock
-                | assignStat
+                | assignOp
                   | idLit
                   | addOp
                     | idLit
                     | intLit
-            | assignStat
+            | assignOp
               | idLit
               | addOp
                 | idLit
@@ -116,10 +122,10 @@
           | idLit
           | type
           | arraySizeList
-        | assignStat
+        | assignOp
           | idLit
           | idLit
-        | assignStat
+        | assignOp
           | idLit
           | intLit
         | whileStat
@@ -130,8 +136,9 @@
           | statBlock
             | writeStat
               | idLit
-                | idLit
-            | assignStat
+                | arraySizeList
+                  | idLit
+            | assignOp
               | idLit
               | addOp
                 | idLit
@@ -146,31 +153,38 @@
           | type
           | arraySizeList
             | intLit
-        | assignStat
+        | assignOp
           | idLit
+            | arraySizeList
+              | intLit
           | intLit
-          | intLit
-        | assignStat
+        | assignOp
           | idLit
+            | arraySizeList
+              | intLit
           | intLit
-          | intLit
-        | assignStat
+        | assignOp
           | idLit
+            | arraySizeList
+              | intLit
           | intLit
-          | intLit
-        | assignStat
+        | assignOp
           | idLit
+            | arraySizeList
+              | intLit
           | intLit
-          | intLit
-        | assignStat
+        | assignOp
           | idLit
+            | arraySizeList
+              | intLit
           | intLit
-          | intLit
-        | assignStat
+        | assignOp
           | idLit
+            | arraySizeList
+              | intLit
           | intLit
-          | intLit
-        | assignStat
+        | assignOp
           | idLit
-          | intLit
+            | arraySizeList
+              | intLit
           | intLit
