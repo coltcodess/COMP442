@@ -23,20 +23,26 @@ void CodeGeneratorVisitor::visit(Node& node)
 
 void CodeGeneratorVisitor::visit(prog_Node& node)
 {
+
+
 	*m_output << moonExecCode + moonDataCode;
+
 
 }
 
 void CodeGeneratorVisitor::visit(classDecl_Node& node)
 {
+
 }
 
 void CodeGeneratorVisitor::visit(funcDef_Node& node)
 {
+
 }
 
 void CodeGeneratorVisitor::visit(impleDef_Node& node)
 {
+
 }
 
 void CodeGeneratorVisitor::visit(memDeclAttrib_Node& node)
@@ -110,6 +116,31 @@ void CodeGeneratorVisitor::visit(assignOp_Node& node)
 
 void CodeGeneratorVisitor::visit(multiOp_Node& node)
 {
+	for (Node* child : node.getChildren())
+	{
+		child->accept(*this);
+	}
+
+	node.localRegister = this->registerPool.back();
+	this->registerPool.pop_back();
+
+	node.leftChildRegister = this->registerPool.back();
+	this->registerPool.pop_back();
+
+	node.rightChildRegister = this->registerPool.back();
+	this->registerPool.pop_back();
+
+	node.moonVarName = this->getNewTempVarName();
+
+	moonExecCode += "           lw " + node.leftChildRegister + node.getChildren()[0]->moonVarName + "(r0)\n";
+	moonExecCode += "           lw " + node.rightChildRegister + node.getChildren()[1]->moonVarName + "(r0)\n";
+	moonExecCode += "           mul " + node.localRegister + "," + node.leftChildRegister + "," + node.rightChildRegister +"\n";
+
+
+	// Clean up registers
+	this->registerPool.push_back(node.leftChildRegister);
+	this->registerPool.push_back(node.rightChildRegister);
+	this->registerPool.push_back(node.localRegister);
 }
 
 void CodeGeneratorVisitor::visit(idLit_Node& node)

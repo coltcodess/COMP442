@@ -1050,7 +1050,7 @@ bool Parser::arithExpr(Node* root)
 	if (!skipErrors(false, first, follow)) return false;
 
 	Node* term_Node = m_nodeFactory->makeNode();
-	Node* RIGHTRECARITHEXPR_Node = m_nodeFactory->makeNode();
+	Node* RIGHTRECARITHEXPR_Node = m_nodeFactory->makeNode(Type::addOp);
 
 	if (m_lookAheadToken->type == OPENPAR || m_lookAheadToken->type == TokenType::floatnum
 		|| m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::intnum
@@ -1078,11 +1078,10 @@ bool Parser::RIGHTRECARITHEXPR(Node& child, Node* root)
 
 	if (m_lookAheadToken->type == PLUS || m_lookAheadToken->type == MINUS || m_lookAheadToken->type == OR)
 	{
-		root->setType(Type::addOp);
 		root->addChild(&child);
 		
 		Node* term_Node = m_nodeFactory->makeNode();
-		Node* RIGHTRECARITHEXPR_Node = m_nodeFactory->makeNode();
+		Node* RIGHTRECARITHEXPR_Node = m_nodeFactory->makeNode(Type::addOp);
 
 		if (addOp() && term(*term_Node) && RIGHTRECARITHEXPR(*term_Node, RIGHTRECARITHEXPR_Node))
 		{
@@ -1139,7 +1138,7 @@ bool Parser::term(Node& node)
 	if (!skipErrors(false, first, follow)) return false;
 
 	Node* factor_Node = m_nodeFactory->makeNode();
-	Node* rightRecTerm_Node = m_nodeFactory->makeNode();
+	Node* rightRecTerm_Node = m_nodeFactory->makeNode(Type::multiOp);
 
 	if (m_lookAheadToken->type == OPENPAR 
 		|| m_lookAheadToken->type == TokenType::floatnum
@@ -1171,11 +1170,10 @@ bool Parser::rightRecTerm(Node& child, Node* root)
 
 	if (m_lookAheadToken->type == MULTI || m_lookAheadToken->type == DIV || m_lookAheadToken->type == AND)
 	{
-		root->setType(Type::multiOp);
 		root->addChild(&child);
 
 		Node* factor_Node = m_nodeFactory->makeNode();
-		Node* rightRecTerm_Node = m_nodeFactory->makeNode();
+		Node* rightRecTerm_Node = m_nodeFactory->makeNode(Type::multiOp);
 
 		if (multOp(factor_Node) && factor(factor_Node) && rightRecTerm(*factor_Node, rightRecTerm_Node))
 		{
