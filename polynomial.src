@@ -1,6 +1,6 @@
  // ====== struct declarations ====== //
 class POLYNOMIAL {
-	
+	public function evaluate(x: float) => float; 
 };
 
 class LINEAR isa POLYNOMIAL, SHAPE {
@@ -82,6 +82,7 @@ function main() => void
     write(f2.evaluate(counter));
   };
 }
+
 /*
     classes
     --------------------------------------

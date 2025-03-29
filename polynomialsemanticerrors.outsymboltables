@@ -1,0 +1,57 @@
+ || table: global
+ -------------------------------- 
+  || class: POLYNOMIAL
+  inherit: | none
+ -------------------------------- 
+        table:  POLYNOMIAL::evaluate
+ -------------------------------- 
+ -------------------------------- 
+        table:  POLYNOMIAL::evaluate2
+ -------------------------------- 
+ -------------------------------- 
+  || class: LINEAR
+  inherit: | POLYNOMIAL
+  data:  | a | float
+  data:  | b | float
+ -------------------------------- 
+        table:  LINEAR::build
+ -------------------------------- 
+        local: | id | new_functiontion
+        param: | float | B
+        param: | float | A
+ -------------------------------- 
+        table:  LINEAR::evaluate
+ -------------------------------- 
+        param: | float | x
+ -------------------------------- 
+  || class: QUADRATIC
+  inherit: | POLYNOMIAL
+  data:  | a | float
+  data:  | b | float
+  data:  | c | float
+ -------------------------------- 
+        table:  QUADRATIC::build
+ -------------------------------- 
+        local: | id | new_functiontion
+        param: | float | B
+        param: | float | C
+        param: | float | A
+ -------------------------------- 
+        table:  QUADRATIC::evaluate
+ -------------------------------- 
+        param: | float | x
+ -------------------------------- 
+  || class: C
+  inherit: | E
+  data:  | a | int
+ -------------------------------- 
+  || class: D
+  inherit: | C
+  data:  | b | int
+ -------------------------------- 
+  || class: E
+  inherit: | D
+  data:  | c | int
+ -------------------------------- 
+  || function: main
+ -------------------------------- 

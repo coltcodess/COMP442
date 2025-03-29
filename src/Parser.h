@@ -15,6 +15,7 @@ public:
 	Parser(const std::string fileName, Lexer& lexer);
 	~Parser();
 	bool parse();
+	Node* getASTroot();
 
 private:
 	bool match(TokenType type);
@@ -36,6 +37,7 @@ private:
 	std::ofstream* m_ASTFile;
 
 	std::ofstream* astFile;
+
 	bool skipErrors(bool containsESPILON, std::vector<TokenType> first, std::vector<TokenType> follow);
 
 	// Non Terminals
@@ -65,7 +67,7 @@ private:
 	bool FUNCALLORASSIGN4(Node& child, Node* root);
 	bool variable(Node* root);
 	bool variable2(Node* root);
-	bool reptVariable(Node* root);
+	bool reptVariable(Node& child, Node* root);
 	bool varIdNest(Node* root);
 	bool varIdNest2(Node* root);
 
@@ -113,11 +115,11 @@ private:
 	// Terminals
 	bool assignOp(Node* root);
 	bool sign();
-	bool multOp();
-	bool IDORSELF();
+	bool multOp(Node* node);
+	bool IDORSELF(Node* root);
 	bool addOp();
 	bool relOp();
-	bool type();
+	bool type(Node* root);
 	
 	// Write AST to file
 	void writeAST(Node* root, int level);
@@ -127,6 +129,7 @@ private:
 
 	bool tokenInFollowSet(std::vector<TokenType> _follow);
 	bool tokenInFirstSet(std::vector<TokenType> _first);
+
 
 };
 

@@ -1,0 +1,3 @@
+ERROR: POLYNOMIAL - Multiply declared function with same parameters - evaluate
+ERROR: LINEAR - Multiply declared data member - b
+ERROR: global - Multiply declared class - POLYNOMIAL

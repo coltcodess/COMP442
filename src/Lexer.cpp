@@ -59,6 +59,12 @@ bool Lexer::isFinished()
     return m_tokenIndex > m_tokens.size()-1;
 }
 
+Token* Lexer::peekAheadToken()
+{
+    int temp = m_tokenIndex;
+    return m_tokens[temp];
+}
+
 bool Lexer::isDigit(char chr)
 {
     return (chr >= '0' && chr <= '9');

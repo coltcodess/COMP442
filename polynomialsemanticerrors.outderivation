@@ -9,12 +9,48 @@ returnType -> type
 'function' 'id' '(' fParams ')' '=>' returnType
 funcDec1 -> funcHead
 memberDecl -> funcDec1
+visibility -> 'public'
+type -> 'float'
+arraySizes -> EPSILON
+REPTFPARAMS1 -> EPSILON
+fParams -> 'id' ':' type arraySizes REPTFPARAMS1
+type -> 'float'
+returnType -> type
+'function' 'id' '(' fParams ')' '=>' returnType
+funcDec1 -> funcHead
+memberDecl -> funcDec1
 VISMEMBERDECL -> EPSILON
+VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
+VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
+classDecl -> 'class' 'id' ISA1 '{' VISMEMBERDECL '}' ';'
+classOrImplOrFunc -> classDecl
+ISA1 -> EPSILON
+visibility -> 'public'
+type -> 'float'
+arraySizes -> EPSILON
+REPTFPARAMS1 -> EPSILON
+fParams -> 'id' ':' type arraySizes REPTFPARAMS1
+type -> 'float'
+returnType -> type
+'function' 'id' '(' fParams ')' '=>' returnType
+funcDec1 -> funcHead
+memberDecl -> funcDec1
+visibility -> 'public'
+type -> 'int'
+arraySizes -> EPSILON
+REPTFPARAMS1 -> EPSILON
+fParams -> 'id' ':' type arraySizes REPTFPARAMS1
+type -> 'id'
+returnType -> type
+'function' 'id' '(' fParams ')' '=>' returnType
+funcDec1 -> funcHead
+memberDecl -> funcDec1
+VISMEMBERDECL -> EPSILON
+VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
 VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
 classDecl -> 'class' 'id' ISA1 '{' VISMEMBERDECL '}' ';'
 classOrImplOrFunc -> classDecl
 ISA2 -> EPSILON
-ISA2 -> ',' 'id' ISA2
 ISA1 -> 'isa' 'id' ISA2
 visibility -> 'private'
 type -> 'float'
@@ -24,6 +60,12 @@ attributeDecl -> 'attribute' varDecl
 memberDecl -> attributeDec1
 visibility -> 'private'
 type -> 'float'
+arraySizes -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+attributeDecl -> 'attribute' varDecl
+memberDecl -> attributeDec1
+visibility -> 'private'
+type -> 'int'
 arraySizes -> EPSILON
 varDec1 -> 'id' ':' type arraySize ';'
 attributeDecl -> 'attribute' varDecl
@@ -57,19 +99,14 @@ VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
 VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
 VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
 VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
+VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
 classDecl -> 'class' 'id' ISA1 '{' VISMEMBERDECL '}' ';'
 classOrImplOrFunc -> classDecl
 ISA2 -> EPSILON
 ISA1 -> 'isa' 'id' ISA2
 visibility -> 'private'
 type -> 'float'
-arraySize1 -> 'intnum' ']'
-arraySize -> '[' arraySize2
-arraySize1 -> 'intnum' ']'
-arraySize -> '[' arraySize2
 arraySizes -> EPSILON
-arraySizes -> arraySize arraySizes
-arraySizes -> arraySize arraySizes
 varDec1 -> 'id' ':' type arraySize ';'
 attributeDecl -> 'attribute' varDecl
 memberDecl -> attributeDec1
@@ -118,6 +155,42 @@ VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
 VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
 VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
 VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
+VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
+classDecl -> 'class' 'id' ISA1 '{' VISMEMBERDECL '}' ';'
+classOrImplOrFunc -> classDecl
+ISA2 -> EPSILON
+ISA1 -> 'isa' 'id' ISA2
+visibility -> 'private'
+type -> 'int'
+arraySizes -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+attributeDecl -> 'attribute' varDecl
+memberDecl -> attributeDec1
+VISMEMBERDECL -> EPSILON
+VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
+classDecl -> 'class' 'id' ISA1 '{' VISMEMBERDECL '}' ';'
+classOrImplOrFunc -> classDecl
+ISA2 -> EPSILON
+ISA1 -> 'isa' 'id' ISA2
+visibility -> 'private'
+type -> 'int'
+arraySizes -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+attributeDecl -> 'attribute' varDecl
+memberDecl -> attributeDec1
+VISMEMBERDECL -> EPSILON
+VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
+classDecl -> 'class' 'id' ISA1 '{' VISMEMBERDECL '}' ';'
+classOrImplOrFunc -> classDecl
+ISA2 -> EPSILON
+ISA1 -> 'isa' 'id' ISA2
+visibility -> 'private'
+type -> 'int'
+arraySizes -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+attributeDecl -> 'attribute' varDecl
+memberDecl -> attributeDec1
+VISMEMBERDECL -> EPSILON
 VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
 classDecl -> 'class' 'id' ISA1 '{' VISMEMBERDECL '}' ';'
 classOrImplOrFunc -> classDecl
@@ -147,48 +220,23 @@ implDef -> 'implementation' 'id' '{' funcDef '}'
 classOrImplOrFunc -> implDef
 type -> 'float'
 arraySizes -> EPSILON
-REPTFPARAMS1 -> EPSILON
-fParams -> 'id' ':' type arraySizes REPTFPARAMS1
 type -> 'float'
+arraySizes -> EPSILON
+fParasTail -> ',' 'id' ':' type arraySizes
+REPTFPARAMS1 -> EPSILON
+REPTFPARAMS1 -> fParamsTail REPTFPARAMS1
+fParams -> 'id' ':' type arraySizes REPTFPARAMS1
+type -> 'id'
 returnType -> type
 'function' 'id' '(' fParams ')' '=>' returnType
-type -> 'float'
+type -> 'id'
 arraySizes -> EPSILON
 varDec1 -> 'id' ':' type arraySize ';'
 localVarDecl -> 'local' varDecl ';'
 LOCALVARDECLORSTAT2 -> localVarDecl
 IDORSELF -> 'id'
 indices -> EPSILON
-assignOp -> :=IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-arithExpr -> term RIGHTRECARITHEXPR
-expr2 -> EPSILON
-expr -> arithExpr exp2
-FUNCALLORASSIGN3 -> assignOp expr
-FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
-FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
-statement -> FUNCALLORASSIGN ';'
-LOCALVARDECLORSTAT2 -> statement
-IDORSELF -> 'id'
 indices -> EPSILON
-assignOp -> :=IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-sign -> '*'
-IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-rightRecTerm -> multiOp factor rightRecTerm
-term -> factor rightRecTerm
-addOp -> '+'
 IDORSELF -> 'id'
 factor2 -> EPSILON
 REPTVARIABLEORFUNCTIONCALL -> EPSILON
@@ -196,146 +244,38 @@ factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
 rightRecTerm -> EPSILON
 term -> factor rightRecTerm
 RIGHTRECARITHEXPR -> EPSILON
-RIGHTRECARITHEXPR -> addOp term arithExpr2
 arithExpr -> term RIGHTRECARITHEXPR
 expr2 -> EPSILON
 expr -> arithExpr exp2
-FUNCALLORASSIGN3 -> assignOp expr
+REPTAPARAMS1 -> EPSILON
+aParams -> expr REPTAPARAMS1
+FUNCALLORASSIGN4 -> 'EPSILON
+FUNCALLORASSIGN2 -> '(' aParams ')' FUNCALLORASSIGN4
+FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2
+FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
+FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2
 FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
 FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
 statement -> FUNCALLORASSIGN ';'
-LOCALVARDECLORSTAT2 -> statement
-IDORSELF -> 'id'
-indices -> EPSILON
-assignOp -> :=IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-sign -> '*'
-IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-rightRecTerm -> multiOp factor rightRecTerm
-term -> factor rightRecTerm
-addOp -> '+'
-IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-RIGHTRECARITHEXPR -> addOp term arithExpr2
-arithExpr -> term RIGHTRECARITHEXPR
-expr2 -> EPSILON
-expr -> arithExpr exp2
-FUNCALLORASSIGN3 -> assignOp expr
-FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
-FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
-statement -> FUNCALLORASSIGN ';'
-LOCALVARDECLORSTAT2 -> statement
-IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-arithExpr -> term RIGHTRECARITHEXPR
-expr2 -> EPSILON
-expr -> arithExpr exp2
-statement -> 'return' '(' expr ')' ';'
 LOCALVARDECLORSTAT2 -> statement
 LOCALVARDECLORSTAT2 -> EPSILON
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
 LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
 LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
 funcBody -> '{' localVarDeclOrStatRep '}'
 funcDef -> funcHead funcBody
 type -> 'float'
 arraySizes -> EPSILON
-type -> 'float'
-arraySizes -> EPSILON
-fParasTail -> ',' 'id' ':' type arraySizes
-type -> 'float'
-arraySizes -> EPSILON
-fParasTail -> ',' 'id' ':' type arraySizes
 REPTFPARAMS1 -> EPSILON
-REPTFPARAMS1 -> fParamsTail REPTFPARAMS1
-REPTFPARAMS1 -> fParamsTail REPTFPARAMS1
 fParams -> 'id' ':' type arraySizes REPTFPARAMS1
-type -> 'id'
+type -> 'float'
 returnType -> type
 'function' 'id' '(' fParams ')' '=>' returnType
-type -> 'id'
+type -> 'float'
 arraySizes -> EPSILON
 varDec1 -> 'id' ':' type arraySize ';'
 localVarDecl -> 'local' varDecl ';'
 LOCALVARDECLORSTAT2 -> localVarDecl
 IDORSELF -> 'id'
-indices -> EPSILON
-indices -> EPSILON
-assignOp -> :=IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-arithExpr -> term RIGHTRECARITHEXPR
-expr2 -> EPSILON
-expr -> arithExpr exp2
-FUNCALLORASSIGN3 -> assignOp expr
-FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
-FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2
-FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
-FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
-statement -> FUNCALLORASSIGN ';'
-LOCALVARDECLORSTAT2 -> statement
-IDORSELF -> 'id'
-indices -> EPSILON
-indices -> EPSILON
-assignOp -> :=IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-arithExpr -> term RIGHTRECARITHEXPR
-expr2 -> EPSILON
-expr -> arithExpr exp2
-FUNCALLORASSIGN3 -> assignOp expr
-FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
-FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2
-FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
-FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
-statement -> FUNCALLORASSIGN ';'
-LOCALVARDECLORSTAT2 -> statement
-IDORSELF -> 'id'
-indices -> EPSILON
-indices -> EPSILON
-assignOp -> :=IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-arithExpr -> term RIGHTRECARITHEXPR
-expr2 -> EPSILON
-expr -> arithExpr exp2
-FUNCALLORASSIGN3 -> assignOp expr
-FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
-FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2
-FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
-FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
-statement -> FUNCALLORASSIGN ';'
-LOCALVARDECLORSTAT2 -> statement
 IDORSELF -> 'id'
 factor2 -> EPSILON
 REPTVARIABLEORFUNCTIONCALL -> EPSILON
@@ -346,12 +286,14 @@ RIGHTRECARITHEXPR -> EPSILON
 arithExpr -> term RIGHTRECARITHEXPR
 expr2 -> EPSILON
 expr -> arithExpr exp2
-statement -> 'return' '(' expr ')' ';'
+REPTAPARAMS1 -> EPSILON
+aParams -> expr REPTAPARAMS1
+FUNCALLORASSIGN4 -> 'EPSILON
+FUNCALLORASSIGN2 -> '(' aParams ')' FUNCALLORASSIGN4
+FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
+statement -> FUNCALLORASSIGN ';'
 LOCALVARDECLORSTAT2 -> statement
 LOCALVARDECLORSTAT2 -> EPSILON
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
 LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
 LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
 funcBody -> '{' localVarDeclOrStatRep '}'
@@ -363,10 +305,49 @@ implDef -> 'implementation' 'id' '{' funcDef '}'
 classOrImplOrFunc -> implDef
 type -> 'float'
 arraySizes -> EPSILON
+REPTFPARAMS1 -> EPSILON
+fParams -> 'id' ':' type arraySizes REPTFPARAMS1
+type -> 'float'
+returnType -> type
+'function' 'id' '(' fParams ')' '=>' returnType
+type -> 'float'
+arraySizes -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+LOCALVARDECLORSTAT2 -> localVarDecl
+IDORSELF -> 'id'
+IDORSELF -> 'id'
+factor2 -> EPSILON
+REPTVARIABLEORFUNCTIONCALL -> EPSILON
+factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+RIGHTRECARITHEXPR -> EPSILON
+arithExpr -> term RIGHTRECARITHEXPR
+expr2 -> EPSILON
+expr -> arithExpr exp2
+REPTAPARAMS1 -> EPSILON
+aParams -> expr REPTAPARAMS1
+FUNCALLORASSIGN4 -> 'EPSILON
+FUNCALLORASSIGN2 -> '(' aParams ')' FUNCALLORASSIGN4
+FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
+statement -> FUNCALLORASSIGN ';'
+LOCALVARDECLORSTAT2 -> statement
+LOCALVARDECLORSTAT2 -> EPSILON
+LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
+LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
+funcBody -> '{' localVarDeclOrStatRep '}'
+funcDef -> funcHead funcBody
+type -> 'float'
+arraySizes -> EPSILON
+type -> 'float'
+arraySizes -> EPSILON
+fParasTail -> ',' 'id' ':' type arraySizes
 type -> 'float'
 arraySizes -> EPSILON
 fParasTail -> ',' 'id' ':' type arraySizes
 REPTFPARAMS1 -> EPSILON
+REPTFPARAMS1 -> fParamsTail REPTFPARAMS1
 REPTFPARAMS1 -> fParamsTail REPTFPARAMS1
 fParams -> 'id' ':' type arraySizes REPTFPARAMS1
 type -> 'id'
@@ -380,103 +361,56 @@ LOCALVARDECLORSTAT2 -> localVarDecl
 IDORSELF -> 'id'
 indices -> EPSILON
 indices -> EPSILON
-assignOp -> :=IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
+indices -> EPSILON
+factor -> 'intLit'
 rightRecTerm -> EPSILON
 term -> factor rightRecTerm
 RIGHTRECARITHEXPR -> EPSILON
 arithExpr -> term RIGHTRECARITHEXPR
 expr2 -> EPSILON
 expr -> arithExpr exp2
-FUNCALLORASSIGN3 -> assignOp expr
+REPTAPARAMS1 -> EPSILON
+aParams -> expr REPTAPARAMS1
+FUNCALLORASSIGN4 -> 'EPSILON
+FUNCALLORASSIGN2 -> '(' aParams ')' FUNCALLORASSIGN4
+FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2
+FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
+FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2
 FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
 FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2
 FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
 FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
 statement -> FUNCALLORASSIGN ';'
-LOCALVARDECLORSTAT2 -> statement
-IDORSELF -> 'id'
-indices -> EPSILON
-indices -> EPSILON
-assignOp -> :=IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-arithExpr -> term RIGHTRECARITHEXPR
-expr2 -> EPSILON
-expr -> arithExpr exp2
-FUNCALLORASSIGN3 -> assignOp expr
-FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
-FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2
-FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
-FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
-statement -> FUNCALLORASSIGN ';'
-LOCALVARDECLORSTAT2 -> statement
-IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-arithExpr -> term RIGHTRECARITHEXPR
-expr2 -> EPSILON
-expr -> arithExpr exp2
-statement -> 'return' '(' expr ')' ';'
 LOCALVARDECLORSTAT2 -> statement
 LOCALVARDECLORSTAT2 -> EPSILON
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
 LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
 LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
 funcBody -> '{' localVarDeclOrStatRep '}'
 funcDef -> funcHead funcBody
 type -> 'float'
 arraySizes -> EPSILON
-REPTFPARAMS1 -> EPSILON
-fParams -> 'id' ':' type arraySizes REPTFPARAMS1
 type -> 'float'
+arraySizes -> EPSILON
+fParasTail -> ',' 'id' ':' type arraySizes
+type -> 'float'
+arraySizes -> EPSILON
+fParasTail -> ',' 'id' ':' type arraySizes
+REPTFPARAMS1 -> EPSILON
+REPTFPARAMS1 -> fParamsTail REPTFPARAMS1
+REPTFPARAMS1 -> fParamsTail REPTFPARAMS1
+fParams -> 'id' ':' type arraySizes REPTFPARAMS1
+type -> 'id'
 returnType -> type
 'function' 'id' '(' fParams ')' '=>' returnType
-type -> 'float'
+type -> 'id'
 arraySizes -> EPSILON
 varDec1 -> 'id' ':' type arraySize ';'
 localVarDecl -> 'local' varDecl ';'
 LOCALVARDECLORSTAT2 -> localVarDecl
 IDORSELF -> 'id'
 indices -> EPSILON
-assignOp -> :=factor -> 'floatnum'
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-arithExpr -> term RIGHTRECARITHEXPR
-expr2 -> EPSILON
-expr -> arithExpr exp2
-FUNCALLORASSIGN3 -> assignOp expr
-FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
-FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
-statement -> FUNCALLORASSIGN ';'
-LOCALVARDECLORSTAT2 -> statement
-IDORSELF -> 'id'
 indices -> EPSILON
-assignOp -> :=IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-sign -> '*'
-IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-rightRecTerm -> multiOp factor rightRecTerm
-term -> factor rightRecTerm
-addOp -> '+'
+indices -> EPSILON
 IDORSELF -> 'id'
 factor2 -> EPSILON
 REPTVARIABLEORFUNCTIONCALL -> EPSILON
@@ -484,30 +418,23 @@ factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
 rightRecTerm -> EPSILON
 term -> factor rightRecTerm
 RIGHTRECARITHEXPR -> EPSILON
-RIGHTRECARITHEXPR -> addOp term arithExpr2
 arithExpr -> term RIGHTRECARITHEXPR
 expr2 -> EPSILON
 expr -> arithExpr exp2
-FUNCALLORASSIGN3 -> assignOp expr
+REPTAPARAMS1 -> EPSILON
+aParams -> expr REPTAPARAMS1
+FUNCALLORASSIGN4 -> 'EPSILON
+FUNCALLORASSIGN2 -> '(' aParams ')' FUNCALLORASSIGN4
+FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2
+FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
+FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2
+FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
+FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2
 FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
 FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
 statement -> FUNCALLORASSIGN ';'
-LOCALVARDECLORSTAT2 -> statement
-IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-arithExpr -> term RIGHTRECARITHEXPR
-expr2 -> EPSILON
-expr -> arithExpr exp2
-statement -> 'return' '(' expr ')' ';'
 LOCALVARDECLORSTAT2 -> statement
 LOCALVARDECLORSTAT2 -> EPSILON
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
 LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
 LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
 funcBody -> '{' localVarDeclOrStatRep '}'
@@ -515,8 +442,61 @@ funcDef -> funcHead funcBody
 impleBody -> ESPILON
 impleBody -> funcDef impleBody
 impleBody -> funcDef impleBody
+impleBody -> funcDef impleBody
 implDef -> 'implementation' 'id' '{' funcDef '}'
 classOrImplOrFunc -> implDef
+type -> 'id'
+arraySizes -> EPSILON
+REPTFPARAMS1 -> EPSILON
+fParams -> 'id' ':' type arraySizes REPTFPARAMS1
+returnType -> 'void'
+'function' 'id' '(' fParams ')' '=>' returnType
+LOCALVARDECLORSTAT2 -> EPSILON
+funcBody -> '{' localVarDeclOrStatRep '}'
+funcDef -> funcHead funcBody
+classOrImplOrFunc -> funcDef
+type -> 'id'
+arraySizes -> EPSILON
+REPTFPARAMS1 -> EPSILON
+fParams -> 'id' ':' type arraySizes REPTFPARAMS1
+returnType -> 'void'
+'function' 'id' '(' fParams ')' '=>' returnType
+LOCALVARDECLORSTAT2 -> EPSILON
+funcBody -> '{' localVarDeclOrStatRep '}'
+funcDef -> funcHead funcBody
+classOrImplOrFunc -> funcDef
+type -> 'id'
+arraySizes -> EPSILON
+type -> 'id'
+arraySizes -> EPSILON
+fParasTail -> ',' 'id' ':' type arraySizes
+REPTFPARAMS1 -> EPSILON
+REPTFPARAMS1 -> fParamsTail REPTFPARAMS1
+fParams -> 'id' ':' type arraySizes REPTFPARAMS1
+type -> 'id'
+returnType -> type
+'function' 'id' '(' fParams ')' '=>' returnType
+LOCALVARDECLORSTAT2 -> EPSILON
+funcBody -> '{' localVarDeclOrStatRep '}'
+funcDef -> funcHead funcBody
+classOrImplOrFunc -> funcDef
+type -> 'id'
+arraySize1 -> 'intnum' ']'
+arraySize -> '[' arraySize2
+arraySize1 -> 'intnum' ']'
+arraySize -> '[' arraySize2
+arraySizes -> EPSILON
+arraySizes -> arraySize arraySizes
+arraySizes -> arraySize arraySizes
+REPTFPARAMS1 -> EPSILON
+fParams -> 'id' ':' type arraySizes REPTFPARAMS1
+type -> 'id'
+returnType -> type
+'function' 'id' '(' fParams ')' '=>' returnType
+LOCALVARDECLORSTAT2 -> EPSILON
+funcBody -> '{' localVarDeclOrStatRep '}'
+funcDef -> funcHead funcBody
+classOrImplOrFunc -> funcDef
 fParams -> EPSILON
 returnType -> 'void'
 'function' 'id' '(' fParams ')' '=>' returnType
@@ -530,15 +510,53 @@ arraySizes -> EPSILON
 varDec1 -> 'id' ':' type arraySize ';'
 localVarDecl -> 'local' varDecl ';'
 LOCALVARDECLORSTAT2 -> localVarDecl
-type -> 'int'
+type -> 'id'
 arraySizes -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+LOCALVARDECLORSTAT2 -> localVarDecl
+type -> 'id'
+arraySizes -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+LOCALVARDECLORSTAT2 -> localVarDecl
+type -> 'id'
+arraySizes -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+LOCALVARDECLORSTAT2 -> localVarDecl
+type -> 'float'
+arraySizes -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+LOCALVARDECLORSTAT2 -> localVarDecl
+type -> 'id'
+arraySize1 -> 'intnum' ']'
+arraySize -> '[' arraySize2
+arraySize1 -> 'intnum' ']'
+arraySize -> '[' arraySize2
+arraySizes -> EPSILON
+arraySizes -> arraySize arraySizes
+arraySizes -> arraySize arraySizes
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+LOCALVARDECLORSTAT2 -> localVarDecl
+type -> 'id'
+arraySize1 -> 'intnum' ']'
+arraySize -> '[' arraySize2
+arraySize1 -> 'intnum' ']'
+arraySize -> '[' arraySize2
+arraySize1 -> 'intnum' ']'
+arraySize -> '[' arraySize2
+arraySizes -> EPSILON
+arraySizes -> arraySize arraySizes
+arraySizes -> arraySize arraySizes
+arraySizes -> arraySize arraySizes
 varDec1 -> 'id' ':' type arraySize ';'
 localVarDecl -> 'local' varDecl ';'
 LOCALVARDECLORSTAT2 -> localVarDecl
 IDORSELF -> 'id'
 indices -> EPSILON
-assignOp -> :=IDORSELF -> 'id'
-factor2 -> EPSILON
 factor -> 'intLit'
 rightRecTerm -> EPSILON
 term -> factor rightRecTerm
@@ -557,26 +575,15 @@ aParamsTail -> ',' expr
 REPTAPARAMS1 -> EPSILON
 REPTAPARAMS1 -> aParamsTail REPTAPARAMS1
 aParams -> expr REPTAPARAMS1
-idnest2 -> '(' aParams ')'
-idnest -> '.' 'id' idnest2
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> idnest REPTVARIABLEORFUNCTIONCALL
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-arithExpr -> term RIGHTRECARITHEXPR
-expr2 -> EPSILON
-expr -> arithExpr exp2
-FUNCALLORASSIGN3 -> assignOp expr
+FUNCALLORASSIGN4 -> 'EPSILON
+FUNCALLORASSIGN2 -> '(' aParams ')' FUNCALLORASSIGN4
+FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2
 FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
 FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
 statement -> FUNCALLORASSIGN ';'
 LOCALVARDECLORSTAT2 -> statement
 IDORSELF -> 'id'
 indices -> EPSILON
-assignOp -> :=IDORSELF -> 'id'
-factor2 -> EPSILON
 sign -> '-'
 factor -> 'floatnum'
 factor -> sign factor
@@ -606,50 +613,6 @@ REPTAPARAMS1 -> EPSILON
 REPTAPARAMS1 -> aParamsTail REPTAPARAMS1
 REPTAPARAMS1 -> aParamsTail REPTAPARAMS1
 aParams -> expr REPTAPARAMS1
-idnest2 -> '(' aParams ')'
-idnest -> '.' 'id' idnest2
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> idnest REPTVARIABLEORFUNCTIONCALL
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-arithExpr -> term RIGHTRECARITHEXPR
-expr2 -> EPSILON
-expr -> arithExpr exp2
-FUNCALLORASSIGN3 -> assignOp expr
-FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
-FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
-statement -> FUNCALLORASSIGN ';'
-LOCALVARDECLORSTAT2 -> statement
-IDORSELF -> 'id'
-indices -> EPSILON
-assignOp -> :=factor -> 'intLit'
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-arithExpr -> term RIGHTRECARITHEXPR
-expr2 -> EPSILON
-expr -> arithExpr exp2
-FUNCALLORASSIGN3 -> assignOp expr
-FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
-FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
-statement -> FUNCALLORASSIGN ';'
-LOCALVARDECLORSTAT2 -> statement
-IDORSELF -> 'id'
-indices -> EPSILON
-IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-arithExpr -> term RIGHTRECARITHEXPR
-expr2 -> EPSILON
-expr -> arithExpr exp2
-REPTAPARAMS1 -> EPSILON
-aParams -> expr REPTAPARAMS1
 FUNCALLORASSIGN4 -> 'EPSILON
 FUNCALLORASSIGN2 -> '(' aParams ')' FUNCALLORASSIGN4
 FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2
@@ -658,108 +621,86 @@ FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
 statement -> FUNCALLORASSIGN ';'
 LOCALVARDECLORSTAT2 -> statement
 IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-arithExpr -> term RIGHTRECARITHEXPR
-relOp -> '<='
+indices -> EPSILON
+indices -> EPSILON
+aParams -> EPSILON
+FUNCALLORASSIGN4 -> 'EPSILON
+FUNCALLORASSIGN2 -> '(' aParams ')' FUNCALLORASSIGN4
+FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2
+FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
+FUNCALLORASSIGN3 -> '.' 'id' FUNCALLORASSIGN2
+FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
+FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
+statement -> FUNCALLORASSIGN ';'
+LOCALVARDECLORSTAT2 -> statement
+IDORSELF -> 'id'
+aParams -> EPSILON
+FUNCALLORASSIGN4 -> 'EPSILON
+FUNCALLORASSIGN2 -> '(' aParams ')' FUNCALLORASSIGN4
+FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
+statement -> FUNCALLORASSIGN ';'
+LOCALVARDECLORSTAT2 -> statement
+IDORSELF -> 'id'
 factor -> 'intLit'
 rightRecTerm -> EPSILON
 term -> factor rightRecTerm
 RIGHTRECARITHEXPR -> EPSILON
 arithExpr -> term RIGHTRECARITHEXPR
-relExpr -> arithExpr relOp arithExpr
-IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
+expr2 -> EPSILON
+expr -> arithExpr exp2
+factor -> 'intLit'
 rightRecTerm -> EPSILON
 term -> factor rightRecTerm
 RIGHTRECARITHEXPR -> EPSILON
 arithExpr -> term RIGHTRECARITHEXPR
 expr2 -> EPSILON
 expr -> arithExpr exp2
-statement -> 'write' '(' expr ')' ';'
-IDORSELF -> 'id'
-factor2 -> EPSILON
-IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
+aParamsTail -> ',' expr
+factor -> 'intLit'
 rightRecTerm -> EPSILON
 term -> factor rightRecTerm
 RIGHTRECARITHEXPR -> EPSILON
 arithExpr -> term RIGHTRECARITHEXPR
 expr2 -> EPSILON
 expr -> arithExpr exp2
+aParamsTail -> ',' expr
 REPTAPARAMS1 -> EPSILON
+REPTAPARAMS1 -> aParamsTail REPTAPARAMS1
+REPTAPARAMS1 -> aParamsTail REPTAPARAMS1
 aParams -> expr REPTAPARAMS1
-idnest2 -> '(' aParams ')'
-idnest -> '.' 'id' idnest2
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> idnest REPTVARIABLEORFUNCTIONCALL
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-arithExpr -> term RIGHTRECARITHEXPR
-expr2 -> EPSILON
-expr -> arithExpr exp2
-statement -> 'write' '(' expr ')' ';'
-IDORSELF -> 'id'
-factor2 -> EPSILON
-IDORSELF -> 'id'
-factor2 -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-arithExpr -> term RIGHTRECARITHEXPR
-expr2 -> EPSILON
-expr -> arithExpr exp2
-REPTAPARAMS1 -> EPSILON
-aParams -> expr REPTAPARAMS1
-idnest2 -> '(' aParams ')'
-idnest -> '.' 'id' idnest2
-REPTVARIABLEORFUNCTIONCALL -> EPSILON
-REPTVARIABLEORFUNCTIONCALL -> idnest REPTVARIABLEORFUNCTIONCALL
-factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-RIGHTRECARITHEXPR -> EPSILON
-arithExpr -> term RIGHTRECARITHEXPR
-expr2 -> EPSILON
-expr -> arithExpr exp2
-statement -> 'write' '(' expr ')' ';'
-STATEMENTS -> ESPILON
-STATEMENTS -> statement STATEMENTS
-STATEMENTS -> statement STATEMENTS
-STATEMENTS -> statement STATEMENTS
-statBlock -> '{' STATEMENTS '}'
-statement -> 'while' '(' relExpr ')' statBlock ';'
+FUNCALLORASSIGN4 -> 'EPSILON
+FUNCALLORASSIGN2 -> '(' aParams ')' FUNCALLORASSIGN4
+FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
+statement -> FUNCALLORASSIGN ';'
 LOCALVARDECLORSTAT2 -> statement
-LOCALVARDECLORSTAT2 -> EPSILON
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
-LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
-funcBody -> '{' localVarDeclOrStatRep '}'
-funcDef -> funcHead funcBody
-classOrImplOrFunc -> funcDef
-prog -> EPSILON
-prog -> classOrImplOrFunc prog
-prog -> classOrImplOrFunc prog
-prog -> classOrImplOrFunc prog
-prog -> classOrImplOrFunc prog
-prog -> classOrImplOrFunc prog
-prog -> classOrImplOrFunc prog
-prog -> classOrImplOrFunc prog
-startsymbol -> prog
+IDORSELF -> 'id'
+factor -> 'floatnum'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+RIGHTRECARITHEXPR -> EPSILON
+arithExpr -> term RIGHTRECARITHEXPR
+expr2 -> EPSILON
+expr -> arithExpr exp2
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+RIGHTRECARITHEXPR -> EPSILON
+arithExpr -> term RIGHTRECARITHEXPR
+expr2 -> EPSILON
+expr -> arithExpr exp2
+aParamsTail -> ',' expr
+REPTAPARAMS1 -> EPSILON
+REPTAPARAMS1 -> aParamsTail REPTAPARAMS1
+aParams -> expr REPTAPARAMS1
+FUNCALLORASSIGN4 -> 'EPSILON
+FUNCALLORASSIGN2 -> '(' aParams ')' FUNCALLORASSIGN4
+FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
+statement -> FUNCALLORASSIGN ';'
+LOCALVARDECLORSTAT2 -> statement
+IDORSELF -> 'id'
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+RIGHTRECARITHEXPR -> EPSILON
+arithExpr -> term RIGHTRECARITHEXPR
+indice -> '(' arithExpr ')'

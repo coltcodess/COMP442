@@ -5,12 +5,12 @@
     | funcDef
       | idLit
       | fParamsList
-        | varDecl
-          | idLit
+        | fParam
           | type
-        | varDecl
           | idLit
+        | fParam
           | type
+          | idLit
       | type
       | statBlock
         | varDecl
@@ -29,18 +29,18 @@
           | idLit
           | type
           | arraySizeList
-        | assignStat
+        | assignOp
           | idLit
           | idLit
-        | assignStat
+        | assignOp
+          | idLit
           | intLit
+        | assignOp
           | idLit
-        | assignStat
           | intLit
+        | assignOp
           | idLit
-        | assignStat
           | intLit
-          | idLit
         | whileStat
           | relExpr
             | relOp
@@ -63,49 +63,55 @@
                   | relExpr
                     | relOp
                       | idLit
-                        | idLit
-                      | idLit
-                        | addOp
+                        | arraySizeList
                           | idLit
-                          | intLit
+                      | idLit
+                        | arraySizeList
+                          | addOp
+                            | idLit
+                            | intLit
                   | statBlock
-                    | assignStat
-                      | idLit
-                        | idLit
-                      | idLit
-                    | assignStat
+                    | assignOp
                       | idLit
                       | idLit
-                        | addOp
+                        | arraySizeList
                           | idLit
-                          | intLit
+                    | assignOp
                       | idLit
-                    | assignStat
-                      | addOp
-                        | idLit
-                        | intLit
+                        | arraySizeList
+                          | idLit
                       | idLit
+                        | arraySizeList
+                          | addOp
+                            | idLit
+                            | intLit
+                    | assignOp
+                      | idLit
+                        | arraySizeList
+                          | addOp
+                            | idLit
+                            | intLit
                       | idLit
                   | statBlock
-                | assignStat
+                | assignOp
+                  | idLit
                   | addOp
                     | idLit
                     | intLit
-                  | idLit
-            | assignStat
+            | assignOp
+              | idLit
               | addOp
                 | idLit
                 | intLit
-              | idLit
     | funcDef
       | idLit
       | fParamsList
-        | varDecl
-          | idLit
+        | fParam
           | type
-        | varDecl
           | idLit
+        | fParam
           | type
+          | idLit
       | type
       | statBlock
         | varDecl
@@ -116,12 +122,12 @@
           | idLit
           | type
           | arraySizeList
-        | assignStat
+        | assignOp
           | idLit
           | idLit
-        | assignStat
+        | assignOp
+          | idLit
           | intLit
-          | idLit
         | whileStat
           | relExpr
             | relOp
@@ -130,12 +136,13 @@
           | statBlock
             | writeStat
               | idLit
-                | idLit
-            | assignStat
+                | arraySizeList
+                  | idLit
+            | assignOp
+              | idLit
               | addOp
                 | idLit
                 | intLit
-              | idLit
     | funcDef
       | idLit
       | fParamsList
@@ -146,31 +153,38 @@
           | type
           | arraySizeList
             | intLit
-        | assignStat
-          | intLit
-          | intLit
+        | assignOp
           | idLit
-        | assignStat
+            | arraySizeList
+              | intLit
           | intLit
-          | intLit
+        | assignOp
           | idLit
-        | assignStat
+            | arraySizeList
+              | intLit
           | intLit
-          | intLit
+        | assignOp
           | idLit
-        | assignStat
+            | arraySizeList
+              | intLit
           | intLit
-          | intLit
+        | assignOp
           | idLit
-        | assignStat
+            | arraySizeList
+              | intLit
           | intLit
-          | intLit
+        | assignOp
           | idLit
-        | assignStat
+            | arraySizeList
+              | intLit
           | intLit
-          | intLit
+        | assignOp
           | idLit
-        | assignStat
+            | arraySizeList
+              | intLit
           | intLit
-          | intLit
+        | assignOp
           | idLit
+            | arraySizeList
+              | intLit
+          | intLit
