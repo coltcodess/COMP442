@@ -13,10 +13,20 @@ const std::string OUTPUT_TOKEN_FILE_TYPE = ".outlextokens";
 
 int main()
 {
-    // Intro message:
+    bool bypassInput = true;
     std::string fileInput;
-    std::cout << "Enter file to open. " << std::endl;
-    std::cin >> fileInput;
+
+    if (!bypassInput)
+    {
+        // Intro message:
+        std::cout << "Enter file to open. " << std::endl;
+        std::cin >> fileInput;
+    }
+    else
+    {
+        fileInput = "polynomial";
+    }
+
 
     std::stringstream* buffer = new std::stringstream;
     std::ifstream* srcFile = NULL;
