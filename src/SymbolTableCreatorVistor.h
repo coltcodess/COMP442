@@ -51,5 +51,9 @@ private:
 	// Inherited via Visitor
 	virtual void visit(assignStat_Node& node) override;
 
+
+	// Inherited via Visitor
+	virtual void visit(addOp_Node& node) override;
+
 };
 

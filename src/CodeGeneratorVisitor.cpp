@@ -132,9 +132,9 @@ void CodeGeneratorVisitor::visit(multiOp_Node& node)
 
 	node.moonVarName = this->getNewTempVarName();
 
-	moonExecCode += "           lw " + node.leftChildRegister + node.getChildren()[0]->moonVarName + "(r0)\n";
-	moonExecCode += "           lw " + node.rightChildRegister + node.getChildren()[1]->moonVarName + "(r0)\n";
-	moonExecCode += "           mul " + node.localRegister + "," + node.leftChildRegister + "," + node.rightChildRegister +"\n";
+	//moonExecCode += "           lw " + node.leftChildRegister + node.getChildren()[0]->moonVarName + "(r0)\n";
+	//moonExecCode += "           lw " + node.rightChildRegister + node.getChildren()[1]->moonVarName + "(r0)\n";
+	//moonExecCode += "           mul " + node.localRegister + "," + node.leftChildRegister + "," + node.rightChildRegister +"\n";
 
 
 	// Clean up registers
@@ -157,7 +157,10 @@ void CodeGeneratorVisitor::visit(floatLit_Node& node)
 
 void CodeGeneratorVisitor::visit(type_Node& node)
 {
-	
+	for (Node* child : node.getChildren())
+	{
+		child->accept(*this);
+	}
 }
 
 void CodeGeneratorVisitor::visit(assignStat_Node& node)
@@ -166,4 +169,11 @@ void CodeGeneratorVisitor::visit(assignStat_Node& node)
 }
 
 
+void CodeGeneratorVisitor::visit(addOp_Node& node)
+{
+	for (Node* child : node.getChildren())
+	{
+		child->accept(*this);
+	}
+}
 

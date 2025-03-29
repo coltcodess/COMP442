@@ -9,8 +9,13 @@ public:
 	null_Node() {};
 	virtual ~null_Node() {};
 
-	void accept(Visitor& v) override {
-		v.visit(*this);
+	void accept(Visitor& visitor) override
+	{
+		for (Node* child : this->getChildren())
+		{
+			child->accept(visitor);
+		}
+		visitor.visit(*this);
 	};
 
 };

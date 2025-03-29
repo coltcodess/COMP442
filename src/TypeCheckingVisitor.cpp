@@ -58,7 +58,7 @@ void TypeCheckingVisitor::visit(assignOp_Node& node)
 
 void TypeCheckingVisitor::visit(multiOp_Node& node)
 {
-	std::string leftOperandType = node.getChildren()[0]->token->convertTokenTypeToString();
+	
 
 }
 
@@ -80,5 +80,9 @@ void TypeCheckingVisitor::visit(type_Node& node)
 }
 
 void TypeCheckingVisitor::visit(assignStat_Node& node)
+{
+}
+
+void TypeCheckingVisitor::visit(addOp_Node& node)
 {
 }

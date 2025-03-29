@@ -20,7 +20,7 @@ int main()
 
     std::stringstream* buffer = new std::stringstream;
     std::ifstream* srcFile = NULL;
-    srcFile = new std::ifstream(fileInput + SOURCE_FILE_TYPE);
+    srcFile = new std::ifstream("polynomial" + SOURCE_FILE_TYPE);
     bool file_opened = false;
 
     // Reask for valid file

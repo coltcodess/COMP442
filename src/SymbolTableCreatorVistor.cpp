@@ -396,3 +396,7 @@ void SymbolTableCreatorVistor::visit(assignStat_Node& node)
 {
 }
 
+void SymbolTableCreatorVistor::visit(addOp_Node& node)
+{
+}
+
