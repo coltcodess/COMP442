@@ -1,0 +1,27 @@
+| prog
+  | classDeclList
+  | implDefList
+  | funcDefList
+    | funcDef
+      | idLit
+      | fParamsList
+      | type
+      | statBlock
+        | assignOp
+          | idLit
+          | intLit
+        | assignOp
+          | idLit
+          | intLit
+        | assignOp
+          | idLit
+          | addOp
+            | idLit
+            | idLit
+        | assignOp
+          | idLit
+          | addOp
+            | multiOp
+              | idLit
+              | idLit
+            | idLit

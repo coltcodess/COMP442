@@ -1051,15 +1051,17 @@ bool Parser::arithExpr(Node* root)
 
 	Node* term_Node = m_nodeFactory->makeNode();
 	Node* RIGHTRECARITHEXPR_Node = m_nodeFactory->makeNode(Type::addOp);
+	Node& ref_RIGHTRECARITHEXPR_Node = *RIGHTRECARITHEXPR_Node;
+
 
 	if (m_lookAheadToken->type == OPENPAR || m_lookAheadToken->type == TokenType::floatnum
 		|| m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::intnum
 		|| m_lookAheadToken->type == NOT || m_lookAheadToken->type == PLUS
 		|| m_lookAheadToken->type == MINUS || m_lookAheadToken->type == SELF)
 	{
-		if (term(*term_Node) && 
-			RIGHTRECARITHEXPR(*term_Node, RIGHTRECARITHEXPR_Node))
+		if (term(term_Node) &&	RIGHTRECARITHEXPR(*term_Node, RIGHTRECARITHEXPR_Node))
 		{
+			
 			root->addChild(RIGHTRECARITHEXPR_Node);
 			*m_derivationFile << "arithExpr -> term RIGHTRECARITHEXPR\n";
 			return true;
@@ -1069,7 +1071,7 @@ bool Parser::arithExpr(Node* root)
 	else return false;
 }
 
-bool Parser::RIGHTRECARITHEXPR(Node& child, Node* root)
+bool Parser::RIGHTRECARITHEXPR(Node& child, Node*& root)
 {
 	std::vector<TokenType> first = { MINUS, OR, PLUS, };
 	std::vector<TokenType> follow = { CLOSEPAR, SEMI, COMMA, EQ, GT , GEQ,  LT , LEQ,  NOTEQ , CLOSESQBR };
@@ -1082,8 +1084,9 @@ bool Parser::RIGHTRECARITHEXPR(Node& child, Node* root)
 		
 		Node* term_Node = m_nodeFactory->makeNode();
 		Node* RIGHTRECARITHEXPR_Node = m_nodeFactory->makeNode(Type::addOp);
+		Node& ref_RIGHTRECARITHEXPR_Node = *RIGHTRECARITHEXPR_Node;
 
-		if (addOp() && term(*term_Node) && RIGHTRECARITHEXPR(*term_Node, RIGHTRECARITHEXPR_Node))
+		if (addOp() && term(term_Node) && RIGHTRECARITHEXPR(*term_Node, RIGHTRECARITHEXPR_Node))
 		{
 			root->addChild(RIGHTRECARITHEXPR_Node);
 			*m_derivationFile << "RIGHTRECARITHEXPR -> addOp term arithExpr2\n";
@@ -1094,7 +1097,7 @@ bool Parser::RIGHTRECARITHEXPR(Node& child, Node* root)
 	}
 	else if (tokenInFollowSet(follow))
 	{
-		*root = child;
+		root = &child;
 		*m_derivationFile << "RIGHTRECARITHEXPR -> EPSILON\n";
 		return true;
 	}
@@ -1130,7 +1133,7 @@ bool Parser::sign()
 	else return false;
 }
 
-bool Parser::term(Node& node)
+bool Parser::term(Node*& node)
 {
 	std::vector<TokenType> first = { OPENPAR, floatnum, intnum, NOT, id, SELF, MINUS, PLUS };
 	std::vector<TokenType> follow = {};
@@ -1149,10 +1152,9 @@ bool Parser::term(Node& node)
 		|| m_lookAheadToken->type == PLUS
 		|| m_lookAheadToken->type == MINUS)
 	{			
-		if (factor(factor_Node) && 
-			rightRecTerm(*factor_Node, rightRecTerm_Node))
+		if (factor(factor_Node) && rightRecTerm(*factor_Node, rightRecTerm_Node))
 		{
-			node = *rightRecTerm_Node;
+			node = *&rightRecTerm_Node;
 			*m_derivationFile << "term -> factor rightRecTerm\n";
 			return true;
 		}
@@ -1161,7 +1163,7 @@ bool Parser::term(Node& node)
 	else return false;
 }
 
-bool Parser::rightRecTerm(Node& child, Node* root)
+bool Parser::rightRecTerm(Node& child, Node*& root)
 {
 	std::vector<TokenType> first = { MULTI, DIV, AND };
 	std::vector<TokenType> follow = { CLOSEPAR, SEMI, COMMA, EQ, GT, GEQ, LT, LEQ, NOTEQ, CLOSESQBR, MINUS, OR, PLUS };
@@ -1185,7 +1187,7 @@ bool Parser::rightRecTerm(Node& child, Node* root)
 	}
 	else if (tokenInFollowSet(follow))
 	{
-		*root = child;
+		root = &child;
 		*m_derivationFile << "rightRecTerm -> EPSILON\n";
 		return true;
 	}

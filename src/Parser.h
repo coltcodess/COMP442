@@ -74,14 +74,14 @@ private:
 	bool expr(Node* root);
 	bool expr2(Node* root);
 	bool arithExpr(Node* root);
-	bool RIGHTRECARITHEXPR(Node& child, Node* root);
-	bool term(Node& root);
+	bool RIGHTRECARITHEXPR(Node& child, Node*& root);
+	bool term(Node*& root);
 	bool factor( Node* root);
 	bool factor2(Node* root);
 
 	bool indice(Node* root);
 
-	bool rightRecTerm(Node& child, Node* root);
+	bool rightRecTerm(Node& child, Node*& root);
 
 	bool relExpr(Node* root);
 	bool statBlock(Node* root);

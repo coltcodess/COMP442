@@ -13,7 +13,7 @@ const std::string OUTPUT_TOKEN_FILE_TYPE = ".outlextokens";
 
 int main()
 {
-    bool bypassInput = true;
+    bool bypassInput = false;
     std::string fileInput;
 
     if (!bypassInput)
@@ -30,7 +30,7 @@ int main()
 
     std::stringstream* buffer = new std::stringstream;
     std::ifstream* srcFile = NULL;
-    srcFile = new std::ifstream("polynomial" + SOURCE_FILE_TYPE);
+    srcFile = new std::ifstream(fileInput + SOURCE_FILE_TYPE);
     bool file_opened = false;
 
     // Reask for valid file

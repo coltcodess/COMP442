@@ -1,0 +1,98 @@
+fParams -> EPSILON
+returnType -> 'void'
+'function' 'id' '(' fParams ')' '=>' returnType
+IDORSELF -> 'id'
+indices -> EPSILON
+assignOp -> :=factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+RIGHTRECARITHEXPR -> EPSILON
+arithExpr -> term RIGHTRECARITHEXPR
+expr2 -> EPSILON
+expr -> arithExpr exp2
+FUNCALLORASSIGN3 -> assignOp expr
+FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
+FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
+statement -> FUNCALLORASSIGN ';'
+LOCALVARDECLORSTAT2 -> statement
+IDORSELF -> 'id'
+indices -> EPSILON
+assignOp -> :=factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+RIGHTRECARITHEXPR -> EPSILON
+arithExpr -> term RIGHTRECARITHEXPR
+expr2 -> EPSILON
+expr -> arithExpr exp2
+FUNCALLORASSIGN3 -> assignOp expr
+FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
+FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
+statement -> FUNCALLORASSIGN ';'
+LOCALVARDECLORSTAT2 -> statement
+IDORSELF -> 'id'
+indices -> EPSILON
+assignOp -> :=IDORSELF -> 'id'
+factor2 -> EPSILON
+REPTVARIABLEORFUNCTIONCALL -> EPSILON
+factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+addOp -> '+'
+IDORSELF -> 'id'
+factor2 -> EPSILON
+REPTVARIABLEORFUNCTIONCALL -> EPSILON
+factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+RIGHTRECARITHEXPR -> EPSILON
+RIGHTRECARITHEXPR -> addOp term arithExpr2
+arithExpr -> term RIGHTRECARITHEXPR
+expr2 -> EPSILON
+expr -> arithExpr exp2
+FUNCALLORASSIGN3 -> assignOp expr
+FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
+FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
+statement -> FUNCALLORASSIGN ';'
+LOCALVARDECLORSTAT2 -> statement
+IDORSELF -> 'id'
+indices -> EPSILON
+assignOp -> :=IDORSELF -> 'id'
+factor2 -> EPSILON
+REPTVARIABLEORFUNCTIONCALL -> EPSILON
+factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
+sign -> '*'
+IDORSELF -> 'id'
+factor2 -> EPSILON
+REPTVARIABLEORFUNCTIONCALL -> EPSILON
+factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
+rightRecTerm -> EPSILON
+rightRecTerm -> multiOp factor rightRecTerm
+term -> factor rightRecTerm
+addOp -> '+'
+IDORSELF -> 'id'
+factor2 -> EPSILON
+REPTVARIABLEORFUNCTIONCALL -> EPSILON
+factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+RIGHTRECARITHEXPR -> EPSILON
+RIGHTRECARITHEXPR -> addOp term arithExpr2
+arithExpr -> term RIGHTRECARITHEXPR
+expr2 -> EPSILON
+expr -> arithExpr exp2
+FUNCALLORASSIGN3 -> assignOp expr
+FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
+FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
+statement -> FUNCALLORASSIGN ';'
+LOCALVARDECLORSTAT2 -> statement
+LOCALVARDECLORSTAT2 -> EPSILON
+LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
+LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
+LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
+LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
+funcBody -> '{' localVarDeclOrStatRep '}'
+funcDef -> funcHead funcBody
+classOrImplOrFunc -> funcDef
+prog -> EPSILON
+prog -> classOrImplOrFunc prog
+startsymbol -> prog
