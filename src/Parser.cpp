@@ -1194,7 +1194,7 @@ bool Parser::rightRecTerm(Node& child, Node*& root)
 	else return false;
 }
 
-bool Parser::factor(Node* root)
+bool Parser::factor(Node*& root)
 {
 	std::vector<TokenType> first = { MINUS, PLUS, id, SELF, NOT, intnum, floatnum, OPENPAR };
 	std::vector<TokenType> follow = { };
@@ -1212,7 +1212,9 @@ bool Parser::factor(Node* root)
 	}
 	else if (m_lookAheadToken->type == TokenType::id || m_lookAheadToken->type == TokenType::SELF)
 	{
-		root->setType(Type::idLit);
+		root = m_nodeFactory->makeNode(idLit);
+		root->token = m_lookAheadToken;
+
 		if (IDORSELF(root) && factor2(root) && REPTVARIABLEORFUNCTIONCALL(root))
 		{
 			*m_derivationFile << "factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL\n";
@@ -1231,7 +1233,9 @@ bool Parser::factor(Node* root)
 	}
 	else if (m_lookAheadToken->type == TokenType::intnum)
 	{
-		root->setType(Type::intLit);
+		root = m_nodeFactory->makeNode(intLit);
+		root->token = m_lookAheadToken;
+
 		if (match(TokenType::intnum))
 		{
 			*m_derivationFile << "factor -> 'intLit'\n";
@@ -1241,9 +1245,11 @@ bool Parser::factor(Node* root)
 	}
 	else if (m_lookAheadToken->type == TokenType::floatnum)
 	{
+		root = m_nodeFactory->makeNode(floatLit);
+		root->token = m_lookAheadToken;
+
 		if (match(TokenType::floatnum))
 		{
-			root->setType(Type::floatLit);
 			*m_derivationFile << "factor -> 'floatnum'\n";
 			return true;
 		}

@@ -76,7 +76,7 @@ private:
 	bool arithExpr(Node* root);
 	bool RIGHTRECARITHEXPR(Node& child, Node*& root);
 	bool term(Node*& root);
-	bool factor( Node* root);
+	bool factor(Node*& root);
 	bool factor2(Node* root);
 
 	bool indice(Node* root);
