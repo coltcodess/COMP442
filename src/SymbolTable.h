@@ -45,6 +45,10 @@ public:
 	std::string type;
 	SymbolTable* link;
 
+	// Assignment 5
+	int m_entryOffset = 0;
+	int m_entrySize = 0;
+
 };
 
 class SymbolTable
@@ -66,6 +70,8 @@ public:
 	bool checkEntryInTable(SymbolTableEntry* entry);
 
 	bool checkEntryNameKindInTable(SymbolTableEntry* entry);
+
+	int m_tableOffset = 0;
 
 private:
 	std::string name;

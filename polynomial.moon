@@ -1,3 +1,29 @@
+  lw 
+           lw r2(r0)
+           lw r3(r0)
+           mul r1,r2,r3
+           lw r3(r0)
+           lw r2(r0)
+           mul r1,r3,r2
+           lw r2(r0)
+           lw r3(r0)
+           mul r1,r2,r3
+           lw r3(r0)
+           lw r2(r0)
+           mul r1,r3,r2
+ lw 
+           lw r2(r0)
+           lw r3(r0)
+           mul r1,r2,r3
+           lw r3(r0)
+           lw r2(r0)
+           mul r1,r3,r2
+           lw r2(r0)
+           lw r3(r0)
+           mul r1,r2,r3
+           lw r3(r0)
+           lw r2(r0)
+           mul r1,r3,r2
  lw 
  lw 
  lw 
@@ -5,8 +31,18 @@
  lw 
  lw 
  lw 
- lw 
- lw 
+           lw r2(r0)
+           lw r3(r0)
+           mul r1,r2,r3
+           lw r3(r0)
+           lw r2(r0)
+           mul r1,r3,r2
+           lw r2(r0)
+           lw r3(r0)
+           mul r1,r2,r3
+           lw r3(r0)
+           lw r2(r0)
+           mul r1,r3,r2
  lw 
  lw 
  lw 

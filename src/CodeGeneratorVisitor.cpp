@@ -1,13 +1,27 @@
 #include "CodeGeneratorVisitor.h"
 
+std::string MOON_INDENT = "     ";
+
 CodeGeneratorVisitor::CodeGeneratorVisitor(std::ofstream* output)
 {
 	m_output = output;
 
+	// Initialize Registers 
 	for (int i = 12; i >= 1; i--)
 	{
 		registerPool.push_back("r" + std::to_string(i));
 	}
+
+	// Program start point
+	moonExecCode += "% start of program\n";
+	moonExecCode += MOON_INDENT + "entry\n";
+	moonExecCode += MOON_INDENT + "addi" + MOON_INDENT + "r14, r0, topaddr% Set stack pointer\n";
+
+	// Start of program data 
+	moonDataCode += "% start of data code\n";
+	moonDataCode += "% buffer space used for console output\n";
+
+
 }
 
 std::string CodeGeneratorVisitor::getNewTempVarName()
@@ -24,6 +38,8 @@ void CodeGeneratorVisitor::visit(Node& node)
 void CodeGeneratorVisitor::visit(prog_Node& node)
 {
 
+	// End program
+	moonExecCode += MOON_INDENT + "hlt\n";
 
 	*m_output << moonExecCode + moonDataCode;
 
@@ -76,12 +92,12 @@ void CodeGeneratorVisitor::visit(varDecl_Node& node)
 
 	if (node.getChild(Type::type)->token->convertTokenTypeToString().compare("float") == 0)
 	{
-		moonDataCode += "           % space for variable " + node.getChild(Type::idLit)->token->lexem + "\n";
+		moonDataCode += MOON_INDENT + "% space for variable " + node.getChild(Type::idLit)->token->lexem + "\n";
 		moonDataCode += node.getChild(Type::idLit)->token->lexem + "           " + "res 8\n";
 	}
 	else if (node.getChild(Type::type)->token->convertTokenTypeToString().compare("int") == 0)
 	{
-		moonDataCode += "           % space for variable " + node.getChild(Type::idLit)->token->lexem + "\n";
+		moonDataCode += MOON_INDENT + "% space for variable " + node.getChild(Type::idLit)->token->lexem + "\n";
 		moonDataCode += node.getChild(Type::idLit)->token->lexem + "           " + "res 4\n";
 	}
 	else if (node.getChild(Type::type)->token->convertTokenTypeToString().compare("id") == 0)
@@ -132,10 +148,9 @@ void CodeGeneratorVisitor::visit(multiOp_Node& node)
 
 	node.moonVarName = this->getNewTempVarName();
 
-	//moonExecCode += "           lw " + node.leftChildRegister + node.getChildren()[0]->moonVarName + "(r0)\n";
-	//moonExecCode += "           lw " + node.rightChildRegister + node.getChildren()[1]->moonVarName + "(r0)\n";
-	//moonExecCode += "           mul " + node.localRegister + "," + node.leftChildRegister + "," + node.rightChildRegister +"\n";
-
+	moonExecCode += MOON_INDENT + "lw     " + node.leftChildRegister + "," + node.getChildren()[0]->token->lexem + "(r0)" + MOON_INDENT + "% " + node.leftChildRegister + " := " + node.getChildren()[0]->token->lexem + "\n";
+	moonExecCode += MOON_INDENT + "lw     " + node.rightChildRegister + "," + node.getChildren()[1]->token->lexem + "(r0)" + MOON_INDENT + "% " + node.rightChildRegister + " := " + node.getChildren()[1]->token->lexem + "\n";
+	moonExecCode += MOON_INDENT + "mul    " + node.localRegister + "," + node.leftChildRegister + "," + node.rightChildRegister +"\n";
 
 	// Clean up registers
 	this->registerPool.push_back(node.leftChildRegister);
