@@ -10,6 +10,11 @@ struct SymbolTableEntry
 {
 public:
 
+	SymbolTableEntry(std::string name)
+	{
+		this->name = name;
+	};
+	
 	SymbolTableEntry(std::string name, Kind kind, SymbolTable* symbolTable)
 	{
 		this->name = name;

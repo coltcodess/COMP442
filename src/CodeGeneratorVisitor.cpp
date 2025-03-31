@@ -15,7 +15,7 @@ CodeGeneratorVisitor::CodeGeneratorVisitor(std::ofstream* output)
 	// Program start point
 	moonExecCode += "% start of program\n";
 	moonExecCode += MOON_INDENT + "entry\n";
-	moonExecCode += MOON_INDENT + "addi" + MOON_INDENT + "r14, r0, topaddr% Set stack pointer\n";
+	moonExecCode += MOON_INDENT + "addi" + MOON_INDENT + "r14, r0, topaddr % Set stack pointer\n";
 
 	// Start of program data 
 	moonDataCode += "% start of data code\n";
@@ -39,9 +39,7 @@ void CodeGeneratorVisitor::visit(prog_Node& node)
 {
 
 	// End program
-	moonExecCode += MOON_INDENT + "hlt\n";
-
-	*m_output << moonExecCode + moonDataCode;
+	*m_output << moonExecCode + MOON_INDENT + "hlt\n" + moonDataCode;
 
 
 }
@@ -90,6 +88,7 @@ void CodeGeneratorVisitor::visit(varDecl_Node& node)
 
 	std::string outputCode;
 
+	// Reserve memory space for variable declare
 	if (node.getChild(Type::type)->token->convertTokenTypeToString().compare("float") == 0)
 	{
 		moonDataCode += "% space for variable " + node.getChild(Type::idLit)->token->lexem + "\n";
@@ -166,6 +165,17 @@ void CodeGeneratorVisitor::visit(idLit_Node& node)
 
 void CodeGeneratorVisitor::visit(intLit_Node& node)
 {
+	std::string r1 = this->registerPool.back();
+	this->registerPool.pop_back();
+
+	std::string offset = std::to_string(node.m_symbolEntry->m_entryOffset);
+
+	
+	moonExecCode += MOON_INDENT + "addi " + r1 + "," + "r0" + node.token->lexem + "\n";
+	moonExecCode += MOON_INDENT + "sw" + offset + "(r14)," + r1 + "\n";
+	
+	this->registerPool.push_back(r1);
+
 }
 
 void CodeGeneratorVisitor::visit(floatLit_Node& node)

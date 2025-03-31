@@ -1611,9 +1611,12 @@ bool Parser::arraySize2(Node* root)
 	}
 	else if (m_lookAheadToken->type == TokenType::intnum)
 	{
+		Node* int_node = m_nodeFactory->makeNode(Type::intLit);
+		int_node->token = m_lookAheadToken;
+		root->addChild(int_node);
+		
 		if (match(TokenType::intnum) && match(TokenType::CLOSESQBR))
 		{
-			root->addChild(m_nodeFactory->makeNode(Type::intLit));
 			*m_derivationFile << "arraySize1 -> 'intnum' ']'\n";
 			return true;
 		}
