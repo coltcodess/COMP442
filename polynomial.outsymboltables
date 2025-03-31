@@ -1,47 +1,47 @@
- || table: global
+ || table: global  offset:  0
  -------------------------------- 
-  || class: POLYNOMIAL
+  || class: POLYNOMIAL scope offset:  0
   inherit: | none
  -------------------------------- 
         table:  POLYNOMIAL::evaluate
  -------------------------------- 
-        param: | float | x
+        param: | float | x | 8 | 0
  -------------------------------- 
-  || class: LINEAR
+  || class: LINEAR scope offset:  -16
   inherit: | SHAPE
-  data:  | a | float
-  data:  | b | float
+  data:  | a | float | 8 | 0
+  data:  | b | float | 8 | -8
  -------------------------------- 
         table:  LINEAR::build
  -------------------------------- 
-        local: | id | new_function
-        param: | float | B
-        param: | float | A
+        local: | id | new_function | 0 | 0
+        param: | float | B | 8 | 0
+        param: | float | A | 8 | 0
  -------------------------------- 
         table:  LINEAR::evaluate
  -------------------------------- 
-        local: | float | result
-        param: | float | x
+        local: | float | result | 8 | 0
+        param: | float | x | 8 | 0
  -------------------------------- 
-  || class: QUADRATIC
+  || class: QUADRATIC scope offset:  -24
   inherit: | POLYNOMIAL
-  data:  | a | float
-  data:  | b | float
-  data:  | c | float
+  data:  | a | float | 8 | 0
+  data:  | b | float | 8 | -8
+  data:  | c | float | 8 | -16
  -------------------------------- 
         table:  QUADRATIC::build
  -------------------------------- 
-        local: | id | new_function
-        param: | float | B
-        param: | float | C
-        param: | float | A
+        local: | id | new_function | 0 | 0
+        param: | float | B | 8 | 0
+        param: | float | C | 8 | 0
+        param: | float | A | 8 | 0
  -------------------------------- 
         table:  QUADRATIC::evaluate
  -------------------------------- 
-        local: | float | result
-        param: | float | x
+        local: | float | result | 8 | 0
+        param: | float | x | 8 | 0
  -------------------------------- 
-  || function: main
+  || function: main  offset:  0
         local: | id | f1
         local: | id | f2
         local: | int | counter

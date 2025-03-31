@@ -81,8 +81,12 @@ void SymbolTableCreatorVistor::visit(classDecl_Node& node)
 					else
 					{
 						node.m_symbolTable->appendEntry(j->m_symbolEntry);
+						j->m_symbolEntry->m_entryOffset = node.m_symbolTable->m_tableOffset;
+						node.m_symbolTable->m_tableOffset = node.m_symbolTable->m_tableOffset - j->m_symbolEntry->m_entrySize;
 					}
 				}
+
+
 			}
 			else if (i->getType() == Type::memDeclFunc)
 			{
@@ -311,18 +315,19 @@ void SymbolTableCreatorVistor::visit(type_Node& node)
 
 void SymbolTableCreatorVistor::print()
 {
-	*m_output << " || table: " + m_global_table->getName() << std::endl;
+	*m_output << " || table: " + m_global_table->getName() + "  offset:  " + std::to_string(m_global_table->m_tableOffset) << std::endl;
 
 	*m_output << " -------------------------------- " << std::endl;
 
 	for (auto i : m_global_table->getEntries())
 	{
-		// Print classes
+
 		if (i != nullptr)
 		{
+			// Classes
 			if (i->kind == Kind::_class)
 			{
-				*m_output << "  || class: " + i->name << std::endl;
+				*m_output << "  || class: " + i->name + " scope offset:  " + std::to_string(i->link->m_tableOffset) << std::endl;
 
 				if (i->link->getEntryByKind(Kind::_inherit) != nullptr)
 				{
@@ -346,18 +351,18 @@ void SymbolTableCreatorVistor::print()
 						{
 							if (k->kind == Kind::_parameter)
 							{
-								*m_output << "        param: | " + k->type + " | " + k->name << std::endl;
+								*m_output << "        param: | " + k->type + " | " + k->name + " | " + std::to_string(k->m_entrySize) + " | " + std::to_string(k->m_entryOffset) << std::endl;
 							}
 							else if (k->kind == Kind::_variable)
 							{
-								*m_output << "        local: | " + k->type + " | " + k->name << std::endl;
+								*m_output << "        local: | " + k->type + " | " + k->name + " | " + std::to_string(k->m_entrySize) + " | " + std::to_string(k->m_entryOffset) << std::endl;
 							}
 						}
 
 					}
 					else if (j->kind == Kind::_variable)
 					{
-						*m_output << "  data:  | " + j->name + " | " + j->type << std::endl;
+						*m_output << "  data:  | " + j->name + " | " + j->type + " | " + std::to_string(j->m_entrySize) + " | " + std::to_string(j->m_entryOffset) << std::endl;
 					}
 
 				}
@@ -365,10 +370,11 @@ void SymbolTableCreatorVistor::print()
 				*m_output << " -------------------------------- " << std::endl;
 			}
 
+			// Free functions
 			else if (i->kind == Kind::_function)
 			{
 
-				*m_output << "  || function: " + i->name << std::endl;
+				*m_output << "  || function: " + i->name + "  offset:  " + std::to_string(i->m_entryOffset) << std::endl;
 
 				for (auto j : i->link->getEntries())
 				{

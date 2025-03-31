@@ -92,7 +92,7 @@ void CodeGeneratorVisitor::visit(varDecl_Node& node)
 
 	if (node.getChild(Type::type)->token->convertTokenTypeToString().compare("float") == 0)
 	{
-		moonDataCode += MOON_INDENT + "% space for variable " + node.getChild(Type::idLit)->token->lexem + "\n";
+		moonDataCode += "% space for variable " + node.getChild(Type::idLit)->token->lexem + "\n";
 		moonDataCode += node.getChild(Type::idLit)->token->lexem + "           " + "res 8\n";
 	}
 	else if (node.getChild(Type::type)->token->convertTokenTypeToString().compare("int") == 0)
@@ -124,8 +124,8 @@ void CodeGeneratorVisitor::visit(assignOp_Node& node)
 	node.localRegister = this->registerPool.back();
 	this->registerPool.pop_back();
 
-	moonExecCode += " lw \n";
-	//moonExecCode += " sw " + node.getChildren()[0].moonVarName + "(r0)," + node.localRegister + "\n";
+	//moonExecCode += MOON_INDENT + "lw" + MOON_INDENT + node.localRegister + "," + node.getChildren()[0]->token->lexem + "(r0)\n";
+	//moonExecCode += MOON_INDENT + "sw" + MOON_INDENT + node.getChildren()[0]->token->lexem + "(r0)," + node.localRegister + "\n";
 
 	this->registerPool.push_back(node.localRegister);
 }
@@ -148,9 +148,11 @@ void CodeGeneratorVisitor::visit(multiOp_Node& node)
 
 	node.moonVarName = this->getNewTempVarName();
 
-	moonExecCode += MOON_INDENT + "lw     " + node.leftChildRegister + "," + node.getChildren()[0]->token->lexem + "(r0)" + MOON_INDENT + "% " + node.leftChildRegister + " := " + node.getChildren()[0]->token->lexem + "\n";
-	moonExecCode += MOON_INDENT + "lw     " + node.rightChildRegister + "," + node.getChildren()[1]->token->lexem + "(r0)" + MOON_INDENT + "% " + node.rightChildRegister + " := " + node.getChildren()[1]->token->lexem + "\n";
-	moonExecCode += MOON_INDENT + "mul    " + node.localRegister + "," + node.leftChildRegister + "," + node.rightChildRegister +"\n";
+	moonExecCode += MOON_INDENT + "lw" + MOON_INDENT + node.leftChildRegister + "," + node.getChildren()[0]->token->lexem + "(r0)" + MOON_INDENT + "% " + node.leftChildRegister + " := " + node.getChildren()[0]->token->lexem + "\n";
+	moonExecCode += MOON_INDENT + "lw" + MOON_INDENT + node.rightChildRegister + "," + node.getChildren()[1]->token->lexem + "(r0)" + MOON_INDENT + "% " + node.rightChildRegister + " := " + node.getChildren()[1]->token->lexem + "\n";
+	moonExecCode += MOON_INDENT + "mul" + MOON_INDENT + node.localRegister + "," + node.leftChildRegister + "," + node.rightChildRegister +"\n";
+
+	moonExecCode += MOON_INDENT + "sw" + MOON_INDENT + node.moonVarName + "(r0)," + node.localRegister + "\n";
 
 	// Clean up registers
 	this->registerPool.push_back(node.leftChildRegister);
@@ -190,5 +192,26 @@ void CodeGeneratorVisitor::visit(addOp_Node& node)
 	{
 		child->accept(*this);
 	}
+
+	node.localRegister = this->registerPool.back();
+	this->registerPool.pop_back();
+
+	node.leftChildRegister = this->registerPool.back();
+	this->registerPool.pop_back();
+
+	node.rightChildRegister = this->registerPool.back();
+	this->registerPool.pop_back();
+
+	node.moonVarName = this->getNewTempVarName();
+
+	// Code generation
+	moonExecCode += MOON_INDENT + "lw     " + node.leftChildRegister + "," + node.getChildren()[0]->token->lexem + "(r0)" + MOON_INDENT + "% " + node.leftChildRegister + " := " + node.getChildren()[0]->token->lexem + "\n";
+	moonExecCode += MOON_INDENT + "lw     " + node.rightChildRegister + "," + node.getChildren()[1]->token->lexem + "(r0)" + MOON_INDENT + "% " + node.rightChildRegister + " := " + node.getChildren()[1]->token->lexem + "\n";
+	moonExecCode += MOON_INDENT + "add    " + node.localRegister + "," + node.leftChildRegister + "," + node.rightChildRegister + "\n";
+
+	// Clean up registers
+	this->registerPool.push_back(node.leftChildRegister);
+	this->registerPool.push_back(node.rightChildRegister);
+	this->registerPool.push_back(node.localRegister);
 }
 

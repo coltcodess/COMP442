@@ -30,6 +30,8 @@ public:
 		this->kind = kind;
 		this->type = type;
 		this->link = symbolTable;
+
+		addSize();
 	};
 
 	SymbolTableEntry(std::string name, Kind kind, std::string type)
@@ -38,6 +40,9 @@ public:
 		this->kind = kind;
 		this->type = type;
 		this->link = nullptr;
+
+		addSize();
+
 	};
 
 	std::string name;
@@ -49,6 +54,18 @@ public:
 	int m_entryOffset = 0;
 	int m_entrySize = 0;
 
+	void addSize()
+	{
+		if (this->type == "float")
+		{
+			this->m_entrySize = 8;
+		}
+
+		if (this->type == "int")
+		{
+			this->m_entrySize = 4;
+		}
+	}
 };
 
 class SymbolTable

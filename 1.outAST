@@ -7,6 +7,19 @@
       | fParamsList
       | type
       | statBlock
+        | varDecl
+          | idLit
+          | type
+          | arraySizeList
+        | assignOp
+          | idLit
+          | addOp
+            | intLit
+            | intLit
+        | varDecl
+          | idLit
+          | type
+          | arraySizeList
         | assignOp
           | idLit
           | intLit
@@ -17,11 +30,6 @@
           | idLit
           | addOp
             | idLit
-            | idLit
-        | assignOp
-          | idLit
-          | addOp
             | multiOp
               | idLit
               | idLit
-            | idLit
