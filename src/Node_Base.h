@@ -85,6 +85,7 @@ public:
 	std::string leftChildRegister = "";
 	std::string rightChildRegister = "";
 
+
 	// Constructors 
 	Node(Type t) : m_type(t)
 	{	};
@@ -307,5 +308,7 @@ public:
 
 		return stream << "Node [type: " + std::to_string(node.m_type) + " | parent " + parent + " | children " + std::to_string(node.children.size()) + " ]";
 	}
+
+	
 
 };

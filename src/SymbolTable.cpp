@@ -64,6 +64,19 @@ SymbolTableEntry* SymbolTable::getEntryByKind(Kind kind)
     return nullptr;
 }
 
+SymbolTableEntry* SymbolTable::getEntryByName(std::string name)
+{
+    for (SymbolTableEntry* entry : this->entries)
+    {
+        if (entry->name.compare(entry->name) == 0)
+        {
+            return entry;
+        }
+    }
+
+    return nullptr;
+}
+
 bool SymbolTable::checkEntryInTable(SymbolTableEntry* entry)
 {
     for (auto i : this->entries)

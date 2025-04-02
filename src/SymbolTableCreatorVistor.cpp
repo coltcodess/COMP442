@@ -9,7 +9,11 @@ SymbolTableCreatorVistor::SymbolTableCreatorVistor(std::ofstream* output, std::o
 
 void SymbolTableCreatorVistor::visit(Node& node)
 {
-
+	for (Node* child : node.getChildren())
+	{
+		child->m_symbolTable = node.m_symbolTable;
+		child->accept(*this);
+	}
 }
 
 //////////////////
@@ -51,16 +55,19 @@ void SymbolTableCreatorVistor::visit(prog_Node& node)
 		}
 	}
 
+	for (Node* child : node.getChildren())
+	{
+		child->m_symbolTable = node.m_symbolTable;
+		child->accept(*this);
+	}
+
 }
 
 void SymbolTableCreatorVistor::visit(classDecl_Node& node)
 {
 	node.m_symbolTable = new SymbolTable(node.token->lexem);
-
 	std::string name = node.token->lexem;
-
 	node.m_symbolTable->parentTable = m_global_table;
-
 	node.m_symbolEntry = new SymbolTableEntry(name, Kind::_class, node.m_symbolTable);
 	
 	// Members 
@@ -81,8 +88,6 @@ void SymbolTableCreatorVistor::visit(classDecl_Node& node)
 					else
 					{
 						node.m_symbolTable->appendEntry(j->m_symbolEntry);
-						j->m_symbolEntry->m_entryOffset = node.m_symbolTable->m_tableOffset;
-						node.m_symbolTable->m_tableOffset = node.m_symbolTable->m_tableOffset - j->m_symbolEntry->m_entrySize;
 					}
 				}
 
@@ -115,14 +120,17 @@ void SymbolTableCreatorVistor::visit(classDecl_Node& node)
 		node.m_symbolTable->appendEntry(node.getChildren()[1]->m_symbolEntry);
 	}
 
-
+	for (Node* child : node.getChildren())
+	{
+		child->m_symbolTable = node.m_symbolTable;
+		child->accept(*this);
+	}
 
 }
 
 void SymbolTableCreatorVistor::visit(funcDef_Node& node)
 {
-	// Temp Table
-	node.m_symbolTable = new SymbolTable();
+	node.m_symbolTable = new SymbolTable(node.token->lexem);
 
 	std::string name = node.token->lexem;
 	std::string type = node.token->convertTokenTypeToString();
@@ -131,9 +139,12 @@ void SymbolTableCreatorVistor::visit(funcDef_Node& node)
 	{
 		if (i->getType() == Type::statBlock)
 		{
-			for (auto j : i->m_symbolTable->getEntries())
+			for (auto k : i->getChildren())
 			{
-				node.m_symbolTable->appendEntry(j);
+				if (k->getType() == Type::varDecl)
+				{
+					node.m_symbolTable->appendEntry(k->m_symbolEntry);
+				}
 			}
 		}
 	}
@@ -216,6 +227,12 @@ void SymbolTableCreatorVistor::visit(impleDef_Node& node)
 		}
 
 	}
+
+	for (Node* child : node.getChildren())
+	{
+		child->m_symbolTable = node.m_symbolTable;
+		child->accept(*this);
+	}
 }
 
 void SymbolTableCreatorVistor::visit(inheritList_Node& node)
@@ -258,18 +275,11 @@ void SymbolTableCreatorVistor::visit(memDeclFunc_Node& node)
 
 void SymbolTableCreatorVistor::visit(statBlock_Node& node)
 {
-	node.m_symbolTable = new SymbolTable();
 
-	if (!node.getChildren().empty())
+	for (Node* child : node.getChildren())
 	{
-		for (auto i : node.getChildren())
-		{
-			if (i->getType() == Type::varDecl)
-			{
-				node.m_symbolTable->appendEntry(i->m_symbolEntry);
-			}
-
-		}
+		child->m_symbolTable = node.m_symbolTable;
+		child->accept(*this);
 	}
 
 }
@@ -281,12 +291,18 @@ void SymbolTableCreatorVistor::visit(fParam_Node& node)
 	std::string type = node.getChild(Type::type)->token->convertTokenTypeToString();
 	
 	node.m_symbolEntry = new SymbolTableEntry(name, Kind::_parameter, type);
+
+	for (Node* child : node.getChildren())
+	{
+		child->m_symbolTable = node.m_symbolTable;
+		child->accept(*this);
+	}
 }
 
 void SymbolTableCreatorVistor::visit(varDecl_Node& node)
 {
-	std::string name = node.getChild(Type::idLit)->token->lexem;
-	std::string type = node.getChild(Type::type)->token->convertTokenTypeToString();
+	std::string name = node.token->lexem;
+	std::string type = node.token->convertTokenTypeToString();
 
 	node.m_symbolEntry = new SymbolTableEntry(name, Kind::_variable, type, node.m_symbolTable);
 
@@ -299,10 +315,20 @@ void SymbolTableCreatorVistor::visit(varDecl_Node& node)
 
 void SymbolTableCreatorVistor::visit(assignOp_Node& node)
 {
+	for (Node* child : node.getChildren())
+	{
+		child->m_symbolTable = node.m_symbolTable;
+		child->accept(*this);
+	}
 }
 
 void SymbolTableCreatorVistor::visit(multiOp_Node& node)
 {
+	for (Node* child : node.getChildren())
+	{
+		child->m_symbolTable = node.m_symbolTable;
+		child->accept(*this);
+	}
 }
 
 //////////////////
@@ -314,6 +340,7 @@ void SymbolTableCreatorVistor::visit(idLit_Node& node)
 	std::string string = "id";
 	
 	node.m_symbolEntry = new SymbolTableEntry(string, Kind::_variable);
+
 }
 
 void SymbolTableCreatorVistor::visit(intLit_Node& node)
@@ -321,11 +348,6 @@ void SymbolTableCreatorVistor::visit(intLit_Node& node)
 	node.m_symbolEntry = new SymbolTableEntry(node.token->lexem);
 	node.m_symbolEntry->type = Type::intLit;
 
-	for (Node* child : node.getChildren())
-	{
-		child->m_symbolTable = node.m_symbolTable;
-		child->accept(*this);
-	}
 }
 
 void SymbolTableCreatorVistor::visit(floatLit_Node& node)
@@ -333,11 +355,6 @@ void SymbolTableCreatorVistor::visit(floatLit_Node& node)
 	node.m_symbolEntry = new SymbolTableEntry(node.token->lexem);
 	node.m_symbolEntry->type = Type::floatLit;
 
-	for (Node* child : node.getChildren())
-	{
-		child->m_symbolTable = node.m_symbolTable;
-		child->accept(*this);
-	}
 }
 
 void SymbolTableCreatorVistor::visit(type_Node& node)
@@ -349,6 +366,23 @@ void SymbolTableCreatorVistor::visit(type_Node& node)
 	}
 }
 
+void SymbolTableCreatorVistor::visit(assignStat_Node& node)
+{
+	for (Node* child : node.getChildren())
+	{
+		child->m_symbolTable = node.m_symbolTable;
+		child->accept(*this);
+	}
+}
+
+void SymbolTableCreatorVistor::visit(addOp_Node& node)
+{
+	for (Node* child : node.getChildren())
+	{
+		child->m_symbolTable = node.m_symbolTable;
+		child->accept(*this);
+	}
+}
 
 void SymbolTableCreatorVistor::print()
 {
@@ -417,14 +451,12 @@ void SymbolTableCreatorVistor::print()
 				{
 					if (j->kind == Kind::_variable)
 					{
-						*m_output << "        local: | " + j->type + " | " + j->name << std::endl;
+						*m_output << "        local: | " + j->type + " | " + j->name + " | " + std::to_string(j->m_entrySize) << std::endl;
 					}	
 					else if (j->kind == Kind::_parameter)
 					{
 						*m_output << "        param: | " + j->type + " | " + j->name << std::endl;
 					}
-
-
 				}
 
 				*m_output << " -------------------------------- " << std::endl;
@@ -435,21 +467,5 @@ void SymbolTableCreatorVistor::print()
 
 }
 
-void SymbolTableCreatorVistor::visit(assignStat_Node& node)
-{
-	for (Node* child : node.getChildren())
-	{
-		child->m_symbolTable = node.m_symbolTable;
-		child->accept(*this);
-	}
-}
 
-void SymbolTableCreatorVistor::visit(addOp_Node& node)
-{
-	for (Node* child : node.getChildren())
-	{
-		child->m_symbolTable = node.m_symbolTable;
-		child->accept(*this);
-	}
-}
 

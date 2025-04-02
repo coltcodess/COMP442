@@ -5,44 +5,56 @@
  -------------------------------- 
         table:  POLYNOMIAL::evaluate
  -------------------------------- 
-        param: | float | x | 8 | 0
+        param: | float | x | 0 | 0
+        param: | float | x | 0 | 0
  -------------------------------- 
-  || class: LINEAR scope offset:  -16
+  || class: LINEAR scope offset:  0
   inherit: | SHAPE
-  data:  | a | float | 8 | 0
-  data:  | b | float | 8 | -8
+  data:  | a | float | 0 | 0
+  data:  | b | float | 0 | 0
  -------------------------------- 
         table:  LINEAR::build
  -------------------------------- 
         local: | id | new_function | 0 | 0
-        param: | float | B | 8 | 0
-        param: | float | A | 8 | 0
+        param: | float | B | 0 | 0
+        param: | float | A | 0 | 0
+        local: | id | new_function | 0 | 0
+        param: | float | B | 0 | 0
+        param: | float | A | 0 | 0
  -------------------------------- 
         table:  LINEAR::evaluate
  -------------------------------- 
-        local: | float | result | 8 | 0
-        param: | float | x | 8 | 0
+        local: | float | result | 0 | 0
+        param: | float | x | 0 | 0
+        local: | float | result | 0 | 0
+        param: | float | x | 0 | 0
  -------------------------------- 
-  || class: QUADRATIC scope offset:  -24
+  || class: QUADRATIC scope offset:  0
   inherit: | POLYNOMIAL
-  data:  | a | float | 8 | 0
-  data:  | b | float | 8 | -8
-  data:  | c | float | 8 | -16
+  data:  | a | float | 0 | 0
+  data:  | b | float | 0 | 0
+  data:  | c | float | 0 | 0
  -------------------------------- 
         table:  QUADRATIC::build
  -------------------------------- 
         local: | id | new_function | 0 | 0
-        param: | float | B | 8 | 0
-        param: | float | C | 8 | 0
-        param: | float | A | 8 | 0
+        param: | float | B | 0 | 0
+        param: | float | C | 0 | 0
+        param: | float | A | 0 | 0
+        local: | id | new_function | 0 | 0
+        param: | float | B | 0 | 0
+        param: | float | C | 0 | 0
+        param: | float | A | 0 | 0
  -------------------------------- 
         table:  QUADRATIC::evaluate
  -------------------------------- 
-        local: | float | result | 8 | 0
-        param: | float | x | 8 | 0
+        local: | float | result | 0 | 0
+        param: | float | x | 0 | 0
+        local: | float | result | 0 | 0
+        param: | float | x | 0 | 0
  -------------------------------- 
   || function: main  offset:  0
-        local: | id | f1
-        local: | id | f2
-        local: | int | counter
+        local: | id | f1 | 0
+        local: | id | f2 | 0
+        local: | int | counter | 0
  -------------------------------- 

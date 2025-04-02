@@ -87,17 +87,17 @@ void CodeGeneratorVisitor::visit(varDecl_Node& node)
 	}
 
 	std::string outputCode;
-
+	 
 	// Reserve memory space for variable declare
 	if (node.getChild(Type::type)->token->convertTokenTypeToString().compare("float") == 0)
 	{
-		moonDataCode += "% space for variable " + node.getChild(Type::idLit)->token->lexem + "\n";
+		moonDataCode += "% space for variable " + node.token->lexem + "\n";
 		moonDataCode += node.getChild(Type::idLit)->token->lexem + "           " + "res 8\n";
 	}
 	else if (node.getChild(Type::type)->token->convertTokenTypeToString().compare("int") == 0)
 	{
-		moonDataCode += MOON_INDENT + "% space for variable " + node.getChild(Type::idLit)->token->lexem + "\n";
-		moonDataCode += node.getChild(Type::idLit)->token->lexem + "           " + "res 4\n";
+		moonDataCode += MOON_INDENT + "% space for variable " + node.token->lexem + "\n";
+		moonDataCode += node.token->lexem + "           " + "res 4\n";
 	}
 	else if (node.getChild(Type::type)->token->convertTokenTypeToString().compare("id") == 0)
 	{

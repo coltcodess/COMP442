@@ -694,7 +694,7 @@ bool Parser::varDecl(Node* root)
 	if (m_lookAheadToken->type == TokenType::id)
 	{
 		Node* id_node = m_nodeFactory->makeNode(Type::idLit);
-		id_node->token = m_lookAheadToken;
+		varDecl_Node->token = m_lookAheadToken;
 		varDecl_Node->addChild(id_node);
 
 		if (match(TokenType::id) && match(TokenType::COLON) && type(varDecl_Node) && arraySizes(arraySizeList_node) && match(TokenType::SEMI))

@@ -33,6 +33,12 @@ public:
 	void visit(assignOp_Node& node) override;
 	void visit(multiOp_Node& node) override;
 
+	// Inherited via Visitor
+	virtual void visit(assignStat_Node& node) override;
+
+	// Inherited via Visitor
+	virtual void visit(addOp_Node& node) override;
+
 	void visit(idLit_Node& node) override;
 	void visit(intLit_Node& node) override;
 	void visit(floatLit_Node& node) override;
@@ -48,12 +54,6 @@ private:
 	
 
 
-	// Inherited via Visitor
-	virtual void visit(assignStat_Node& node) override;
-
-
-	// Inherited via Visitor
-	virtual void visit(addOp_Node& node) override;
 
 };
 

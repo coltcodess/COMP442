@@ -1,6 +1,0 @@
- || table: global  offset:  0
- -------------------------------- 
-  || function: main  offset:  0
-        local: | int | a
-        local: | int | b
- -------------------------------- 
