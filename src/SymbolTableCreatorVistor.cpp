@@ -50,6 +50,18 @@ void SymbolTableCreatorVistor::visit(writeStat_Node& node)
 	}
 }
 
+void SymbolTableCreatorVistor::visit(ifStat_Node& node)
+{
+}
+
+void SymbolTableCreatorVistor::visit(relExpr_Node& node)
+{
+}
+
+void SymbolTableCreatorVistor::visit(fCall_Node& node)
+{
+}
+
 void SymbolTableCreatorVistor::visit(classDecl_Node& node)
 {
 	std::string className = node.token->lexem;
@@ -72,7 +84,7 @@ void SymbolTableCreatorVistor::visit(funcDef_Node& node)
 	std::string funcName;
 	if (node.parent->token != nullptr)
 	{
-		funcName = node.parent->token->lexem + "::" + node.token->lexem;
+		funcName = node.token->lexem;
 
 	}
 	else
@@ -163,8 +175,7 @@ void SymbolTableCreatorVistor::visit(varDecl_Node& node)
 	}
 
 	std::string name = node.token->lexem;
-	std::string type = node.token->convertTokenTypeToString();
-
+	std::string type = node.getChildren()[1]->token->convertTokenTypeToString();
 	std::vector<int> dimlist;
 
 	for (Node* dim : node.getChildren()[2]->getChildren()) {
@@ -173,10 +184,12 @@ void SymbolTableCreatorVistor::visit(varDecl_Node& node)
 		dimlist.push_back(dimval);
 	}
 
-	node.m_symbolEntry = new SymbolTableEntry(name, Kind::_variable, node.getChildren()[1]->stringType(), dimlist);
+	node.moonVarName = node.m_symbolTable->name + "::" + node.token->lexem;
+
+	node.m_symbolEntry = new SymbolTableEntry(name, Kind::_variable, type, dimlist);
 	node.m_symbolTable->appendEntry(node.m_symbolEntry);
 
-
+	
 }
 
 void SymbolTableCreatorVistor::visit(assignOp_Node& node)
@@ -215,8 +228,7 @@ void SymbolTableCreatorVistor::visit(intLit_Node& node)
 
 	std::string tempVarName = this->getNewTempVarName();
 	node.moonVarName = tempVarName;
-	node.setType(Type::intLit);
-	std::string type = "int";
+	std::string type = node.stringType();
 	node.m_symbolEntry = new SymbolTableEntry(tempVarName, Kind::_variable, type, nullptr);
 	node.m_symbolTable->appendEntry(node.m_symbolEntry);
 
@@ -238,7 +250,6 @@ void SymbolTableCreatorVistor::visit(type_Node& node)
 	}
 }
 
-// Good
 void SymbolTableCreatorVistor::visit(assignStat_Node& node)
 {
 	for (Node* child : node.getChildren())
@@ -258,8 +269,17 @@ void SymbolTableCreatorVistor::visit(addOp_Node& node)
 
 	std::string tempVar = this->getNewTempVarName();
 	node.moonVarName = tempVar;
-	node.setType(node.getChildren()[0]->getType());
-	node.m_symbolEntry = new SymbolTableEntry(node.moonVarName, Kind::_variable, node.getChildren()[0]->stringType());
+	std::string type;
+
+	for (auto i : node.m_symbolTable->getEntries())
+	{
+		if (i->name.compare(node.getChildren()[0]->token->lexem) == 0)
+		{
+			type = i->type;
+		}
+	}
+
+	node.m_symbolEntry = new SymbolTableEntry(node.moonVarName, Kind::_variable, type);
 	node.m_symbolTable->appendEntry(node.m_symbolEntry);
 }
 
@@ -272,8 +292,19 @@ void SymbolTableCreatorVistor::visit(multiOp_Node& node)
 	}
 
 	std::string tempVar = this->getNewTempVarName();
+	std::string type;
+
+	// Check symbol table for first operand type
+	for (auto i : node.m_symbolTable->getEntries())
+	{
+		if (i->name.compare(node.getChildren()[0]->token->lexem) == 0)
+		{
+			type = i->type;
+		}
+	}
+
 	node.moonVarName = tempVar;
-	node.m_symbolEntry = new SymbolTableEntry(node.moonVarName, Kind::_variable, node.getChildren()[0]->stringType());
+	node.m_symbolEntry = new SymbolTableEntry(node.moonVarName, Kind::_variable, type);
 	node.m_symbolTable->appendEntry(node.m_symbolEntry);
 }
 

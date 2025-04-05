@@ -10,7 +10,7 @@ class SymbolTableEntry;
 class SymbolTable
 {
 public:
-
+	std::string name;
 	SymbolTable(int tableLevel, std::string name, SymbolTable* upperTable);
 	
 	std::string getName();
@@ -28,11 +28,13 @@ public:
 
 	bool checkEntryNameKindInTable(SymbolTableEntry* entry);
 
+	SymbolTableEntry* lookupName(std::string name);
+
 	int m_tableOffset = 0;
 
 
 private:
-	std::string name;
+
 	std::vector<SymbolTableEntry*> entries;
 
 };

@@ -16,7 +16,7 @@ int ComputeMemSizeVisitor::sizeOfTypeNode(Node* node)
 	{
 		size = 8;
 	}
-	else if (node->m_symbolEntry->type.compare("type") == 0)
+	else if (node->m_symbolEntry->type.compare("id") == 0)
 	{
 		for (SymbolTableEntry* entry : node->m_symbolTable->upperTable->getEntries())
 		{
@@ -170,6 +170,8 @@ void ComputeMemSizeVisitor::visit(multiOp_Node& node)
 		
 		child->accept(*this);
 	}
+
+	node.m_symbolEntry->m_entrySize = this->sizeOfTypeNode(&node);
 }
 
 void ComputeMemSizeVisitor::visit(addOp_Node& node)
@@ -179,6 +181,8 @@ void ComputeMemSizeVisitor::visit(addOp_Node& node)
 		
 		child->accept(*this);
 	}
+
+	node.m_symbolEntry->m_entrySize = this->sizeOfTypeNode(&node);
 }
 
 void ComputeMemSizeVisitor::visit(idLit_Node& node)
@@ -188,6 +192,8 @@ void ComputeMemSizeVisitor::visit(idLit_Node& node)
 		
 		child->accept(*this);
 	}
+
+
 }
 
 void ComputeMemSizeVisitor::visit(intLit_Node& node)
@@ -207,6 +213,8 @@ void ComputeMemSizeVisitor::visit(floatLit_Node& node)
 		
 		child->accept(*this);
 	}
+
+	node.m_symbolEntry->m_entrySize = this->sizeOfTypeNode(&node);
 }
 
 void ComputeMemSizeVisitor::visit(type_Node& node)
@@ -232,4 +240,16 @@ void ComputeMemSizeVisitor::visit(writeStat_Node& node)
 	{
 		child->accept(*this);
 	}
+}
+
+void ComputeMemSizeVisitor::visit(ifStat_Node& node)
+{
+}
+
+void ComputeMemSizeVisitor::visit(relExpr_Node& node)
+{
+}
+
+void ComputeMemSizeVisitor::visit(fCall_Node& node)
+{
 }

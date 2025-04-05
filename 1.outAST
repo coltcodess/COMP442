@@ -4,17 +4,33 @@
       | idLit
       | inheritList
       | memDeclList
+        | memDeclFunc
+          | type
+          | idLit
+          | fParamsList
+            | fParam
+              | type
+              | idLit
+          | type
         | memDeclAttrib
           | varDecl
             | idLit
-            | float
-            | arraySizeList
-        | memDeclAttrib
-          | varDecl
-            | idLit
-            | int
+            | type
             | arraySizeList
   | implDefList
+    | impleDef
+      | idLit
+      | funcDef
+        | type
+        | idLit
+        | fParamsList
+          | fParam
+            | type
+            | idLit
+        | type
+        | statBlock
+          | returnStat
+            | int
   | funcDefList
     | funcDef
       | idLit
@@ -27,29 +43,12 @@
           | arraySizeList
         | varDecl
           | idLit
-          | int
-          | arraySizeList
-            | int
-        | varDecl
-          | idLit
-          | int
-          | arraySizeList
-        | varDecl
-          | idLit
-          | int
+          | type
           | arraySizeList
         | assignOp
           | idLit
-          | int
-        | assignOp
           | idLit
-          | int
-        | assignOp
-          | idLit
-          | multiOp
-            | idLit
-            | idLit
+            | dot
+              | fCall
         | writeStat
-          | addOp
-            | idLit
-            | int
+          | idLit

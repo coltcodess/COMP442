@@ -118,10 +118,20 @@ void CodeGeneratorVisitor::visit(varDecl_Node& node)
 		child->accept(*this);
 	}
 
-	if (node.getChildren()[1]->getType() == Type::intLit)
+	if (node.m_symbolEntry->type == "int")
 	{
 		moonDataCode += MOON_INDENT + "% space for variable " + node.getChildren()[1]->token->convertTokenTypeToString() + "\n";
 		moonDataCode += node.token->lexem + MOON_INDENT + " res 4\n";
+	}
+	else if (node.m_symbolEntry->type == "float")
+	{
+		moonDataCode += MOON_INDENT + "% space for variable " + node.getChildren()[1]->token->convertTokenTypeToString() + "\n";
+		moonDataCode += node.token->lexem + MOON_INDENT + " res 8\n";
+	}
+	else if (node.m_symbolEntry->type == "id")
+	{
+		moonDataCode += MOON_INDENT + "% space for variable " + node.getChildren()[1]->token->convertTokenTypeToString() + "\n";
+		moonDataCode += node.token->lexem + MOON_INDENT + " res " + std::to_string(node.m_symbolEntry->m_entrySize) + "\n";
 	}
 }
 
@@ -193,6 +203,7 @@ void CodeGeneratorVisitor::visit(intLit_Node& node)
 	moonDataCode += node.moonVarName + MOON_INDENT + "res 4\n";
 	moonExecCode += MOON_INDENT + "addi " + localRegister + ",r0," + node.token->lexem + "\n";
 	moonExecCode += MOON_INDENT + "sw " + node.moonVarName + "(r0)," + localRegister + "\n";
+
 	// deallocate the register for the current node
 	this->registerPool.push_back(localRegister);
 }
@@ -219,6 +230,21 @@ void CodeGeneratorVisitor::visit(assignStat_Node& node)
 	{
 		child->accept(*this);
 	}
+}
+
+void CodeGeneratorVisitor::visit(ifStat_Node& node)
+{
+	for (Node* child : node.getChildren())
+	{
+		child->accept(*this);
+	}
+
+
+	std::string leftRegister = this->registerPool.back();
+	this->registerPool.pop_back();
+
+	//moonExecCode += MOON_INDENT + "% processing: IF statement \n";
+	//moonExecCode += "lw " + leftRegister + ",";
 }
 
 void CodeGeneratorVisitor::visit(writeStat_Node& node)
@@ -252,6 +278,47 @@ void CodeGeneratorVisitor::visit(funcDefList_Node& node)
 	}
 }
 
+void CodeGeneratorVisitor::visit(fCall_Node& node)
+{
+	for (Node* child : node.getChildren())
+	{
+		child->accept(*this);
+	}
+
+	std::string localRegister = this->registerPool.back();
+	this->registerPool.pop_back();
+
+	SymbolTableEntry* entry = node.m_symbolTable->lookupName(node.token->lexem);
+
+	if (entry == nullptr)
+	{
+		std::cout << "ERROR: Function not found!" << std::endl;
+		return;
+	}
+
+	int indexOfParam = 0;
+
+	moonExecCode += MOON_INDENT + "% processing: function call to " + node.getChildren()[0]->moonVarName + " \n";
+	
+	// check aParams
+
+	moonExecCode += MOON_INDENT + "jl r15," + node.token->lexem + "\n";
+	moonDataCode += MOON_INDENT + "% space for function call expression factor\n";
+	moonDataCode += node.moonVarName + MOON_INDENT + " res 4\n";
+	moonExecCode += MOON_INDENT + "lw " + localRegister + "," + node.token->lexem + "return(r0)\n";
+	moonExecCode += MOON_INDENT + "sw " + node.moonVarName + "(r0)," + localRegister + "\n";
+
+	this->registerPool.push_back(localRegister);
+
+}
+
+void CodeGeneratorVisitor::visit(relExpr_Node& node)
+{
+	for (Node* child : node.getChildren())
+	{
+		child->accept(*this);
+	}
+}
 
 void CodeGeneratorVisitor::visit(addOp_Node& node)
 {
@@ -283,4 +350,7 @@ void CodeGeneratorVisitor::visit(addOp_Node& node)
 	this->registerPool.push_back(localRegister);
 
 }
+
+
+
 

@@ -62,5 +62,10 @@ private:
 
 	virtual void visit(writeStat_Node& node) override;
 
+	virtual void visit(ifStat_Node& node) override;
+
+	virtual void visit(relExpr_Node& node) override;
+
+	virtual void visit(fCall_Node& node) override;
 };
 

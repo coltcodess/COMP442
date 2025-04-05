@@ -2,8 +2,7 @@
 #include "Visitor.h"
 #include "Node.h"
 
-class ComputeMemSizeVisitor :
-    public Visitor
+class ComputeMemSizeVisitor : public Visitor
 {
 public:
     ComputeMemSizeVisitor();
@@ -36,5 +35,14 @@ public:
 
     // Inherited via Visitor
     virtual void visit(writeStat_Node& node) override;
+
+    // Inherited via Visitor
+    virtual void visit(ifStat_Node& node) override;
+
+    // Inherited via Visitor
+    virtual void visit(relExpr_Node& node) override;
+
+    // Inherited via Visitor
+    virtual void visit(fCall_Node& node) override;
 };
 

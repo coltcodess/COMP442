@@ -1,20 +1,27 @@
 class MyClass {
+	public function evaluate(x: float) => float; 
+
 	private attribute a: float;
-	private attribute b: int;
 };
+
+implementation MyClass {   
+  function evaluate(x: float) => float
+  {
+    return (5);
+  }
+}
 
 function main() => void
 {
-	local f: MyClass;
-	local a: int[2];
-	local b: int;
 	local c: int;
-	b := 10;
-	a := 42;
+	local test: MyClass;
 
-	c := b * a;
+	c := test.evaluate();
 
-	write(c + 1);
+	write(c);
+
+
+
 	
 
 	

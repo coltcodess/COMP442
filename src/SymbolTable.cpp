@@ -96,13 +96,12 @@ std::string SymbolTable::print()
     }
     str += "\n" + spacing + "=====================================================\n";
     str += spacing + "| table:  " + this->name + "    " + " scope offset: " + std::to_string(this->m_tableOffset) + "\n";
-    str += spacing + "=====================================================\n";
 
     for (int i = 0; i < entries.size(); i++)
     {
         str += spacing + entries[i]->entryToString() + "\n";
     }
-    str += spacing + "=====================================================\n";
+    str += spacing + "=====================================================";
     return str;
 
 }
@@ -115,6 +114,34 @@ bool SymbolTable::checkEntryNameKindInTable(SymbolTableEntry* entry)
     }
 
     return false;
+}
+
+SymbolTableEntry* SymbolTable::lookupName(std::string name)
+{
+    SymbolTableEntry* entry = nullptr;
+
+    bool found = false;
+
+    for (SymbolTableEntry* i : this->entries)
+    {
+        if (i->name.compare(name) == 0)
+        {
+            entry = i;
+            found = true;
+        }
+    }
+    
+    if (!found)
+    {
+        if (upperTable != nullptr)
+        {
+            entry = upperTable->lookupName(name);
+        }
+    }
+
+
+    return entry;
+
 }
 
 

@@ -372,8 +372,10 @@ bool Parser::implDef(Node* root)
 
 	if (m_lookAheadToken->type == IMPLEMENTATION)
 	{
-		impleDef_Node->addChild(m_nodeFactory->makeNode(idLit));
+		Node* id_node = m_nodeFactory->makeNode(idLit);
+		impleDef_Node->addChild(id_node);
 		impleDef_Node->token = m_lexer.peekAheadToken();
+		id_node->token = m_lexer.peekAheadToken();
 
 		if (match(TokenType::IMPLEMENTATION) && match(TokenType::id) && match(TokenType::OPENCUBR) && impleBody(impleDef_Node) && match(TokenType::CLOSECUBR))
 		{
@@ -1091,6 +1093,8 @@ bool Parser::RIGHTRECARITHEXPR(Node& child, Node*& root)
 		Node* RIGHTRECARITHEXPR_Node = m_nodeFactory->makeNode(Type::addOp);
 		Node& ref_RIGHTRECARITHEXPR_Node = *RIGHTRECARITHEXPR_Node;
 
+		RIGHTRECARITHEXPR_Node->token = m_lookAheadToken;
+
 		if (addOp() && term(term_Node) && RIGHTRECARITHEXPR(*term_Node, RIGHTRECARITHEXPR_Node))
 		{
 			root->addChild(RIGHTRECARITHEXPR_Node);
@@ -1181,6 +1185,8 @@ bool Parser::rightRecTerm(Node& child, Node*& root)
 
 		Node* factor_Node = m_nodeFactory->makeNode();
 		Node* rightRecTerm_Node = m_nodeFactory->makeNode(Type::multiOp);
+
+		rightRecTerm_Node->token = m_lexer.peekAheadToken();
 
 		if (multOp(factor_Node) && factor(factor_Node) && rightRecTerm(*factor_Node, rightRecTerm_Node))
 		{
@@ -1448,8 +1454,6 @@ bool Parser::reptVariable(Node& child, Node* root)
 
 	if (!skipErrors(true, first, follow)) return false;
 
-
-
 	if (m_lookAheadToken->type == DOT)
 	{
 		Node* varIdNest_Node = m_nodeFactory->makeNode();
@@ -1533,6 +1537,7 @@ bool Parser::idnest(Node* root)
 
 	if (m_lookAheadToken->type == TokenType::DOT)
 	{
+		root->token = m_lexer.peekAheadToken();
 		if (match(DOT) && match(id) && idnest2(root))
 		{
 			*m_derivationFile << "idnest -> '.' 'id' idnest2\n";
@@ -1554,6 +1559,7 @@ bool Parser::idnest2(Node* root)
 	{
 		Node* fCall_Node = m_nodeFactory->makeNode(Type::fCall);
 		root->addChild(fCall_Node);
+		fCall_Node->token = root->token;
 
 		if (match(TokenType::OPENPAR) && aParams(fCall_Node) && match(TokenType::CLOSEPAR))
 		{
@@ -1667,7 +1673,6 @@ bool Parser::type(Node* root)
 
 	if (m_lookAheadToken->type == INT)
 	{
-		node->setType(intLit);
 		if (match(TokenType::INT))
 		{
 			*m_derivationFile << "type -> 'int'\n";
@@ -1677,7 +1682,6 @@ bool Parser::type(Node* root)
 	}
 	else if (m_lookAheadToken->type == FLOAT)
 	{
-		node->setType(floatLit);
 		if (match(TokenType::FLOAT))
 		{
 			*m_derivationFile << "type -> 'float'\n";
