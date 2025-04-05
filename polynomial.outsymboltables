@@ -1,60 +1,77 @@
- || table: global  offset:  0
- -------------------------------- 
-  || class: POLYNOMIAL scope offset:  0
-  inherit: | none
- -------------------------------- 
-        table:  POLYNOMIAL::evaluate
- -------------------------------- 
-        param: | float | x | 0 | 0
-        param: | float | x | 0 | 0
- -------------------------------- 
-  || class: LINEAR scope offset:  0
-  inherit: | SHAPE
-  data:  | a | float | 0 | 0
-  data:  | b | float | 0 | 0
- -------------------------------- 
-        table:  LINEAR::build
- -------------------------------- 
-        local: | id | new_function | 0 | 0
-        param: | float | B | 0 | 0
-        param: | float | A | 0 | 0
-        local: | id | new_function | 0 | 0
-        param: | float | B | 0 | 0
-        param: | float | A | 0 | 0
- -------------------------------- 
-        table:  LINEAR::evaluate
- -------------------------------- 
-        local: | float | result | 0 | 0
-        param: | float | x | 0 | 0
-        local: | float | result | 0 | 0
-        param: | float | x | 0 | 0
- -------------------------------- 
-  || class: QUADRATIC scope offset:  0
-  inherit: | POLYNOMIAL
-  data:  | a | float | 0 | 0
-  data:  | b | float | 0 | 0
-  data:  | c | float | 0 | 0
- -------------------------------- 
-        table:  QUADRATIC::build
- -------------------------------- 
-        local: | id | new_function | 0 | 0
-        param: | float | B | 0 | 0
-        param: | float | C | 0 | 0
-        param: | float | A | 0 | 0
-        local: | id | new_function | 0 | 0
-        param: | float | B | 0 | 0
-        param: | float | C | 0 | 0
-        param: | float | A | 0 | 0
- -------------------------------- 
-        table:  QUADRATIC::evaluate
- -------------------------------- 
-        local: | float | result | 0 | 0
-        param: | float | x | 0 | 0
-        local: | float | result | 0 | 0
-        param: | float | x | 0 | 0
- -------------------------------- 
-  || function: main  offset:  0
-        local: | id | f1 | 0
-        local: | id | f2 | 0
-        local: | int | counter | 0
- -------------------------------- 
+
+=====================================================
+| table:  global     scope offset: |
+=====================================================
+ |  POLYNOMIAL | 
+=====================================================
+| table:  POLYNOMIAL     scope offset: |
+=====================================================
+=====================================================
+
+ |  LINEAR | 
+=====================================================
+| table:  LINEAR     scope offset: |
+=====================================================
+ |  a | floatLit
+ |  b | floatLit
+=====================================================
+
+ |  QUADRATIC | 
+=====================================================
+| table:  QUADRATIC     scope offset: |
+=====================================================
+ |  a | floatLit
+ |  b | floatLit
+ |  c | floatLit
+=====================================================
+
+ |  POLYNOMIAL::evaluate | 
+=====================================================
+| table:  POLYNOMIAL::evaluate     scope offset: |
+=====================================================
+=====================================================
+
+ |  QUADRATIC::evaluate | 
+=====================================================
+| table:  QUADRATIC::evaluate     scope offset: |
+=====================================================
+ |  result | floatLit
+ |  t1 | idLit
+ |  t2 | multiOp
+ |  t3 | idLit
+ |  t4 | multiOp
+=====================================================
+
+ |  QUADRATIC::build | 
+=====================================================
+| table:  QUADRATIC::build     scope offset: |
+=====================================================
+ |  new_function | type
+=====================================================
+
+ |  LINEAR::build | 
+=====================================================
+| table:  LINEAR::build     scope offset: |
+=====================================================
+ |  new_function | type
+=====================================================
+
+ |  LINEAR::evaluate | 
+=====================================================
+| table:  LINEAR::evaluate     scope offset: |
+=====================================================
+ |  result | floatLit
+ |  t5 | idLit
+ |  t6 | multiOp
+=====================================================
+
+ |  main | 
+=====================================================
+| table:  main     scope offset: |
+=====================================================
+ |  f1 | type
+ |  f2 | type
+ |  counter | intLit
+=====================================================
+
+=====================================================

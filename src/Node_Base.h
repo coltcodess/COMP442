@@ -65,6 +65,8 @@ enum Type {
 
 };
 
+
+
 class Node
 {
 private:
@@ -79,12 +81,13 @@ public:
 	SymbolTable* m_symbolTable = nullptr;
 	SymbolTableEntry* m_symbolEntry = nullptr;
 
+
 	std::string moonVarName;
 
 	std::string localRegister = "";
 	std::string leftChildRegister = "";
 	std::string rightChildRegister = "";
-
+	static SymbolTable* m_GLOBAL_symbolTable;
 
 	// Constructors 
 	Node(Type t) : m_type(t)
@@ -225,9 +228,9 @@ public:
 		case Type::classDeclList:
 			return "classDeclList";
 		case Type::floatLit:
-			return "floatLit";
+			return "float";
 		case Type::intLit:
-			return "intLit";
+			return "int";
 		case Type::type:
 			return "type";
 		case Type::inheritList:

@@ -44,16 +44,23 @@ public:
 	void visit(floatLit_Node& node) override;
 	void visit(type_Node& node) override;
 
-	void print();
-
 
 
 private: 
 	std::ofstream* m_output;
 	std::ofstream* m_errors;
-	
+	int tempVarNum;
+	std::string getNewTempVarName();
 
 
+
+
+	// Inherited via Visitor
+	virtual void visit(funcDefList_Node& node) override;
+
+
+	// Inherited via Visitor
+	virtual void visit(writeStat_Node& node) override;
 
 };
 

@@ -9,27 +9,27 @@
       | statBlock
         | varDecl
           | idLit
-          | type
+          | int
           | arraySizeList
-        | assignOp
-          | idLit
-          | addOp
-            | intLit
-            | intLit
+            | int
         | varDecl
           | idLit
-          | type
+          | int
+          | arraySizeList
+        | varDecl
+          | idLit
+          | int
           | arraySizeList
         | assignOp
           | idLit
-          | intLit
+          | int
         | assignOp
           | idLit
-          | intLit
+          | int
         | assignOp
           | idLit
           | addOp
             | idLit
-            | multiOp
-              | idLit
-              | idLit
+            | idLit
+        | writeStat
+          | idLit

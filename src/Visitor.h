@@ -26,6 +26,8 @@ class statBlock_Node;
 class assignOp_Node;
 class multiOp_Node;
 class addOp_Node;
+class funcDefList_Node;
+class writeStat_Node;
 
 
 class Visitor
@@ -45,6 +47,7 @@ public:
 	virtual void visit(statBlock_Node& node) = 0;
 
 	virtual void visit(inheritList_Node& node) = 0;
+	virtual void visit(funcDefList_Node& node) = 0;
 
 	virtual void visit(varDecl_Node& node) = 0;
 
@@ -60,5 +63,7 @@ public:
 	virtual void visit(intLit_Node& node) = 0;
 	virtual void visit(floatLit_Node& node) = 0;
 	virtual void visit(type_Node& node) = 0;
+
+	virtual void visit(writeStat_Node& node) = 0;
 
 };

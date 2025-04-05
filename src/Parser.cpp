@@ -538,11 +538,13 @@ bool Parser::funcHead(Node* root)
 	}
 	else if (m_lookAheadToken->type == FUNCTION)
 	{
-		
+		Node* id_node = m_nodeFactory->makeNode(Type::idLit);
+		id_node->token = m_lexer.peekAheadToken();
+
 		if (match(TokenType::FUNCTION) && match(TokenType::id) && match(TokenType::OPENPAR) && fParams(fParams_node) && match(TokenType::CLOSEPAR) && match(TokenType::ARROW) && returnType(root))
 		{
 			*m_derivationFile << "'function' 'id' '(' fParams ')' '=>' returnType\n";
-			root->addChild(m_nodeFactory->makeNode(Type::idLit));
+			root->addChild(id_node);
 			root->addChild(fParams_node);
 			root->addChild(m_nodeFactory->makeNode(Type::type));
 			// Make subtree from everything
@@ -694,6 +696,7 @@ bool Parser::varDecl(Node* root)
 	if (m_lookAheadToken->type == TokenType::id)
 	{
 		Node* id_node = m_nodeFactory->makeNode(Type::idLit);
+		id_node->token = m_lookAheadToken;
 		varDecl_Node->token = m_lookAheadToken;
 		varDecl_Node->addChild(id_node);
 
@@ -1662,6 +1665,7 @@ bool Parser::type(Node* root)
 
 	if (m_lookAheadToken->type == INT)
 	{
+		node->setType(intLit);
 		if (match(TokenType::INT))
 		{
 			*m_derivationFile << "type -> 'int'\n";
@@ -1671,6 +1675,7 @@ bool Parser::type(Node* root)
 	}
 	else if (m_lookAheadToken->type == FLOAT)
 	{
+		node->setType(floatLit);
 		if (match(TokenType::FLOAT))
 		{
 			*m_derivationFile << "type -> 'float'\n";

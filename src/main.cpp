@@ -74,10 +74,10 @@ int main()
     std::ofstream* outSymbolTables = new std::ofstream(fileInput + ".outsymboltables", std::ofstream::out);
 
     // Assignment 5 - Code Generation
-    std::ofstream* outCodeGeneration = new std::ofstream(fileInput + ".moon", std::ofstream::out);
+    std::ofstream* outCodeGeneration = new std::ofstream(fileInput + ".m", std::ofstream::out);
 
     SymbolTableCreatorVistor symbolTableCreatorVistor(outSymbolTables, outSemErrors);
-    TypeCheckingVisitor typeCheckingVisitor(outSemErrors);
+    //TypeCheckingVisitor typeCheckingVisitor(outSemErrors);
 
     // Assignment 5
     ComputeMemSizeVisitor computeMemSizeVisitor;
@@ -95,6 +95,8 @@ int main()
     astRoot->accept(computeMemSizeVisitor);
 
     astRoot->accept(codeGeneratorVisitor);
+
+    *outSymbolTables << astRoot->m_symbolTable->print();
 
 
     

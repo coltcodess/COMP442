@@ -11,10 +11,6 @@ public:
 
 	void accept(Visitor& visitor) override
 	{
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 		visitor.visit(*this);
 	};
 
@@ -32,10 +28,6 @@ public:
 
 	void accept(Visitor& visitor) override
 	{
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 		visitor.visit(*this);
 	};
 };
@@ -52,10 +44,6 @@ public:
 
 	void accept(Visitor& visitor) override {
 
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 		visitor.visit(*this);
 	};
 	
@@ -73,10 +61,6 @@ public:
 
 	void accept(Visitor& visitor) override {
 
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 		visitor.visit(*this);
 	};
 };
@@ -93,10 +77,6 @@ public:
 
 	void accept(Visitor& visitor) override {
 
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 		visitor.visit(*this);
 	};
 };
@@ -113,10 +93,6 @@ public:
 
 	void accept(Visitor& visitor) override {
 
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 		visitor.visit(*this);
 	};
 };
@@ -133,10 +109,6 @@ public:
 
 	void accept(Visitor& visitor) override {
 
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 		visitor.visit(*this);
 	};
 };
@@ -152,16 +124,12 @@ public:
 	virtual ~funcDefList_Node() {};
 
 	void accept(Visitor& visitor) override {
-	
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
+
 		visitor.visit(*this);
 	};
-};
 
-/////////////////////////////////////////////////////////////////////
+};
+	/////////////////////////////////////////////////////////////////////
 
 class funcDecl_Node : public Node
 {
@@ -172,11 +140,7 @@ public:
 	virtual ~funcDecl_Node() {};
 
 	void accept(Visitor& visitor) override {
-	
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
+
 		visitor.visit(*this);
 	};
 };
@@ -188,17 +152,12 @@ class funcDef_Node : public Node
 public:
 	funcDef_Node(Type t) : Node(t)
 	{ }
-	
+
 	virtual ~funcDef_Node() {};
 
 	void accept(Visitor& visitor) override {
 
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 		visitor.visit(*this);
-	
 	};
 };
 
@@ -213,11 +172,7 @@ public:
 	virtual ~inheritList_Node() {};
 
 	void accept(Visitor& visitor) override {
-		
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
+
 		visitor.visit(*this);
 	};
 };
@@ -233,11 +188,7 @@ public:
 	virtual ~memDeclList_Node() {};
 
 	void accept(Visitor& visitor) override {
-		
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
+
 		visitor.visit(*this);
 	};
 };
@@ -253,11 +204,7 @@ public:
 	virtual ~memDeclFunc_Node() {};
 
 	void accept(Visitor& visitor) override {
-		
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
+
 		visitor.visit(*this);
 	};
 };
@@ -273,12 +220,7 @@ public:
 
 	virtual ~memDeclAttrib_Node() {};
 
-	void accept(Visitor& visitor) override 
-	{
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
+	void accept(Visitor& visitor) override {
 
 		visitor.visit(*this);
 	};
@@ -295,11 +237,6 @@ public:
 	virtual ~fParamsList_Node() {};
 
 	void accept(Visitor& visitor) override {
-		
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 
 		visitor.visit(*this);
 	};
@@ -316,11 +253,6 @@ public:
 	virtual ~fParam_Node() {};
 
 	void accept(Visitor& visitor) override {
-		
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 
 		visitor.visit(*this);
 	};
@@ -337,11 +269,6 @@ public:
 	virtual ~arraySizeList_Node() {};
 
 	void accept(Visitor& visitor) override {
-		
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 
 		visitor.visit(*this);
 	};
@@ -358,11 +285,6 @@ public:
 	virtual ~statBlock_Node() {};
 
 	void accept(Visitor& visitor) override {
-		
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 
 		visitor.visit(*this);
 	};
@@ -379,11 +301,6 @@ public:
 	virtual ~returnStat_Node() {};
 
 	void accept(Visitor& visitor) override {
-		
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 
 		visitor.visit(*this);
 	};
@@ -400,11 +317,6 @@ public:
 	virtual ~whileStat_Node() {};
 
 	void accept(Visitor& visitor) override {
-		
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 
 		visitor.visit(*this);
 	};
@@ -422,11 +334,6 @@ public:
 
 	void accept(Visitor& visitor) override {
 
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
-
 		visitor.visit(*this);
 	};
 };
@@ -442,11 +349,6 @@ public:
 	virtual ~readStat_Node() {};
 
 	void accept(Visitor& visitor) override {
-
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 
 		visitor.visit(*this);
 	};
@@ -464,11 +366,6 @@ public:
 
 	void accept(Visitor& visitor) override {
 
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
-
 		visitor.visit(*this);
 	};
 };
@@ -484,11 +381,6 @@ public:
 	virtual ~expr_Node() {};
 
 	void accept(Visitor& visitor) override {
-
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 
 		visitor.visit(*this);
 	};
@@ -506,11 +398,6 @@ public:
 
 	void accept(Visitor& visitor) override {
 
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
-
 		visitor.visit(*this);
 	};
 };
@@ -526,11 +413,6 @@ public:
 	virtual ~varDecl_Node() {};
 
 	void accept(Visitor& visitor) override {
-
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 
 		visitor.visit(*this);
 	};
@@ -548,18 +430,13 @@ public:
 
 	void accept(Visitor& visitor) override {
 
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
-
 		visitor.visit(*this);
 	};
 };
 
 /////////////////////////////////////////////////////////////////////
 
-class fCall_Node: public Node
+class fCall_Node : public Node
 {
 public:
 	fCall_Node(Type t) : Node(t)
@@ -568,11 +445,6 @@ public:
 	virtual ~fCall_Node() {};
 
 	void accept(Visitor& visitor) override {
-
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 
 		visitor.visit(*this);
 	};
@@ -590,11 +462,6 @@ public:
 
 	void accept(Visitor& visitor) override {
 
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
-
 		visitor.visit(*this);
 	};
 };
@@ -610,6 +477,7 @@ public:
 	virtual ~relOp_Node() {};
 
 	void accept(Visitor& visitor) override {
+
 		visitor.visit(*this);
 	};
 };
@@ -625,11 +493,6 @@ public:
 	virtual ~addOp_Node() {};
 
 	void accept(Visitor& visitor) override {
-
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 
 		visitor.visit(*this);
 	};
@@ -647,11 +510,6 @@ public:
 
 	void accept(Visitor& visitor) override {
 
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
-
 		visitor.visit(*this);
 	};
 };
@@ -668,11 +526,6 @@ public:
 
 	void accept(Visitor& visitor) override {
 
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
-
 		visitor.visit(*this);
 	};
 };
@@ -688,11 +541,6 @@ public:
 	virtual ~dataMem_Node() {};
 
 	void accept(Visitor& visitor) override {
-
-		for (Node* child : this->getChildren())
-		{
-			child->accept(visitor);
-		}
 
 		visitor.visit(*this);
 	};
@@ -713,6 +561,7 @@ public:
 	virtual ~idLit_Node() {};
 
 	void accept(Visitor& visitor) override {
+
 		visitor.visit(*this);
 	};
 
@@ -768,5 +617,3 @@ public:
 };
 
 /////////////////////////////////////////////////////////////////////
-
-

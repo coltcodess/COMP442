@@ -1,14 +1,13 @@
 #include "SymbolTable.h"
 
-SymbolTable::SymbolTable()
+SymbolTable::SymbolTable(int tableLevel, std::string name, SymbolTable* upperTable)
 {
-
-}
-
-SymbolTable::SymbolTable(std::string name)
-{
+    this->tablelevel = tablelevel;
     this->name = name;
+    this->upperTable = upperTable;
 }
+
+
 
 std::string SymbolTable::getName()
 {
@@ -27,7 +26,6 @@ const std::vector<SymbolTableEntry*> SymbolTable::getEntries()
 
 void SymbolTable::appendEntry(SymbolTableEntry* entry)
 {
-
     entries.push_back(entry);
 }
 
@@ -87,6 +85,28 @@ bool SymbolTable::checkEntryInTable(SymbolTableEntry* entry)
     return false;
 }
 
+std::string SymbolTable::print()
+{
+    std::string str; 
+    std::string spacing; 
+
+    for (int i = 0; i < this->tablelevel; i++)
+    {
+        spacing += "|     ";
+    }
+    str += "\n" + spacing + "=====================================================\n";
+    str += spacing + "| table:  " + this->name + "    " + " scope offset: |\n";
+    str += spacing + "=====================================================\n";
+
+    for (int i = 0; i < entries.size(); i++)
+    {
+        str += spacing + entries[i]->entryToString() + "\n";
+    }
+    str += spacing + "=====================================================\n";
+    return str;
+
+}
+
 bool SymbolTable::checkEntryNameKindInTable(SymbolTableEntry* entry)
 {
     for (auto i : this->entries)
@@ -96,5 +116,7 @@ bool SymbolTable::checkEntryNameKindInTable(SymbolTableEntry* entry)
 
     return false;
 }
+
+
 
 

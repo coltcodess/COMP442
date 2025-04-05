@@ -13,7 +13,6 @@ public:
 	int tempVarNum = 0;
 	std::vector<std::string> registerPool;
 
-	std::string getNewTempVarName();
 	std::string moonExecCode; 
 	std::string moonDataCode;
 
@@ -28,6 +27,8 @@ private:
 	virtual void visit(classDecl_Node& node) override;
 
 	virtual void visit(funcDef_Node& node) override;
+
+	virtual void visit(funcDefList_Node& node) override;
 
 	virtual void visit(impleDef_Node& node) override;
 
@@ -57,8 +58,9 @@ private:
 
 	virtual void visit(addOp_Node& node) override;
 
-	// Inherited via Visitor
 	virtual void visit(assignStat_Node& node) override;
+
+	virtual void visit(writeStat_Node& node) override;
 
 };
 

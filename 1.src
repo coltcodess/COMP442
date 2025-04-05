@@ -1,11 +1,15 @@
 function main() => void
 {
-	local a: int;
-	a := 2 + 2;
+	local a: int[2];
 	local b: int;
-	b := 5;
-	d := 5;
-	int c := a + b * d;
+	local c: int;
+	b := 10;
+	a := 42;
+
+	c := b + a;
+
+	write(c);
+	
 
 	
 

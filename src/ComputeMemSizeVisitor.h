@@ -8,6 +8,8 @@ class ComputeMemSizeVisitor :
 public:
     ComputeMemSizeVisitor();
 
+    int sizeOfTypeNode(Node* node);
+
     // Inherited via Visitor
     virtual void visit(Node& node) override;
     virtual void visit(prog_Node& node) override;
@@ -28,5 +30,11 @@ public:
     virtual void visit(intLit_Node& node) override;
     virtual void visit(floatLit_Node& node) override;
     virtual void visit(type_Node& node) override;
+
+    // Inherited via Visitor
+    virtual void visit(funcDefList_Node& node) override;
+
+    // Inherited via Visitor
+    virtual void visit(writeStat_Node& node) override;
 };
 
