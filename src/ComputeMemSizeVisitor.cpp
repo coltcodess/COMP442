@@ -7,9 +7,21 @@ ComputeMemSizeVisitor::ComputeMemSizeVisitor()
 int ComputeMemSizeVisitor::sizeOfTypeNode(Node* node)
 {
 	int size = 0;
-	if (node->getType()  == Type::intLit)
+
+	if (node->m_symbolEntry->type.compare("int") == 0)
 	{
 		size = 4;
+	}
+	else if (node->m_symbolEntry->type.compare("float") == 0)
+	{
+		size = 8;
+	}
+
+	SymbolTableEntry* entry = node->m_symbolEntry;
+	if (entry != nullptr && !entry->arrayList.empty())
+	{
+		for (int i : entry->arrayList)
+			size *= i;
 	}
 
 	return size;
@@ -108,7 +120,7 @@ void ComputeMemSizeVisitor::visit(varDecl_Node& node)
 		child->accept(*this);
 	}
 
-	node.m_symbolEntry->m_entrySize = this->sizeOfTypeNode(node.getChildren()[1]);
+	node.m_symbolEntry->m_entrySize = this->sizeOfTypeNode(&node);
 }
 
 void ComputeMemSizeVisitor::visit(assignStat_Node& node)

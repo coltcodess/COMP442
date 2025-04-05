@@ -165,7 +165,15 @@ void SymbolTableCreatorVistor::visit(varDecl_Node& node)
 	std::string name = node.token->lexem;
 	std::string type = node.token->convertTokenTypeToString();
 
-	node.m_symbolEntry = new SymbolTableEntry(name, Kind::_variable, node.getChildren()[1]->stringType());
+	std::vector<int> dimlist;
+
+	for (Node* dim : node.getChildren()[2]->getChildren()) {
+		// parameter dimension
+		int dimval = std::stoi(dim->token->lexem);
+		dimlist.push_back(dimval);
+	}
+
+	node.m_symbolEntry = new SymbolTableEntry(name, Kind::_variable, node.getChildren()[1]->stringType(), dimlist);
 	node.m_symbolTable->appendEntry(node.m_symbolEntry);
 
 

@@ -90,20 +90,33 @@ public:
 		this->kind = kind;
 		this->type = type;
 		this->link = nullptr;
+	};
 
-
+	SymbolTableEntry(std::string name, Kind kind, std::string type, std::vector<int> arraylist)
+	{
+		this->name = name;
+		this->kind = kind;
+		this->type = type;
+		this->link = nullptr;
+		this->arrayList = arraylist;
 	};
 
 	std::string entryToString()
 	{
+		std::string dimlist;
+		for (int i : this->arrayList)
+		{
+			dimlist += "[" + std::to_string(i) + "]";
+		}
+
 		if (link != nullptr)
 		{
-			return " |  " + this->name + " | " + this->type  +  link->print();
+			return " |  " + this->name + " | " + this->type +  link->print();
 
 		}
 		else
 		{
-			return " |  " + this->name + " | " + this->type + " | " + std::to_string(this->m_entrySize);
+			return " |  " + this->name + " | " + this->type + dimlist + " | " + std::to_string(this->m_entrySize);
 		}
 	}
 
@@ -114,6 +127,7 @@ public:
 	std::string type;
 	SymbolTable* link = nullptr;
 	std::vector<SymbolTableEntry*> entries;
+	std::vector<int> arrayList;
 
 	// Assignment 5
 	int m_entryOffset = 0;
