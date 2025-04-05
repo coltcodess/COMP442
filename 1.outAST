@@ -9,6 +9,11 @@
             | idLit
             | float
             | arraySizeList
+        | memDeclAttrib
+          | varDecl
+            | idLit
+            | int
+            | arraySizeList
   | implDefList
   | funcDefList
     | funcDef
@@ -18,6 +23,10 @@
       | statBlock
         | varDecl
           | idLit
+          | type
+          | arraySizeList
+        | varDecl
+          | idLit
           | int
           | arraySizeList
             | int
@@ -37,10 +46,10 @@
           | int
         | assignOp
           | idLit
-          | addOp
-            | multiOp
-              | idLit
-              | idLit
-            | int
+          | multiOp
+            | idLit
+            | idLit
         | writeStat
-          | idLit
+          | addOp
+            | idLit
+            | int

@@ -5,13 +5,25 @@ arraySizes -> EPSILON
 varDec1 -> 'id' ':' type arraySize ';'
 attributeDecl -> 'attribute' varDecl
 memberDecl -> attributeDec1
+visibility -> 'private'
+type -> 'int'
+arraySizes -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+attributeDecl -> 'attribute' varDecl
+memberDecl -> attributeDec1
 VISMEMBERDECL -> EPSILON
+VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
 VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
 classDecl -> 'class' 'id' ISA1 '{' VISMEMBERDECL '}' ';'
 classOrImplOrFunc -> classDecl
 fParams -> EPSILON
 returnType -> 'void'
 'function' 'id' '(' fParams ')' '=>' returnType
+type -> 'id'
+arraySizes -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+LOCALVARDECLORSTAT2 -> localVarDecl
 type -> 'int'
 arraySize1 -> 'intnum' ']'
 arraySize -> '[' arraySize2
@@ -72,12 +84,7 @@ factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
 rightRecTerm -> EPSILON
 rightRecTerm -> multiOp factor rightRecTerm
 term -> factor rightRecTerm
-addOp -> '+'
-factor -> 'intLit'
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
 RIGHTRECARITHEXPR -> EPSILON
-RIGHTRECARITHEXPR -> addOp term arithExpr2
 arithExpr -> term RIGHTRECARITHEXPR
 expr2 -> EPSILON
 expr -> arithExpr exp2
@@ -92,13 +99,19 @@ REPTVARIABLEORFUNCTIONCALL -> EPSILON
 factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
 rightRecTerm -> EPSILON
 term -> factor rightRecTerm
+addOp -> '+'
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
 RIGHTRECARITHEXPR -> EPSILON
+RIGHTRECARITHEXPR -> addOp term arithExpr2
 arithExpr -> term RIGHTRECARITHEXPR
 expr2 -> EPSILON
 expr -> arithExpr exp2
 statement -> 'write' '(' expr ')' ';'
 LOCALVARDECLORSTAT2 -> statement
 LOCALVARDECLORSTAT2 -> EPSILON
+LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
 LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
 LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
 LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2

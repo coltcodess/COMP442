@@ -44,8 +44,6 @@ void CodeGeneratorVisitor::visit(prog_Node& node)
 	moonExecCode += MOON_INDENT + "hlt\n";
 
 	*m_output << moonExecCode + moonDataCode;
-
-
 }
 
 void CodeGeneratorVisitor::visit(classDecl_Node& node)

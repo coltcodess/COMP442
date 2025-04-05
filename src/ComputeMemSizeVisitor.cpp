@@ -16,6 +16,16 @@ int ComputeMemSizeVisitor::sizeOfTypeNode(Node* node)
 	{
 		size = 8;
 	}
+	else if (node->m_symbolEntry->type.compare("type") == 0)
+	{
+		for (SymbolTableEntry* entry : node->m_symbolTable->upperTable->getEntries())
+		{
+			if (entry->name.compare(node->getChildren()[1]->token->lexem) == 0)
+			{
+				size = abs(entry->link->m_tableOffset);
+			}
+		}
+	}
 
 	SymbolTableEntry* entry = node->m_symbolEntry;
 	if (entry != nullptr && !entry->arrayList.empty())
