@@ -1,5 +1,14 @@
 | prog
   | classDeclList
+    | classDecl
+      | idLit
+      | inheritList
+      | memDeclList
+        | memDeclAttrib
+          | varDecl
+            | idLit
+            | float
+            | arraySizeList
   | implDefList
   | funcDefList
     | funcDef
@@ -29,7 +38,9 @@
         | assignOp
           | idLit
           | addOp
-            | idLit
-            | idLit
+            | multiOp
+              | idLit
+              | idLit
+            | int
         | writeStat
           | idLit

@@ -1,3 +1,14 @@
+ISA1 -> EPSILON
+visibility -> 'private'
+type -> 'float'
+arraySizes -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+attributeDecl -> 'attribute' varDecl
+memberDecl -> attributeDec1
+VISMEMBERDECL -> EPSILON
+VISMEMBERDECL -> visibility memberDec1 VISMEMBERDECL
+classDecl -> 'class' 'id' ISA1 '{' VISMEMBERDECL '}' ';'
+classOrImplOrFunc -> classDecl
 fParams -> EPSILON
 returnType -> 'void'
 'function' 'id' '(' fParams ')' '=>' returnType
@@ -53,13 +64,16 @@ assignOp -> :=IDORSELF -> 'id'
 factor2 -> EPSILON
 REPTVARIABLEORFUNCTIONCALL -> EPSILON
 factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
-rightRecTerm -> EPSILON
-term -> factor rightRecTerm
-addOp -> '+'
+sign -> '*'
 IDORSELF -> 'id'
 factor2 -> EPSILON
 REPTVARIABLEORFUNCTIONCALL -> EPSILON
 factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
+rightRecTerm -> EPSILON
+rightRecTerm -> multiOp factor rightRecTerm
+term -> factor rightRecTerm
+addOp -> '+'
+factor -> 'intLit'
 rightRecTerm -> EPSILON
 term -> factor rightRecTerm
 RIGHTRECARITHEXPR -> EPSILON
@@ -96,5 +110,6 @@ funcBody -> '{' localVarDeclOrStatRep '}'
 funcDef -> funcHead funcBody
 classOrImplOrFunc -> funcDef
 prog -> EPSILON
+prog -> classOrImplOrFunc prog
 prog -> classOrImplOrFunc prog
 startsymbol -> prog

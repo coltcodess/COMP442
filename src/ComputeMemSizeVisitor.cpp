@@ -49,6 +49,12 @@ void ComputeMemSizeVisitor::visit(classDecl_Node& node)
 	{
 		child->accept(*this);
 	}
+
+	for (SymbolTableEntry* entry : node.m_symbolTable->getEntries())
+	{
+		entry->m_entryOffset = node.m_symbolTable->m_tableOffset - entry->m_entrySize;
+		node.m_symbolTable->m_tableOffset -= entry->m_entrySize;
+	}
 }
 
 void ComputeMemSizeVisitor::visit(funcDef_Node& node)
@@ -56,6 +62,12 @@ void ComputeMemSizeVisitor::visit(funcDef_Node& node)
 	for (Node* child : node.getChildren())
 	{
 		child->accept(*this);
+	}
+
+	for (SymbolTableEntry* entry : node.m_symbolTable->getEntries())
+	{
+		entry->m_entryOffset = node.m_symbolTable->m_tableOffset - entry->m_entrySize;
+		node.m_symbolTable->m_tableOffset -= entry->m_entrySize;
 	}
 }
 

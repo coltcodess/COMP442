@@ -16,10 +16,17 @@
      % processing: t4 := b + a
      lw r2,b(r0)
      lw r3,a(r0)
-     add r1,r2,r3
+     mul r1,r2,r3
      sw t4(r0),r1
-     % processing: c := t4
-     lw r1,t4(r0)
+     addi r1,r0,1
+     sw t5(r0),r1
+     % processing: t6 := t4 + t5
+     lw r2,t4(r0)
+     lw r3,t5(r0)
+     add r1,r2,r3
+     sw t6(r0),r1
+     % processing: c := t6
+     lw r1,t6(r0)
      sw c(r0),r1
      % processing: put(c)
      lw r1,c(r0)
@@ -43,5 +50,8 @@ t2     res 4
 t3     res 4
      % space for b + a
 t4      res 4
+t5     res 4
+     % space for t4 + t5
+t6      res 4
      % buffer space used for console output
 buf     res 20

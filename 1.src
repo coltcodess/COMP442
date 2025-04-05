@@ -1,3 +1,7 @@
+class MyClass {
+	private attribute a: float;
+};
+
 function main() => void
 {
 	local a: int[2];
@@ -6,7 +10,7 @@ function main() => void
 	b := 10;
 	a := 42;
 
-	c := b + a;
+	c := b * a + 1;
 
 	write(c);
 	

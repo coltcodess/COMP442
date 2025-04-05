@@ -251,10 +251,12 @@ bool Parser::classDecl(Node* root)
 
 	Node* classDecl_Node = m_nodeFactory->makeNode(Type::classDecl);
 	Node* memDeclList_Node = m_nodeFactory->makeNode(Type::memDeclList);
-	root->addChild(classDecl_Node);
-	classDecl_Node->addChild(m_nodeFactory->makeNode(Type::idLit));
+	Node* id_node = m_nodeFactory->makeNode(Type::idLit);
 
+	root->addChild(classDecl_Node);
+	classDecl_Node->addChild(id_node);
 	classDecl_Node->token = m_lexer.peekAheadToken();
+	id_node->token = m_lexer.peekAheadToken();
 
 	if (!skipErrors(false, first, follow)) return false;
 

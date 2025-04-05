@@ -151,6 +151,27 @@ void CodeGeneratorVisitor::visit(multiOp_Node& node)
 		child->accept(*this);
 	}
 	
+	std::string localRegister = this->registerPool.back();
+	this->registerPool.pop_back();
+
+	std::string leftRegister = this->registerPool.back();
+	this->registerPool.pop_back();
+
+	std::string rightRegister = this->registerPool.back();
+	this->registerPool.pop_back();
+
+	moonExecCode += MOON_INDENT + "% processing: " + node.moonVarName + " := " + node.getChildren()[0]->moonVarName + " + " + node.getChildren()[1]->moonVarName + "\n";
+	moonExecCode += MOON_INDENT + "lw " + leftRegister + "," + node.getChildren()[0]->moonVarName + "(r0)\n";
+	moonExecCode += MOON_INDENT + "lw " + rightRegister + "," + node.getChildren()[1]->moonVarName + "(r0)\n";
+	moonExecCode += MOON_INDENT + "mul " + localRegister + "," + leftRegister + "," + rightRegister + "\n";
+	moonDataCode += MOON_INDENT + "% space for " + node.getChildren()[0]->moonVarName + " + " + node.getChildren()[1]->moonVarName + "\n";
+	moonDataCode += node.moonVarName + MOON_INDENT + " res 4\n";
+	moonExecCode += MOON_INDENT + "sw " + node.moonVarName + "(r0)," + localRegister + "\n";
+
+
+	this->registerPool.push_back(rightRegister);
+	this->registerPool.push_back(leftRegister);
+	this->registerPool.push_back(localRegister);
 }
 
 void CodeGeneratorVisitor::visit(idLit_Node& node)

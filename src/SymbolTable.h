@@ -111,7 +111,7 @@ public:
 
 		if (link != nullptr)
 		{
-			return " |  " + this->name + " | " + this->type +  link->print();
+			return " |  " + this->name + " | " + this->type + link->print();
 
 		}
 		else

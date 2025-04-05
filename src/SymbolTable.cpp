@@ -95,7 +95,7 @@ std::string SymbolTable::print()
         spacing += "|     ";
     }
     str += "\n" + spacing + "=====================================================\n";
-    str += spacing + "| table:  " + this->name + "    " + " scope offset: |\n";
+    str += spacing + "| table:  " + this->name + "    " + " scope offset: " + std::to_string(this->m_tableOffset) + "\n";
     str += spacing + "=====================================================\n";
 
     for (int i = 0; i < entries.size(); i++)
