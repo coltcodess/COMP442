@@ -22,6 +22,6 @@
           | idLit
           | int
         | writeStat
-          | addOp
+          | multiOp
             | idLit
-            | idLit
+            | int

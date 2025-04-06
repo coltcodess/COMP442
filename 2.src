@@ -6,7 +6,7 @@ function main() => void
 	b := 10;
 	c := 5;
 
-	write(c + b);
+	write(c * 2);
 
 
 

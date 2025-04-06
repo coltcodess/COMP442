@@ -224,6 +224,7 @@ void ComputeMemSizeVisitor::visit(type_Node& node)
 		
 		child->accept(*this);
 	}
+
 }
 
 void ComputeMemSizeVisitor::visit(funcDefList_Node& node)

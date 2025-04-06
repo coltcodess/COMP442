@@ -173,7 +173,10 @@ void SymbolTableCreatorVistor::visit(fCall_Node& node)
 	std::string tempVarName = this->getNewTempVarName();
 
 	node.moonVarName = tempVarName;
+
+
 	std::string type = node.token->convertTokenTypeToString();
+
 
 	node.m_symbolEntry = new SymbolTableEntry("reval", Kind::_function, type);
 	node.m_symbolTable->appendEntry(node.m_symbolEntry);
@@ -218,7 +221,7 @@ void SymbolTableCreatorVistor::visit(varDecl_Node& node)
 		dimlist.push_back(dimval);
 	}
 
-	node.moonVarName = node.m_symbolTable->name + "::" + node.token->lexem;
+	node.moonVarName = node.token->lexem;
 
 	node.m_symbolEntry = new SymbolTableEntry(name, Kind::_variable, type, dimlist);
 	node.m_symbolTable->appendEntry(node.m_symbolEntry);
@@ -263,7 +266,7 @@ void SymbolTableCreatorVistor::visit(intLit_Node& node)
 	std::string tempVarName = this->getNewTempVarName();
 	node.moonVarName = tempVarName;
 	std::string type = node.stringType();
-	node.m_symbolEntry = new SymbolTableEntry(tempVarName, Kind::_variable, type, nullptr);
+	node.m_symbolEntry = new SymbolTableEntry("litval", Kind::_variable, type, nullptr);
 	node.m_symbolTable->appendEntry(node.m_symbolEntry);
 
 }

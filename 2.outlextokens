@@ -6,6 +6,6 @@
 [assign, :=, 6] [intnum, 10, 6] [semi, ;, 6] 
 [id, c, 7] [assign, :=, 7] [intnum, 5, 7] [semi, ;, 7] 
 [write, write, 9] 
-[openpar, (, 9] [id, c, 9] [plus, +, 9] [id, b, 9] [closepar, ), 9] [semi, ;, 9] 
+[openpar, (, 9] [id, c, 9] [multi, *, 9] [intnum, 2, 9] [closepar, ), 9] [semi, ;, 9] 
 [closecubr, }, 18] 
 [end_of_file, $, 18] 

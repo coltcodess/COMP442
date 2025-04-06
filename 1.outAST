@@ -5,7 +5,6 @@
       | inheritList
       | memDeclList
         | memDeclFunc
-          | type
           | idLit
           | fParamsList
           | type
@@ -18,7 +17,6 @@
     | impleDef
       | idLit
       | funcDef
-        | type
         | idLit
         | fParamsList
         | type
@@ -39,6 +37,9 @@
           | idLit
           | type
           | arraySizeList
+        | assignOp
+          | idLit
+          | int
         | assignOp
           | idLit
           | idLit
