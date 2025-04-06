@@ -56,10 +56,22 @@ void CodeGeneratorVisitor::visit(classDecl_Node& node)
 
 void CodeGeneratorVisitor::visit(funcDef_Node& node)
 {
+	moonExecCode += MOON_INDENT + "% processing function definition: " + node.moonVarName + "\n";
+	moonExecCode += node.token->lexem;
+
+	moonDataCode += node.token->lexem + "link" + MOON_INDENT + " res 4\n";
+	moonExecCode += MOON_INDENT + "sw " + node.token->lexem + "link(r0),r15\n";
+
+	moonDataCode += node.token->lexem + "return" + MOON_INDENT + " res 4\n";
+
 	for (Node* child : node.getChildren())
 	{
 		child->accept(*this);
 	}
+
+	moonExecCode += MOON_INDENT + "lw r15," + node.token->lexem + "link(r0)\n";
+	// Infinite loop ?
+	//moonExecCode += MOON_INDENT + "jr r15\n";
 }
 
 
@@ -298,7 +310,7 @@ void CodeGeneratorVisitor::visit(fCall_Node& node)
 
 	int indexOfParam = 0;
 
-	moonExecCode += MOON_INDENT + "% processing: function call to " + node.getChildren()[0]->moonVarName + " \n";
+	moonExecCode += MOON_INDENT + "% processing: function call to " + node.token->lexem + " \n";
 	
 	// check aParams
 
@@ -306,10 +318,27 @@ void CodeGeneratorVisitor::visit(fCall_Node& node)
 	moonDataCode += MOON_INDENT + "% space for function call expression factor\n";
 	moonDataCode += node.moonVarName + MOON_INDENT + " res 4\n";
 	moonExecCode += MOON_INDENT + "lw " + localRegister + "," + node.token->lexem + "return(r0)\n";
-	moonExecCode += MOON_INDENT + "sw " + node.moonVarName + "(r0)," + localRegister + "\n";
+	moonExecCode += MOON_INDENT + "sw " +node.moonVarName + "(r0)," + localRegister + "\n";
 
 	this->registerPool.push_back(localRegister);
 
+}
+
+void CodeGeneratorVisitor::visit(returnStat_Node& node)
+{
+	for (Node* child : node.getChildren())
+	{
+		child->accept(*this);
+	}
+
+	std::string localRegister = this->registerPool.back();
+	this->registerPool.pop_back();
+
+	moonExecCode += MOON_INDENT + "% processing: return(" + node.getChildren()[0]->moonVarName + ")\n";
+	moonExecCode += MOON_INDENT + "lw " + localRegister + "," + node.getChildren()[0]->moonVarName + "(r0)\n";
+	moonExecCode += MOON_INDENT + "sw " + node.m_symbolTable->name + "return(r0)," + localRegister + "\n";
+
+	this->registerPool.push_back(localRegister);
 }
 
 void CodeGeneratorVisitor::visit(relExpr_Node& node)

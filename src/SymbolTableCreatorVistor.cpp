@@ -52,14 +52,20 @@ void SymbolTableCreatorVistor::visit(writeStat_Node& node)
 
 void SymbolTableCreatorVistor::visit(ifStat_Node& node)
 {
+	for (Node* child : node.getChildren())
+	{
+		child->m_symbolTable = node.m_symbolTable;
+		child->accept(*this);
+	}
 }
 
 void SymbolTableCreatorVistor::visit(relExpr_Node& node)
 {
-}
-
-void SymbolTableCreatorVistor::visit(fCall_Node& node)
-{
+	for (Node* child : node.getChildren())
+	{
+		child->m_symbolTable = node.m_symbolTable;
+		child->accept(*this);
+	}
 }
 
 void SymbolTableCreatorVistor::visit(classDecl_Node& node)
@@ -147,6 +153,34 @@ void SymbolTableCreatorVistor::visit(memDeclFunc_Node& node)
 }
 
 void SymbolTableCreatorVistor::visit(statBlock_Node& node)
+{
+	for (Node* child : node.getChildren())
+	{
+		child->m_symbolTable = node.m_symbolTable;
+		child->accept(*this);
+	}
+}
+
+void SymbolTableCreatorVistor::visit(fCall_Node& node)
+{
+
+	for (Node* child : node.getChildren())
+	{
+		child->m_symbolTable = node.m_symbolTable;
+		child->accept(*this);
+	}
+
+	std::string tempVarName = this->getNewTempVarName();
+
+	node.moonVarName = tempVarName;
+	std::string type = node.token->convertTokenTypeToString();
+
+	node.m_symbolEntry = new SymbolTableEntry("reval", Kind::_function, type);
+	node.m_symbolTable->appendEntry(node.m_symbolEntry);
+
+}
+
+void SymbolTableCreatorVistor::visit(returnStat_Node& node)
 {
 	for (Node* child : node.getChildren())
 	{

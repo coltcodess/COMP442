@@ -44,5 +44,8 @@ public:
 
     // Inherited via Visitor
     virtual void visit(fCall_Node& node) override;
+
+    // Inherited via Visitor
+    virtual void visit(returnStat_Node& node) override;
 };
 

@@ -24,7 +24,6 @@ public:
 	void visit(memDeclAttrib_Node& node) override;
 	void visit(memDeclFunc_Node& node) override;
 	void visit(statBlock_Node& node) override;
-
 	void visit(fParam_Node& node) override;
 
 	void visit(varDecl_Node& node) override;
@@ -73,6 +72,10 @@ private:
 
 	// Inherited via Visitor
 	virtual void visit(fCall_Node& node) override;
+
+
+	// Inherited via Visitor
+	virtual void visit(returnStat_Node& node) override;
 
 };
 

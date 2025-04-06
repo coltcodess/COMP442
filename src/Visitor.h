@@ -31,6 +31,7 @@ class writeStat_Node;
 class ifStat_Node;
 class relExpr_Node;
 class fCall_Node;
+class returnStat_Node;
 
 class Visitor
 {
@@ -51,6 +52,7 @@ public:
 	virtual void visit(inheritList_Node& node) = 0;
 	virtual void visit(funcDefList_Node& node) = 0;
 	virtual void visit(fCall_Node& node) = 0;
+	virtual void visit(returnStat_Node& node) = 0;
 
 	virtual void visit(varDecl_Node& node) = 0;
 

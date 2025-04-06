@@ -1,11 +1,11 @@
 class MyClass {
-	public function evaluate(x: float) => float; 
+	public function evaluate() => int; 
 
 	private attribute a: float;
 };
 
 implementation MyClass {   
-  function evaluate(x: float) => float
+  function evaluate() => int
   {
     return (5);
   }
@@ -19,9 +19,6 @@ function main() => void
 	c := test.evaluate();
 
 	write(c);
-
-
-
 	
 
 	

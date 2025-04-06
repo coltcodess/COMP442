@@ -1538,8 +1538,12 @@ bool Parser::idnest(Node* root)
 	if (m_lookAheadToken->type == TokenType::DOT)
 	{
 		root->token = m_lexer.peekAheadToken();
-		if (match(DOT) && match(id) && idnest2(root))
+		Node* id_node = m_nodeFactory->makeNode(Type::idLit);
+		id_node->token = m_lexer.peekAheadToken();
+
+		if (match(DOT) && match(id) && idnest2(id_node))
 		{
+			root->addChild(id_node);
 			*m_derivationFile << "idnest -> '.' 'id' idnest2\n";
 			return true;
 		}

@@ -253,3 +253,7 @@ void ComputeMemSizeVisitor::visit(relExpr_Node& node)
 void ComputeMemSizeVisitor::visit(fCall_Node& node)
 {
 }
+
+void ComputeMemSizeVisitor::visit(returnStat_Node& node)
+{
+}

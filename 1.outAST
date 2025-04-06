@@ -8,9 +8,6 @@
           | type
           | idLit
           | fParamsList
-            | fParam
-              | type
-              | idLit
           | type
         | memDeclAttrib
           | varDecl
@@ -24,9 +21,6 @@
         | type
         | idLit
         | fParamsList
-          | fParam
-            | type
-            | idLit
         | type
         | statBlock
           | returnStat
@@ -49,6 +43,7 @@
           | idLit
           | idLit
             | dot
-              | fCall
+              | idLit
+                | fCall
         | writeStat
           | idLit

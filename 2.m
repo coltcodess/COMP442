@@ -1,6 +1,8 @@
 % start of program
      entry
      addi r14, r0, topaddr % Set stack pointer
+     % processing function definition: 
+main     sw mainlink(r0),r15
      addi r1,r0,10
      sw t1(r0),r1
      % processing: b := t1
@@ -24,9 +26,12 @@
      jl r15, intstr
      sw -8(r14),r13
      jl r15, putstr
+     lw r15,mainlink(r0)
      hlt
 % start of data code
 % buffer space used for console output
+mainlink      res 4
+mainreturn      res 4
      % space for variable int
 c      res 4
      % space for variable int
