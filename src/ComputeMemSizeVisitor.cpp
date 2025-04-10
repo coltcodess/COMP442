@@ -271,7 +271,7 @@ void ComputeMemSizeVisitor::visit(fCall_Node& node)
 		child->accept(*this);
 	}
 
-	
+	node.m_symbolEntry->m_entrySize = this->sizeOfTypeNode(&node);
 }
 
 void ComputeMemSizeVisitor::visit(returnStat_Node& node)

@@ -8,7 +8,7 @@
 [function, function, 8] [id, evaluate, 8] [openpar, (, 8] [closepar, ), 8] [arrow, =>, 8] [int, int, 8] 
 [opencubr, {, 9] 
 [local, local, 10] [id, b, 10] [colon, :, 10] [int, int, 10] [semi, ;, 10] 
-[id, b, 11] [assign, :=, 11] [intnum, 2, 11] [semi, ;, 11] 
+[id, b, 11] [assign, :=, 11] [intnum, 10, 11] [semi, ;, 11] 
 [return, return, 13] 
 [openpar, (, 13] [id, b, 13] [closepar, ), 13] [semi, ;, 13] 
 [closecubr, }, 14] 

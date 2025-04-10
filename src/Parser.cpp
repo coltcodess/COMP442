@@ -1673,10 +1673,11 @@ bool Parser::type(Node*& root)
 
 	if (!skipErrors(false, first, follow)) return false;
 
+	root->token = m_lookAheadToken;
+
 	if (m_lookAheadToken->type == INT)
 	{
-		root->token = m_lookAheadToken;
-
+		
 		if (match(TokenType::INT))
 		{
 			*m_derivationFile << "type -> 'int'\n";
@@ -1686,7 +1687,6 @@ bool Parser::type(Node*& root)
 	}
 	else if (m_lookAheadToken->type == FLOAT)
 	{
-		root->token = m_lookAheadToken;
 
 		if (match(TokenType::FLOAT))
 		{
@@ -1697,7 +1697,6 @@ bool Parser::type(Node*& root)
 	}
 	else if (m_lookAheadToken->type == TokenType::id)
 	{
-		root->token = m_lookAheadToken;
 
 		if (match(TokenType::id))
 		{
