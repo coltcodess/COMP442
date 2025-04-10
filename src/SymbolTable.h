@@ -77,12 +77,12 @@ public:
 
 	};
 
-	SymbolTableEntry(std::string name, std::vector<SymbolTableEntry*>& entries, SymbolTable* symbolTable)
+	SymbolTableEntry(std::string name, std::vector<SymbolTableEntry*>& entries, SymbolTable* symbolTable, std::string type)
 	{
 		this->name = name;
 		this->link = symbolTable;
 		this->entries = entries;
-
+		this->type = type;
 
 	};
 

@@ -99,7 +99,7 @@ void SymbolTableCreatorVistor::visit(funcDef_Node& node)
 	}
 	std::vector<SymbolTableEntry*>* entries = new std::vector<SymbolTableEntry*>();
 	SymbolTable* localTable = new SymbolTable(1, funcName, node.m_symbolTable);
-	node.m_symbolEntry = new SymbolTableEntry(funcName, *entries, localTable );
+	node.m_symbolEntry = new SymbolTableEntry(funcName, *entries, localTable, node.getChildren()[2]->token->lexem);
 
 	node.m_symbolTable->appendEntry(node.m_symbolEntry);
 	node.m_symbolTable = localTable;
@@ -175,7 +175,9 @@ void SymbolTableCreatorVistor::visit(fCall_Node& node)
 	node.moonVarName = tempVarName;
 
 
-	std::string type = node.token->convertTokenTypeToString();
+
+	SymbolTableEntry* entry = node.m_symbolTable->upperTable->lookupName(node.token->lexem);
+	std::string type = entry->type;
 
 
 	node.m_symbolEntry = new SymbolTableEntry("reval", Kind::_function, type);
