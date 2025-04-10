@@ -7,6 +7,8 @@ class ComputeMemSizeVisitor : public Visitor
 public:
     ComputeMemSizeVisitor();
 
+    int programOffset = 0;
+
     int sizeOfTypeNode(Node* node);
 
     // Inherited via Visitor

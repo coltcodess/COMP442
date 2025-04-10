@@ -8,13 +8,13 @@
 =====================================================
  |  evaluate | 
 =====================================================
-| table:  evaluate     scope offset: -8
+| table:  evaluate     scope offset: -16
  |  b | int | 4
  |  litval | int | 4
 =====================================================
  |  main | 
 =====================================================
-| table:  main     scope offset: -24
+| table:  main     scope offset: -40
  |  c | int | 4
  |  test | id | 8
  |  litval | int | 4
