@@ -44,11 +44,19 @@ factor2 -> EPSILON
 REPTVARIABLEORFUNCTIONCALL -> EPSILON
 factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
 sign -> '*'
-factor -> 'intLit'
+IDORSELF -> 'id'
+factor2 -> EPSILON
+REPTVARIABLEORFUNCTIONCALL -> EPSILON
+factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
 rightRecTerm -> EPSILON
 rightRecTerm -> multiOp factor rightRecTerm
 term -> factor rightRecTerm
+addOp -> '+'
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
 RIGHTRECARITHEXPR -> EPSILON
+RIGHTRECARITHEXPR -> addOp term arithExpr2
 arithExpr -> term RIGHTRECARITHEXPR
 expr2 -> EPSILON
 expr -> arithExpr exp2

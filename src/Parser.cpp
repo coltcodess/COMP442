@@ -1153,6 +1153,8 @@ bool Parser::term(Node*& node)
 	Node* factor_Node = m_nodeFactory->makeNode();
 	Node* rightRecTerm_Node = m_nodeFactory->makeNode(Type::multiOp);
 
+	rightRecTerm_Node->token = m_lookAheadToken;
+
 	if (m_lookAheadToken->type == OPENPAR 
 		|| m_lookAheadToken->type == TokenType::floatnum
 		|| m_lookAheadToken->type == TokenType::id 

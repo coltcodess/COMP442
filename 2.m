@@ -13,15 +13,20 @@ main     sw mainlink(r0),r15
 % processing: c := t2
      lw r1,t2(r0)
      sw c(r0),r1
-     addi r1,r0,2
-     sw t3(r0),r1
-% processing: t4 := c + t3
+% processing: t3 := c + b
      lw r2,c(r0)
-     lw r3,t3(r0)
+     lw r3,b(r0)
      mul r1,r2,r3
+     sw t3(r0),r1
+     addi r1,r0,2
      sw t4(r0),r1
-% processing: put(t4)
-     lw r1,t4(r0)
+     % processing: t5 := t3 + t4
+     lw r2,t3(r0)
+     lw r3,t4(r0)
+     add r1,r2,r3
+     sw t5(r0),r1
+% processing: put(t5)
+     lw r1,t5(r0)
      sw -8(r14),r1
      addi r1,r0, buf
      sw -12(r14),r1
@@ -40,8 +45,10 @@ c      res 4
 b      res 4
 t1     res 4
 t2     res 4
-t3     res 4
-     % space for c + t3
-t4      res 4
+     % space for c + b
+t3      res 4
+t4     res 4
+     % space for t3 + t4
+t5      res 4
 % buffer space used for console output
 buf     res 20
