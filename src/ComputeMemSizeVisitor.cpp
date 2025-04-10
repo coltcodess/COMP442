@@ -245,16 +245,32 @@ void ComputeMemSizeVisitor::visit(writeStat_Node& node)
 
 void ComputeMemSizeVisitor::visit(ifStat_Node& node)
 {
+	for (Node* child : node.getChildren())
+	{
+		child->accept(*this);
+	}
 }
 
 void ComputeMemSizeVisitor::visit(relExpr_Node& node)
 {
+	for (Node* child : node.getChildren())
+	{
+		child->accept(*this);
+	}
 }
 
 void ComputeMemSizeVisitor::visit(fCall_Node& node)
 {
+	for (Node* child : node.getChildren())
+	{
+		child->accept(*this);
+	}
 }
 
 void ComputeMemSizeVisitor::visit(returnStat_Node& node)
 {
+	for (Node* child : node.getChildren())
+	{
+		child->accept(*this);
+	}
 }

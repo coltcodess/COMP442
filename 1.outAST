@@ -21,8 +21,15 @@
         | fParamsList
         | type
         | statBlock
-          | returnStat
+          | varDecl
+            | idLit
+            | type
+            | arraySizeList
+          | assignOp
+            | idLit
             | int
+          | returnStat
+            | idLit
   | funcDefList
     | funcDef
       | idLit
@@ -47,4 +54,6 @@
               | idLit
                 | fCall
         | writeStat
-          | idLit
+          | addOp
+            | idLit
+            | int
