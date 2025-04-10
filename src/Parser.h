@@ -89,7 +89,7 @@ private:
 
 	bool attributeDecl(Node* root);
 	bool varDecl(Node* node);
-	bool returnType(Node* root);
+	bool returnType(Node*& root);
 	bool indices(Node* root);
 
 
@@ -100,8 +100,8 @@ private:
 	
 
 	bool fParams(Node* root);
-	bool REPTFPARAMS1(Node* root);
-	bool fParamsTail(Node* root);
+	bool REPTFPARAMS1(Node*& root);
+	bool fParamsTail(Node*& root);
 
 	bool aParams(Node* root);
 	bool REPTAPARAMS1(Node* root);
@@ -119,7 +119,7 @@ private:
 	bool IDORSELF(Node* root);
 	bool addOp();
 	bool relOp();
-	bool type(Node* root);
+	bool type(Node*& root);
 	
 	// Write AST to file
 	void writeAST(Node* root, int level);

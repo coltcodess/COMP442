@@ -1,6 +1,35 @@
 | prog
   | classDeclList
+    | classDecl
+      | idLit
+      | inheritList
+      | memDeclList
+        | memDeclFunc
+          | idLit
+          | fParamsList
+          | type
+        | memDeclAttrib
+          | varDecl
+            | idLit
+            | type
+            | arraySizeList
   | implDefList
+    | impleDef
+      | idLit
+      | funcDef
+        | idLit
+        | fParamsList
+        | type
+        | statBlock
+          | varDecl
+            | idLit
+            | type
+            | arraySizeList
+          | assignOp
+            | idLit
+            | int
+          | returnStat
+            | idLit
   | funcDefList
     | funcDef
       | idLit
@@ -11,25 +40,20 @@
           | idLit
           | type
           | arraySizeList
-        | assignOp
-          | idLit
-          | addOp
-            | intLit
-            | intLit
         | varDecl
           | idLit
           | type
           | arraySizeList
         | assignOp
           | idLit
-          | intLit
+          | int
         | assignOp
           | idLit
-          | intLit
-        | assignOp
           | idLit
+            | dot
+              | idLit
+                | fCall
+        | writeStat
           | addOp
             | idLit
-            | multiOp
-              | idLit
-              | idLit
+            | int

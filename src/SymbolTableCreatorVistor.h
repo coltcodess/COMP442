@@ -24,7 +24,6 @@ public:
 	void visit(memDeclAttrib_Node& node) override;
 	void visit(memDeclFunc_Node& node) override;
 	void visit(statBlock_Node& node) override;
-
 	void visit(fParam_Node& node) override;
 
 	void visit(varDecl_Node& node) override;
@@ -33,27 +32,50 @@ public:
 	void visit(assignOp_Node& node) override;
 	void visit(multiOp_Node& node) override;
 
+	// Inherited via Visitor
+	virtual void visit(assignStat_Node& node) override;
+
+	// Inherited via Visitor
+	virtual void visit(addOp_Node& node) override;
+
 	void visit(idLit_Node& node) override;
 	void visit(intLit_Node& node) override;
 	void visit(floatLit_Node& node) override;
 	void visit(type_Node& node) override;
-
-	void print();
 
 
 
 private: 
 	std::ofstream* m_output;
 	std::ofstream* m_errors;
-	
+	int tempVarNum;
+	std::string getNewTempVarName();
+
+
 
 
 	// Inherited via Visitor
-	virtual void visit(assignStat_Node& node) override;
+	virtual void visit(funcDefList_Node& node) override;
 
 
 	// Inherited via Visitor
-	virtual void visit(addOp_Node& node) override;
+	virtual void visit(writeStat_Node& node) override;
+
+
+	// Inherited via Visitor
+	virtual void visit(ifStat_Node& node) override;
+
+
+	// Inherited via Visitor
+	virtual void visit(relExpr_Node& node) override;
+
+
+	// Inherited via Visitor
+	virtual void visit(fCall_Node& node) override;
+
+
+	// Inherited via Visitor
+	virtual void visit(returnStat_Node& node) override;
 
 };
 

@@ -1,0 +1,18 @@
+function main() => void
+{
+	local c: int;
+	local b: int;
+
+	b := 10;
+	c := 5;
+
+	write(c * 2);
+
+
+
+	
+
+	
+
+
+}

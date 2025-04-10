@@ -7,6 +7,7 @@
 #include "SymbolTableCreatorVistor.h"
 #include "TypeCheckingVisitor.h"
 #include "CodeGeneratorVisitor.h"
+#include "ComputeMemSizeVisitor.h"
 
 const std::string SOURCE_FILE_TYPE = ".src";
 const std::string OUTPUT_TOKEN_FILE_TYPE = ".outlextokens";
@@ -73,30 +74,36 @@ int main()
     std::ofstream* outSymbolTables = new std::ofstream(fileInput + ".outsymboltables", std::ofstream::out);
 
     // Assignment 5 - Code Generation
-    std::ofstream* outCodeGeneration = new std::ofstream(fileInput + ".moon", std::ofstream::out);
+    std::ofstream* outCodeGeneration = new std::ofstream(fileInput + ".m", std::ofstream::out);
 
     SymbolTableCreatorVistor symbolTableCreatorVistor(outSymbolTables, outSemErrors);
-    TypeCheckingVisitor typeCheckingVisitor(outSemErrors);
+    //TypeCheckingVisitor typeCheckingVisitor(outSemErrors);
 
     // Assignment 5
+    ComputeMemSizeVisitor computeMemSizeVisitor;
     CodeGeneratorVisitor codeGeneratorVisitor(outCodeGeneration);
 
     Node* astRoot = parser->getASTroot();
 
     // Symbol Table visitor
     astRoot->accept(symbolTableCreatorVistor);
-    symbolTableCreatorVistor.print();
 
     // Type checking visitor
-    astRoot->accept(typeCheckingVisitor);
+    //astRoot->accept(typeCheckingVisitor);
 
     //Code Generation
+    astRoot->accept(computeMemSizeVisitor);
+
     astRoot->accept(codeGeneratorVisitor);
+
+    *outSymbolTables << astRoot->m_symbolTable->print();
 
 
     
 
     return 0;
 }
+
+
 
 
