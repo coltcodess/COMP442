@@ -238,17 +238,59 @@ void CodeGeneratorVisitor::visit(assignStat_Node& node)
 
 void CodeGeneratorVisitor::visit(ifStat_Node& node)
 {
-	for (Node* child : node.getChildren())
-	{
-		child->accept(*this);
-	}
+	//moonExecCode += "% processing: IF statement \n";
+	//std::string localRegister = this->registerPool.back();
+	//this->registerPool.pop_back();
 
+	//for (size_t i = 0; i < node.getChildren().size(); i++)
+	//{
+	//	if (i == 0)
+	//	{
+	//		node.getChildren()[i]->accept(*this);
+	//		moonExecCode += MOON_INDENT + "lw " + localRegister + "," + node.getChildren()[0]->getChildren()[0]->moonVarName + "(r0)\n";
+	//		moonExecCode += MOON_INDENT + "bz " + localRegister + "," + "then1\n";
+	//		moonExecCode += MOON_INDENT + "j endif1\n";
+	//	}
+	//	else if (i == 1)
+	//	{
+	//		moonExecCode += "then1" + MOON_INDENT + "sw " + "then1(r0)," + localRegister + "\n";
+	//		node.getChildren()[i]->accept(*this);
+	//	}
+	//	else
+	//	{
+	//		moonExecCode += "endif1" + MOON_INDENT + "sw " + "endif1(r0)," + localRegister + "\n";
+	//		node.getChildren()[i]->accept(*this);
+	//	}
 
-	std::string leftRegister = this->registerPool.back();
+	//}
+
+}
+
+void CodeGeneratorVisitor::visit(whileStat_Node& node)
+{
+	moonExecCode += "% processing: WHILE statement \n";
+	std::string localRegister = this->registerPool.back();
 	this->registerPool.pop_back();
 
-	//moonExecCode += MOON_INDENT + "% processing: IF statement \n";
-	//moonExecCode += "lw " + leftRegister + ",";
+	for (size_t i = 0; i < node.getChildren().size(); i++)
+	{
+		if (i == 0)
+		{
+			moonExecCode += "gowhile1" + MOON_INDENT + "\n";
+			node.getChildren()[i]->accept(*this);
+			moonExecCode += MOON_INDENT + "lw " + localRegister + "," + node.getChildren()[0]->getChildren()[0]->moonVarName + "(r0)\n";
+			moonExecCode += MOON_INDENT + "bz " + localRegister + "," + "endwhile1\n";
+
+		}
+		else
+		{
+			node.getChildren()[i]->accept(*this);
+			moonExecCode += MOON_INDENT + "j gowhile1\n";
+			moonExecCode += "endwhile1" + MOON_INDENT + "\n";
+		}
+
+
+	}
 }
 
 void CodeGeneratorVisitor::visit(writeStat_Node& node)
@@ -355,12 +397,44 @@ void CodeGeneratorVisitor::visit(returnStat_Node& node)
 	this->registerPool.push_back(localRegister);
 }
 
-void CodeGeneratorVisitor::visit(relExpr_Node& node)
+void CodeGeneratorVisitor::visit(relOp_Node& node)
 {
 	for (Node* child : node.getChildren())
 	{
 		child->accept(*this);
 	}
+
+	std::string leftRegister = this->registerPool.back();
+	this->registerPool.pop_back();
+	std::string rightRegister = this->registerPool.back();
+	this->registerPool.pop_back();
+	std::string resultRegister = this->registerPool.back();
+	this->registerPool.pop_back();
+	std::string op;
+
+	switch (node.token->type)
+	{
+	case GT:
+		op = "cgt";
+		break;
+	case LT:
+		op = "clt";
+		break;
+	}
+
+	moonExecCode += "% processing: relop " + node.getChildren()[0]->token->lexem + " " + op + " " + node.getChildren()[1]->token->lexem + "\n";
+	moonExecCode += MOON_INDENT + "lw " + leftRegister + "," + node.getChildren()[0]->moonVarName + "(r0)\n";
+	moonExecCode += MOON_INDENT + "lw " + rightRegister + "," + node.getChildren()[1]->moonVarName + "(r0)\n";
+
+	moonExecCode += MOON_INDENT + op + " " + resultRegister + "," + leftRegister + "," + rightRegister + "\n";
+	moonDataCode += node.moonVarName + MOON_INDENT + "res 4\n";
+	moonExecCode += MOON_INDENT + "sw " + node.moonVarName + "(r0)," + resultRegister + "\n";
+
+
+
+	this->registerPool.push_back(resultRegister);
+	this->registerPool.push_back(rightRegister);
+	this->registerPool.push_back(leftRegister);
 }
 
 void CodeGeneratorVisitor::visit(addOp_Node& node)
@@ -379,7 +453,7 @@ void CodeGeneratorVisitor::visit(addOp_Node& node)
 	std::string rightRegister = this->registerPool.back();
 	this->registerPool.pop_back();
 
-	moonExecCode += MOON_INDENT + "% processing: " + node.moonVarName + " := " + node.getChildren()[0]->moonVarName + " + " + node.getChildren()[1]->moonVarName + "\n";
+	moonExecCode += "% processing: " + node.moonVarName + " := " + node.getChildren()[0]->moonVarName + " + " + node.getChildren()[1]->moonVarName + "\n";
 	moonExecCode += MOON_INDENT + "lw " + leftRegister + "," + node.getChildren()[0]->moonVarName + "(r0)\n";
 	moonExecCode += MOON_INDENT + "lw " + rightRegister + "," + node.getChildren()[1]->moonVarName + "(r0)\n";
 	moonExecCode += MOON_INDENT + "add " + localRegister + "," + leftRegister + "," + rightRegister + "\n";

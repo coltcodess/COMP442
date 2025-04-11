@@ -1007,7 +1007,7 @@ bool Parser::expr2(Node* root)
 	if (m_lookAheadToken->type == EQ || m_lookAheadToken->type == GT || m_lookAheadToken->type == GEQ ||
 		m_lookAheadToken->type == LT || m_lookAheadToken->type == LEQ || m_lookAheadToken->type == NOTEQ)
 	{
-		if (relOp() && arithExpr(root))
+		if (relOp(root) && arithExpr(root))
 		{
 			*m_derivationFile << "expr2 -> relOp arithExpr\n";
 			return true;
@@ -1040,7 +1040,7 @@ bool Parser::relExpr(Node* root)
 		Node* relOp_Node = m_nodeFactory->makeNode(Type::relOp);
 		relExpr_Node->addChild(relOp_Node);
 
-		if (arithExpr(relOp_Node) && relOp() && arithExpr(relOp_Node))
+		if (arithExpr(relOp_Node) && relOp(relOp_Node) && arithExpr(relOp_Node))
 		{
 			*m_derivationFile << "relExpr -> arithExpr relOp arithExpr\n";
 			return true;
@@ -1934,12 +1934,14 @@ bool Parser::assignOp(Node* root)
 	else return false;
 }
 
-bool Parser::relOp()
+bool Parser::relOp(Node* node)
 {
 	std::vector<TokenType> first = { NOTEQ, LEQ, LT, GEQ, GT, EQ };
 	std::vector<TokenType> follow = { };
 
 	if (!skipErrors(false, first, follow)) return false;
+
+	node->token = m_lookAheadToken;
 
 	if (m_lookAheadToken->type == GEQ)
 	{

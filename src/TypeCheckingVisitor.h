@@ -50,5 +50,21 @@ private:
 	// Inherited via Visitor
 	virtual void visit(addOp_Node& node) override;
 
+
+	// Inherited via Visitor
+	virtual void visit(funcDefList_Node& node) override;
+
+	virtual void visit(fCall_Node& node) override;
+
+	virtual void visit(returnStat_Node& node) override;
+
+	virtual void visit(relOp_Node& node) override;
+
+	virtual void visit(writeStat_Node& node) override;
+
+	virtual void visit(ifStat_Node& node) override;
+
+	virtual void visit(whileStat_Node& node) override;
+
 };
 

@@ -256,7 +256,7 @@ void ComputeMemSizeVisitor::visit(ifStat_Node& node)
 	}
 }
 
-void ComputeMemSizeVisitor::visit(relExpr_Node& node)
+void ComputeMemSizeVisitor::visit(relOp_Node& node)
 {
 	for (Node* child : node.getChildren())
 	{
@@ -275,6 +275,14 @@ void ComputeMemSizeVisitor::visit(fCall_Node& node)
 }
 
 void ComputeMemSizeVisitor::visit(returnStat_Node& node)
+{
+	for (Node* child : node.getChildren())
+	{
+		child->accept(*this);
+	}
+}
+
+void ComputeMemSizeVisitor::visit(whileStat_Node& node)
 {
 	for (Node* child : node.getChildren())
 	{

@@ -86,3 +86,31 @@ void TypeCheckingVisitor::visit(assignStat_Node& node)
 void TypeCheckingVisitor::visit(addOp_Node& node)
 {
 }
+
+void TypeCheckingVisitor::visit(funcDefList_Node& node)
+{
+}
+
+void TypeCheckingVisitor::visit(fCall_Node& node)
+{
+}
+
+void TypeCheckingVisitor::visit(returnStat_Node& node)
+{
+}
+
+void TypeCheckingVisitor::visit(relOp_Node& node)
+{
+}
+
+void TypeCheckingVisitor::visit(writeStat_Node& node)
+{
+}
+
+void TypeCheckingVisitor::visit(ifStat_Node& node)
+{
+}
+
+void TypeCheckingVisitor::visit(whileStat_Node& node)
+{
+}

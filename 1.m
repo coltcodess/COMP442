@@ -29,7 +29,7 @@ main     sw mainlink(r0),r15
      sw c(r0),r1
      addi r1,r0,2
      sw t4(r0),r1
-     % processing: t5 := c + t4
+% processing: t5 := c + t4
      lw r2,c(r0)
      lw r3,t4(r0)
      add r1,r2,r3

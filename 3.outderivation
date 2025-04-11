@@ -1,0 +1,85 @@
+fParams -> EPSILON
+returnType -> 'void'
+'function' 'id' '(' fParams ')' '=>' returnType
+type -> 'int'
+arraySizes -> EPSILON
+varDec1 -> 'id' ':' type arraySize ';'
+localVarDecl -> 'local' varDecl ';'
+LOCALVARDECLORSTAT2 -> localVarDecl
+IDORSELF -> 'id'
+indices -> EPSILON
+assignOp -> :=factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+RIGHTRECARITHEXPR -> EPSILON
+arithExpr -> term RIGHTRECARITHEXPR
+expr2 -> EPSILON
+expr -> arithExpr exp2
+FUNCALLORASSIGN3 -> assignOp expr
+FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
+FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
+statement -> FUNCALLORASSIGN ';'
+LOCALVARDECLORSTAT2 -> statement
+IDORSELF -> 'id'
+factor2 -> EPSILON
+REPTVARIABLEORFUNCTIONCALL -> EPSILON
+factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+RIGHTRECARITHEXPR -> EPSILON
+arithExpr -> term RIGHTRECARITHEXPR
+relOp -> '<'
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+RIGHTRECARITHEXPR -> EPSILON
+arithExpr -> term RIGHTRECARITHEXPR
+relExpr -> arithExpr relOp arithExpr
+IDORSELF -> 'id'
+factor2 -> EPSILON
+REPTVARIABLEORFUNCTIONCALL -> EPSILON
+factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+RIGHTRECARITHEXPR -> EPSILON
+arithExpr -> term RIGHTRECARITHEXPR
+expr2 -> EPSILON
+expr -> arithExpr exp2
+statement -> 'write' '(' expr ')' ';'
+IDORSELF -> 'id'
+indices -> EPSILON
+assignOp -> :=IDORSELF -> 'id'
+factor2 -> EPSILON
+REPTVARIABLEORFUNCTIONCALL -> EPSILON
+factor -> IDORSELF factor2 REPTVARIABLEORFUNCTIONCALL
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+addOp -> '+'
+factor -> 'intLit'
+rightRecTerm -> EPSILON
+term -> factor rightRecTerm
+RIGHTRECARITHEXPR -> EPSILON
+RIGHTRECARITHEXPR -> addOp term arithExpr2
+arithExpr -> term RIGHTRECARITHEXPR
+expr2 -> EPSILON
+expr -> arithExpr exp2
+FUNCALLORASSIGN3 -> assignOp expr
+FUNCALLORASSIGN2 -> indice FUNCALLORASSIGN3
+FUNCALLORASSIGN -> IDORSELF FUNCALLORASSIGN2
+statement -> FUNCALLORASSIGN ';'
+STATEMENTS -> ESPILON
+STATEMENTS -> statement STATEMENTS
+STATEMENTS -> statement STATEMENTS
+statBlock -> '{' STATEMENTS '}'
+statement -> 'while' '(' relExpr ')' statBlock ';'
+LOCALVARDECLORSTAT2 -> statement
+LOCALVARDECLORSTAT2 -> EPSILON
+LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
+LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
+LOCALVARDECLORSTAT2 -> LOCALVARDECLORSTAT LOCALVARDECLORSTAT2
+funcBody -> '{' localVarDeclOrStatRep '}'
+funcDef -> funcHead funcBody
+classOrImplOrFunc -> funcDef
+prog -> EPSILON
+prog -> classOrImplOrFunc prog
+startsymbol -> prog

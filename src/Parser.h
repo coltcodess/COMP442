@@ -118,7 +118,7 @@ private:
 	bool multOp(Node* node);
 	bool IDORSELF(Node* root);
 	bool addOp();
-	bool relOp();
+	bool relOp(Node* node);
 	bool type(Node*& root);
 	
 	// Write AST to file

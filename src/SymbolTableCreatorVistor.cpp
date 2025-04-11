@@ -59,13 +59,17 @@ void SymbolTableCreatorVistor::visit(ifStat_Node& node)
 	}
 }
 
-void SymbolTableCreatorVistor::visit(relExpr_Node& node)
+void SymbolTableCreatorVistor::visit(relOp_Node& node)
 {
 	for (Node* child : node.getChildren())
 	{
 		child->m_symbolTable = node.m_symbolTable;
 		child->accept(*this);
 	}
+
+	std::string tempVarName = this->getNewTempVarName();
+
+	node.moonVarName = tempVarName;
 }
 
 void SymbolTableCreatorVistor::visit(classDecl_Node& node)
@@ -186,6 +190,15 @@ void SymbolTableCreatorVistor::visit(fCall_Node& node)
 }
 
 void SymbolTableCreatorVistor::visit(returnStat_Node& node)
+{
+	for (Node* child : node.getChildren())
+	{
+		child->m_symbolTable = node.m_symbolTable;
+		child->accept(*this);
+	}
+}
+
+void SymbolTableCreatorVistor::visit(whileStat_Node& node)
 {
 	for (Node* child : node.getChildren())
 	{

@@ -1,0 +1,13 @@
+function main() => void
+{
+	local c: int;
+	c := 0;	
+
+	while(c < 5)
+	{
+		write(c);
+		c := c + 1;
+	};
+
+
+}

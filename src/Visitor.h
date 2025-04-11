@@ -32,6 +32,8 @@ class ifStat_Node;
 class relExpr_Node;
 class fCall_Node;
 class returnStat_Node;
+class relOp_Node;
+class whileStat_Node;
 
 class Visitor
 {
@@ -62,7 +64,8 @@ public:
 	virtual void visit(assignOp_Node& node) = 0;
 	virtual void visit(multiOp_Node& node) = 0;
 	virtual void visit(addOp_Node& node) = 0;
-	virtual void visit(relExpr_Node& node) = 0;
+	virtual void visit(relOp_Node& node) = 0;
+
 
 	// Terminals
 	virtual void visit(idLit_Node& node) = 0;
@@ -72,5 +75,6 @@ public:
 
 	virtual void visit(writeStat_Node& node) = 0;
 	virtual void visit(ifStat_Node& node) = 0;
+	virtual void visit(whileStat_Node& node) = 0;
 
 };
