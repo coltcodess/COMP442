@@ -73,5 +73,7 @@ private:
 	virtual void visit(fCall_Node& node) override;
 
 	virtual void visit(returnStat_Node& node) override;
+
+	virtual void visit(dot_Node& node) override;
 };
 

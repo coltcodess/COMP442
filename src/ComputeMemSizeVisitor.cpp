@@ -289,3 +289,12 @@ void ComputeMemSizeVisitor::visit(whileStat_Node& node)
 		child->accept(*this);
 	}
 }
+
+void ComputeMemSizeVisitor::visit(dot_Node& node)
+{
+
+	for (Node* child : node.getChildren())
+	{
+		child->accept(*this);
+	}
+}

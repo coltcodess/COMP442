@@ -1,3 +1,14 @@
-ERROR: POLYNOMIAL - Multiply declared function with same parameters - evaluate
-ERROR: LINEAR - Multiply declared data member - b
-ERROR: global - Multiply declared class - POLYNOMIAL
+multiply declared class - POLYNOMIAL
+multiply declared identifier in class - b
+multiply declared identifier in functiontion - b
+multiply declared function - evaluate
+multiply declared function - evaluate
+multiply declared function - build
+multiply declared function - f
+multiply declared function - f
+Undeclared class - a
+multiply declared identifier in functiontion - counter
+Type error between - B and 3
+ '.' operator used on non - class type - counter
+ '.' operator used on non - class type - evaluate
+ '.' operator used on non - class type - evaluate

@@ -1,57 +1,134 @@
- || table: global
- -------------------------------- 
-  || class: POLYNOMIAL
-  inherit: | none
- -------------------------------- 
-        table:  POLYNOMIAL::evaluate
- -------------------------------- 
- -------------------------------- 
-        table:  POLYNOMIAL::evaluate2
- -------------------------------- 
- -------------------------------- 
-  || class: LINEAR
-  inherit: | POLYNOMIAL
-  data:  | a | float
-  data:  | b | float
- -------------------------------- 
-        table:  LINEAR::build
- -------------------------------- 
-        local: | id | new_functiontion
-        param: | float | B
-        param: | float | A
- -------------------------------- 
-        table:  LINEAR::evaluate
- -------------------------------- 
-        param: | float | x
- -------------------------------- 
-  || class: QUADRATIC
-  inherit: | POLYNOMIAL
-  data:  | a | float
-  data:  | b | float
-  data:  | c | float
- -------------------------------- 
-        table:  QUADRATIC::build
- -------------------------------- 
-        local: | id | new_functiontion
-        param: | float | B
-        param: | float | C
-        param: | float | A
- -------------------------------- 
-        table:  QUADRATIC::evaluate
- -------------------------------- 
-        param: | float | x
- -------------------------------- 
-  || class: C
-  inherit: | E
-  data:  | a | int
- -------------------------------- 
-  || class: D
-  inherit: | C
-  data:  | b | int
- -------------------------------- 
-  || class: E
-  inherit: | D
-  data:  | c | int
- -------------------------------- 
-  || function: main
- -------------------------------- 
+
+=====================================================
+| table:  global     scope offset: 0
+ |  POLYNOMIAL | 
+=====================================================
+| table:  POLYNOMIAL     scope offset: 0
+=====================================================
+ |  POLYNOMIAL | 
+=====================================================
+| table:  POLYNOMIAL     scope offset: 0
+=====================================================
+ |  LINEAR | 
+=====================================================
+| table:  LINEAR     scope offset: -20
+ |  a | float | 8
+ |  b | float | 8
+ |  b | int | 4
+=====================================================
+ |  QUADRATIC | 
+=====================================================
+| table:  QUADRATIC     scope offset: -44
+ |  a | float | 8
+ |  b | float | 8
+ |  c | float | 8
+=====================================================
+ |  C | 
+=====================================================
+| table:  C     scope offset: -48
+ |  a | int | 4
+=====================================================
+ |  D | 
+=====================================================
+| table:  D     scope offset: -52
+ |  b | int | 4
+=====================================================
+ |  E | 
+=====================================================
+| table:  E     scope offset: -56
+ |  c | int | 4
+=====================================================
+ |  evaluate | float
+=====================================================
+| table:  evaluate     scope offset: -60
+ |  litval | int | 4
+=====================================================
+ |  build | LINEAR
+=====================================================
+| table:  build     scope offset: -80
+ |  new_functiontion | id | 20
+=====================================================
+ |  evaluate | float
+=====================================================
+| table:  evaluate     scope offset: -88
+ |  result | float | 8
+ |  t2 |  | 0
+ |  t3 |  | 0
+=====================================================
+ |  evaluate | float
+=====================================================
+| table:  evaluate     scope offset: -128
+ |  result | float | 8
+ |  t4 | float | 8
+ |  t5 | float | 8
+ |  t6 | float | 8
+ |  t7 | float | 8
+=====================================================
+ |  build | QUADRATIC
+=====================================================
+| table:  build     scope offset: -184
+ |  new_functiontion | id | 44
+ |  litval | int | 4
+ |  t9 |  | 0
+ |  t10 |  | 0
+ |  litval | int | 4
+ |  litval | int | 4
+=====================================================
+ |  build2 | QUADRATIC
+=====================================================
+| table:  build2     scope offset: -228
+ |  new_functiontion | id | 44
+=====================================================
+ |  f | void
+=====================================================
+| table:  f     scope offset: 0
+=====================================================
+ |  f | void
+=====================================================
+| table:  f     scope offset: 0
+=====================================================
+ |  f | integer
+=====================================================
+| table:  f     scope offset: 0
+=====================================================
+ |  f3 | integer
+=====================================================
+| table:  f3     scope offset: -236
+ |  litval | int | 4
+ |  litval | int | 4
+=====================================================
+ |  main | void
+=====================================================
+| table:  main     scope offset: -492
+ |  a | id | 0
+ |  c | id | 48
+ |  f1 | id | 20
+ |  f2 | id | 44
+ |  counter | int | 4
+ |  counter | float | 8
+ |  litval | int | 4
+ |  litval | int | 4
+ |  i | int[2][3] | 24
+ |  litval | int | 4
+ |  litval | int | 4
+ |  litval | int | 4
+ |  j | int[1][2][3] | 24
+ |  litval | int | 4
+ |  reval | QUADRATIC | 0
+ |  reval | QUADRATIC | 0
+ |  litval | int | 4
+ |  reval | integer | 0
+ |  litval | int | 4
+ |  litval | int | 4
+ |  litval | int | 4
+ |  litval | int | 4
+ |  litval | int | 4
+ |  litval | int | 4
+ |  litval | int | 4
+ |  litval | int | 4
+ |  litval | int | 4
+ |  litval | int | 4
+ |  reval | float | 8
+ |  reval | float | 8
+=====================================================
+=====================================================

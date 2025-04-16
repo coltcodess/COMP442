@@ -1,0 +1,11 @@
+
+
+
+// ====== main ====== //
+function main() => void
+{
+
+     local counter: int;
+     counter.x := 1;
+
+}

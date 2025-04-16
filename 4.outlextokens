@@ -1,0 +1,10 @@
+
+[inlinecmt, // ====== main ====== //, 4] 
+[function, function, 4] 
+[id, main, 4] [openpar, (, 4] [closepar, ), 4] [arrow, =>, 4] [void, void, 4] 
+[opencubr, {, 5] 
+[local, local, 7] 
+[id, counter, 7] [colon, :, 7] [int, int, 7] [semi, ;, 7] 
+[id, counter, 8] [dot, ., 8] [id, x, 8] [assign, :=, 8] [intnum, 1, 8] [semi, ;, 8] 
+[closecubr, }, 10] 
+[end_of_file, $, 10] 

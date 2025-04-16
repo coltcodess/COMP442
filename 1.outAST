@@ -28,6 +28,9 @@
           | assignOp
             | idLit
             | int
+          | assignOp
+            | idLit
+            | int
           | returnStat
             | idLit
   | funcDefList

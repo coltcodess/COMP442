@@ -30,6 +30,8 @@ void SymbolTableCreatorVistor::visit(prog_Node& node)
 		child->accept(*this);
 	}
 
+
+
 }
 
 void SymbolTableCreatorVistor::visit(funcDefList_Node& node)
@@ -75,8 +77,14 @@ void SymbolTableCreatorVistor::visit(relOp_Node& node)
 void SymbolTableCreatorVistor::visit(classDecl_Node& node)
 {
 	std::string className = node.token->lexem;
+
+	if (node.m_symbolTable->lookupName(className) != nullptr)
+	{
+		*m_errors << "multiply declared class - " + className + "\n";
+	}
+
 	SymbolTable* localTable = new SymbolTable(1, className, node.m_symbolTable);
-	node.m_symbolEntry = new SymbolTableEntry(className, localTable);
+	node.m_symbolEntry = new SymbolTableEntry(className, Kind::_class, localTable);
 
 	node.m_symbolTable->appendEntry(node.m_symbolEntry);
 
@@ -91,7 +99,13 @@ void SymbolTableCreatorVistor::visit(classDecl_Node& node)
 
 void SymbolTableCreatorVistor::visit(funcDef_Node& node)
 {
-	std::string funcName;
+	std::string funcName = node.token->lexem;
+
+	if (node.m_symbolTable->lookupName(funcName) != nullptr)
+	{
+		*m_errors << "multiply declared function - " + funcName + "\n";
+	}
+
 	if (node.parent->token != nullptr)
 	{
 		funcName = node.token->lexem;
@@ -101,6 +115,7 @@ void SymbolTableCreatorVistor::visit(funcDef_Node& node)
 	{
 		funcName = node.token->lexem;
 	}
+
 	std::vector<SymbolTableEntry*>* entries = new std::vector<SymbolTableEntry*>();
 	SymbolTable* localTable = new SymbolTable(1, funcName, node.m_symbolTable);
 	node.m_symbolEntry = new SymbolTableEntry(funcName, *entries, localTable, node.getChildren()[2]->token->lexem);
@@ -113,6 +128,9 @@ void SymbolTableCreatorVistor::visit(funcDef_Node& node)
 		child->m_symbolTable = node.m_symbolTable;
 		child->accept(*this);
 	}
+
+
+
 }
 
 void SymbolTableCreatorVistor::visit(impleDef_Node& node)
@@ -137,6 +155,13 @@ void SymbolTableCreatorVistor::visit(inheritList_Node& node)
 
 void SymbolTableCreatorVistor::visit(memDeclAttrib_Node& node)
 {
+	for (auto i : node.m_symbolTable->getEntries())
+	{
+		if (i->name.compare(node.getChildren()[0]->token->lexem) == 0)
+		{
+			*m_errors << "multiply declared identifier in class - " + node.getChildren()[0]->token->lexem + "\n";
+		}
+	}
 
 	for (Node* child : node.getChildren())
 	{
@@ -147,7 +172,7 @@ void SymbolTableCreatorVistor::visit(memDeclAttrib_Node& node)
 
 void SymbolTableCreatorVistor::visit(memDeclFunc_Node& node)
 {
-
+	
 
 	for (Node* child : node.getChildren())
 	{
@@ -207,6 +232,17 @@ void SymbolTableCreatorVistor::visit(whileStat_Node& node)
 	}
 }
 
+void SymbolTableCreatorVistor::visit(dot_Node& node)
+{
+	for (Node* child : node.getChildren())
+	{
+		child->m_symbolTable = node.m_symbolTable;
+		child->accept(*this);
+	}
+
+
+}
+
 void SymbolTableCreatorVistor::visit(fParam_Node& node)
 {
 
@@ -220,11 +256,27 @@ void SymbolTableCreatorVistor::visit(fParam_Node& node)
 
 void SymbolTableCreatorVistor::visit(varDecl_Node& node)
 {
+	std::string varName = node.token->lexem;
+
+	if (node.m_symbolTable->lookupName(varName) != nullptr)
+	{
+		*m_errors << "multiply declared identifier in functiontion - " + varName + "\n";
+	}
+
 	for (Node* child : node.getChildren())
 	{
 		child->m_symbolTable = node.m_symbolTable;
 		child->accept(*this);
 	}
+	
+	if (node.getChildren()[1]->token->type == 499)
+	{
+		if (node.m_symbolTable->lookupName(node.getChildren()[1]->token->lexem) == nullptr)
+		{
+			*m_errors << "Undeclared class - " + node.getChildren()[1]->token->lexem + "\n";
+		}
+	}
+
 
 	std::string name = node.token->lexem;
 	std::string type = node.getChildren()[1]->token->convertTokenTypeToString();

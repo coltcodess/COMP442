@@ -236,6 +236,14 @@ void CodeGeneratorVisitor::visit(assignStat_Node& node)
 	}
 }
 
+void CodeGeneratorVisitor::visit(dot_Node& node)
+{
+	for (Node* child : node.getChildren())
+	{
+		child->accept(*this);
+	}
+}
+
 void CodeGeneratorVisitor::visit(ifStat_Node& node)
 {
 	//moonExecCode += "% processing: IF statement \n";

@@ -17,6 +17,7 @@ class fParam_Node;
 class assignStat_Node;
 
 class varDecl_Node;
+class dot_Node;
 
 class idLit_Node;
 class intLit_Node;
@@ -65,6 +66,7 @@ public:
 	virtual void visit(multiOp_Node& node) = 0;
 	virtual void visit(addOp_Node& node) = 0;
 	virtual void visit(relOp_Node& node) = 0;
+	virtual void visit(dot_Node& node) = 0;
 
 
 	// Terminals

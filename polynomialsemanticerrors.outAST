@@ -5,79 +5,40 @@
       | inheritList
       | memDeclList
         | memDeclFunc
-          | type
           | idLit
           | fParamsList
             | fParam
-              | type
               | idLit
+              | type
+              | arraySizeList
           | type
         | memDeclFunc
-          | type
           | idLit
           | fParamsList
             | fParam
-              | type
               | idLit
+              | type
+              | arraySizeList
           | type
     | classDecl
       | idLit
       | inheritList
       | memDeclList
         | memDeclFunc
-          | type
           | idLit
           | fParamsList
             | fParam
-              | type
               | idLit
+              | type
+              | arraySizeList
           | type
         | memDeclFunc
-          | type
           | idLit
           | fParamsList
             | fParam
-              | type
               | idLit
-          | type
-    | classDecl
-      | idLit
-      | inheritList
-        | idLit
-      | memDeclList
-        | memDeclAttrib
-          | varDecl
-            | idLit
-            | type
-            | arraySizeList
-        | memDeclAttrib
-          | varDecl
-            | idLit
-            | type
-            | arraySizeList
-        | memDeclAttrib
-          | varDecl
-            | idLit
-            | type
-            | arraySizeList
-        | memDeclFunc
-          | type
-          | idLit
-          | fParamsList
-            | fParam
               | type
-              | idLit
-            | fParam
-              | type
-              | idLit
-          | type
-        | memDeclFunc
-          | type
-          | idLit
-          | fParamsList
-            | fParam
-              | type
-              | idLit
+              | arraySizeList
           | type
     | classDecl
       | idLit
@@ -100,26 +61,68 @@
             | type
             | arraySizeList
         | memDeclFunc
-          | type
           | idLit
           | fParamsList
             | fParam
-              | type
               | idLit
+              | type
+              | arraySizeList
             | fParam
-              | type
               | idLit
-            | fParam
               | type
-              | idLit
+              | arraySizeList
           | type
         | memDeclFunc
-          | type
           | idLit
           | fParamsList
             | fParam
-              | type
               | idLit
+              | type
+              | arraySizeList
+          | type
+    | classDecl
+      | idLit
+      | inheritList
+        | idLit
+      | memDeclList
+        | memDeclAttrib
+          | varDecl
+            | idLit
+            | type
+            | arraySizeList
+        | memDeclAttrib
+          | varDecl
+            | idLit
+            | type
+            | arraySizeList
+        | memDeclAttrib
+          | varDecl
+            | idLit
+            | type
+            | arraySizeList
+        | memDeclFunc
+          | idLit
+          | fParamsList
+            | fParam
+              | idLit
+              | type
+              | arraySizeList
+            | fParam
+              | idLit
+              | type
+              | arraySizeList
+            | fParam
+              | idLit
+              | type
+              | arraySizeList
+          | type
+        | memDeclFunc
+          | idLit
+          | fParamsList
+            | fParam
+              | idLit
+              | type
+              | arraySizeList
           | type
     | classDecl
       | idLit
@@ -155,28 +158,29 @@
     | impleDef
       | idLit
       | funcDef
-        | type
         | idLit
         | fParamsList
           | fParam
-            | type
             | idLit
+            | type
+            | arraySizeList
         | type
         | statBlock
           | returnStat
-            | intLit
+            | int
     | impleDef
       | idLit
       | funcDef
-        | type
         | idLit
         | fParamsList
           | fParam
-            | type
             | idLit
+            | type
+            | arraySizeList
           | fParam
-            | type
             | idLit
+            | type
+            | arraySizeList
         | type
         | statBlock
           | varDecl
@@ -185,55 +189,90 @@
             | arraySizeList
           | dot
             | idLit
-            | fCall
+            | assignOp
               | idLit
-              | aParams
-                | idLit
+              | idLit
+          | dot
+            | idLit
+            | assignOp
+              | idLit
+              | idLit
+          | returnStat
+            | idLit
       | funcDef
-        | type
         | idLit
         | fParamsList
           | fParam
-            | type
             | idLit
+            | type
+            | arraySizeList
         | type
-        | fCall
+        | statBlock
           | varDecl
             | idLit
             | type
             | arraySizeList
-          | aParams
+          | assignOp
+            | idLit
+            | float
+          | assignOp
+            | idLit
+            | addOp
+              | multiOp
+                | idLit
+                | idLit
+              | idLit
+          | returnStat
             | idLit
     | impleDef
       | idLit
       | funcDef
-        | type
         | idLit
         | fParamsList
           | fParam
-            | type
             | idLit
+            | type
+            | arraySizeList
         | type
-        | fCall
+        | statBlock
           | varDecl
             | idLit
             | type
             | arraySizeList
-          | aParams
+          | assignOp
+            | idLit
+            | idLit
+          | assignOp
+            | idLit
+            | addOp
+              | multiOp
+                | idLit
+                | idLit
+              | idLit
+          | assignOp
+            | idLit
+            | addOp
+              | multiOp
+                | idLit
+                | idLit
+              | idLit
+          | returnStat
             | idLit
       | funcDef
-        | type
         | idLit
         | fParamsList
           | fParam
-            | type
             | idLit
+            | type
+            | arraySizeList
           | fParam
-            | type
             | idLit
+            | type
+            | arraySizeList
           | fParam
-            | type
             | idLit
+            | type
+            | arraySizeList
         | type
         | statBlock
           | varDecl
@@ -242,80 +281,223 @@
             | arraySizeList
           | dot
             | idLit
-            | dot
+            | assignOp
               | idLit
-              | fCall
+              | addOp
                 | idLit
-                | aParams
-                  | intLit
-      | funcDef
-        | type
-        | idLit
-        | fParamsList
-          | fParam
-            | type
-            | idLit
-          | fParam
-            | type
-            | idLit
-          | fParam
-            | type
-            | idLit
-        | type
-        | statBlock
-          | varDecl
-            | idLit
-            | type
-            | arraySizeList
-          | dot
-            | idLit
-            | dot
-              | idLit
-              | fCall
-                | idLit
-                | aParams
+                | multiOp
                   | idLit
+                  | int
+          | dot
+            | idLit
+            | assignOp
+              | idLit
+              | idLit
+          | dot
+            | idLit
+            | assignOp
+              | idLit
+              | int
+          | returnStat
+            | int
+      | funcDef
+        | idLit
+        | fParamsList
+          | fParam
+            | idLit
+            | type
+            | arraySizeList
+          | fParam
+            | idLit
+            | type
+            | arraySizeList
+          | fParam
+            | idLit
+            | type
+            | arraySizeList
+        | type
+        | statBlock
+          | varDecl
+            | idLit
+            | type
+            | arraySizeList
+          | dot
+            | idLit
+            | assignOp
+              | idLit
+              | idLit
+          | dot
+            | idLit
+            | assignOp
+              | idLit
+              | idLit
+          | dot
+            | idLit
+            | assignOp
+              | idLit
+              | idLit
+          | returnStat
+            | idLit
   | funcDefList
     | funcDef
       | idLit
       | fParamsList
         | fParam
-          | type
           | idLit
+          | type
+          | arraySizeList
       | type
       | statBlock
     | funcDef
       | idLit
       | fParamsList
         | fParam
-          | type
           | idLit
-      | type
-      | statBlock
-    | funcDef
-      | type
-      | idLit
-      | fParamsList
-        | fParam
           | type
-          | idLit
-        | fParam
-          | type
-          | idLit
-      | type
-      | statBlock
-    | funcDef
-      | type
-      | idLit
-      | fParamsList
-        | intLit
-        | intLit
-        | fParam
-          | type
-          | idLit
+          | arraySizeList
       | type
       | statBlock
     | funcDef
       | idLit
       | fParamsList
+        | fParam
+          | idLit
+          | type
+          | arraySizeList
+        | fParam
+          | idLit
+          | type
+          | arraySizeList
       | type
+      | statBlock
+    | funcDef
+      | idLit
+      | fParamsList
+        | fParam
+          | idLit
+          | type
+          | arraySizeList
+        | int
+        | int
+      | type
+      | statBlock
+    | funcDef
+      | idLit
+      | fParamsList
+      | type
+      | fCall
+        | varDecl
+          | idLit
+          | type
+          | arraySizeList
+        | varDecl
+          | idLit
+          | type
+          | arraySizeList
+        | varDecl
+          | idLit
+          | type
+          | arraySizeList
+        | varDecl
+          | idLit
+          | type
+          | arraySizeList
+        | varDecl
+          | idLit
+          | type
+          | arraySizeList
+        | varDecl
+          | idLit
+          | type
+          | arraySizeList
+        | varDecl
+          | idLit
+          | type
+          | arraySizeList
+            | int
+            | int
+        | varDecl
+          | idLit
+          | type
+          | arraySizeList
+            | int
+            | int
+            | int
+        | assignOp
+          | idLit
+          | idLit
+            | dot
+              | idLit
+                | fCall
+                  | int
+                  | float
+        | assignOp
+          | idLit
+          | idLit
+            | dot
+              | idLit
+                | fCall
+                  | float
+                  | float
+                  | float
+        | dot
+          | idLit
+          | assignOp
+            | idLit
+            | int
+        | assignOp
+          | idLit
+          | idLit
+            | dot
+              | idLit
+                | fCall
+        | aParams
+        | assignOp
+          | idLit
+          | idLit
+        | aParams
+          | int
+          | int
+          | int
+        | aParams
+          | float
+          | int
+        | assignOp
+          | idLit
+            | arraySizeList
+              | int
+          | int
+        | assignOp
+          | idLit
+            | arraySizeList
+              | int
+              | arraySizeList
+                | float
+          | int
+        | aParams
+          | idLit
+        | dot
+          | idLit
+          | assignOp
+            | idLit
+            | int
+        | whileStat
+          | relExpr
+            | relOp
+              | idLit
+              | int
+          | statBlock
+            | writeStat
+              | idLit
+            | writeStat
+              | idLit
+                | dot
+                  | idLit
+                    | fCall
+                      | idLit
+            | writeStat
+              | idLit
+                | dot
+                  | idLit
+                    | fCall
+                      | idLit

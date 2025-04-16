@@ -77,7 +77,7 @@ int main()
     std::ofstream* outCodeGeneration = new std::ofstream(fileInput + ".m", std::ofstream::out);
 
     SymbolTableCreatorVistor symbolTableCreatorVistor(outSymbolTables, outSemErrors);
-    //TypeCheckingVisitor typeCheckingVisitor(outSemErrors);
+    TypeCheckingVisitor typeCheckingVisitor(outSemErrors);
 
     // Assignment 5
     ComputeMemSizeVisitor computeMemSizeVisitor;
@@ -89,7 +89,7 @@ int main()
     astRoot->accept(symbolTableCreatorVistor);
 
     // Type checking visitor
-    //astRoot->accept(typeCheckingVisitor);
+    astRoot->accept(typeCheckingVisitor);
 
     //Code Generation
     astRoot->accept(computeMemSizeVisitor);

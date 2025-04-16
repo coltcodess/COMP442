@@ -1,0 +1,18 @@
+| prog
+  | classDeclList
+  | implDefList
+  | funcDefList
+    | funcDef
+      | idLit
+      | fParamsList
+      | type
+      | statBlock
+        | varDecl
+          | idLit
+          | type
+          | arraySizeList
+        | dot
+          | idLit
+          | assignOp
+            | idLit
+            | int

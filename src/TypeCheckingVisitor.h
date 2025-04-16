@@ -66,5 +66,9 @@ private:
 
 	virtual void visit(whileStat_Node& node) override;
 
+
+	// Inherited via Visitor
+	virtual void visit(dot_Node& node) override;
+
 };
 

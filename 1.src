@@ -1,7 +1,7 @@
 class MyClass {
 	public function evaluate() => int; 
 
-	private attribute a: float;
+	private attribute a: int;
 };
 
 implementation MyClass {   
@@ -9,8 +9,9 @@ implementation MyClass {
   {
 	local b: int;
 	b := 10;
+	a := 2;
 
-    return (b);
+    return (a);
   }
 }
 
